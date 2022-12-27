@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CafeInform {
+  id: String!
+  cafeinfo: String!
+  closedDay: String!
+  operatingTime: String!
+  cafeAddr: String!
+  lat: Float!
+  lng: Float!
+}
+
 type Category {
   id: String!
   category: String!
@@ -11,7 +21,9 @@ type Comment {
   id: String!
   reply: String!
   like: Int!
+
   time: DateTime!
+
 }
 
 """
@@ -19,11 +31,29 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+
+type Owner {
+  id: String!
+  name: String!
+  email: String!
+  personalNum: String!
+  phone: String!
+  brandName: String!
+}
+
+type Query {
+  fetchComments: [Comment!]!
+  fetchComment(commentId: String!): Comment!
+
 type Query {
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchbestcomment: [Comment!]!
+
   fetchCategory: [Category!]!
+  fetchOwners: [Owner!]!
+  fetchOwner(ownerID: String!): Owner!
+  fetchCafeInform(cafeInformID: String!): CafeInform!
 }
 
 type Mutation {
@@ -32,14 +62,63 @@ type Mutation {
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
+
+  CreateOwner(createOwnerInput: OwnerInput!): Owner!
+  deleteOwner(ownerID: String!): Boolean!
+  updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
+  updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
+
 }
 
 input createCommentInput {
   reply: String!
   like: Int!
+
 }
 
 input UpdateCommentInput {
   reply: String
   like: Int
+
+  cafeaddr: String
+  tag: String
+  brandname: String
+}
+
+input OwnerInput {
+  name: String!
+  email: String!
+  personalNum: String!
+  phone: String!
+  brandName: String!
+  cafeInformInput: CafeInformInput!
+}
+
+input CafeInformInput {
+  id: String
+  cafeinfo: String
+  closedDay: String
+  operatingTime: String
+  cafeAddr: String
+  lat: Float
+  lng: Float
+}
+
+input OwnerUpdateInput {
+  name: String
+  email: String
+  phone: String
+  brandName: String
+  password: String
+  ownerPassword: String
+}
+
+input UpdateCafeInform {
+  cafeinfo: String
+  closedDay: String
+  operatingTime: String
+  cafeAddr: String
+  lat: Float
+  lng: Float
+
 }

@@ -1,0 +1,16 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Category {
+  id: String!
+  category: String!
+}
+
+type Query {
+  fetchCategory: [Category!]!
+}
+
+type Mutation {
+  createCategory(category: String!): Category!
+}

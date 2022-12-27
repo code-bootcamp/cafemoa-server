@@ -21,29 +21,7 @@ export class Comment {
   @Field(() => Int)
   like: number;
 
-  @Column()
-  @Field(() => String)
-  cafeaddr: string;
-
-  @Column()
-  @Field(() => String)
-  tag: string;
-
-  @Column()
-  @Field(() => String)
-  brandname: string;
-
-  // @Column()
-  // @Field(()=>[String])
-  // image: string;
-
-  // @ManyToOne(()=>owner)
-  // owner:owner;
-
-  // @ManyToOne(()=>user)
-  // user:user;
-
   @CreateDateColumn()
   @Field(() => Date)
-  createAt: Date;
+  time: Date;
 }

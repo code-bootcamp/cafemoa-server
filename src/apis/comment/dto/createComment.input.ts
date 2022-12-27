@@ -7,13 +7,4 @@ export class createCommentInput {
 
   @Field(() => Int)
   like: number;
-
-  @Field(() => String)
-  cafeaddr: string;
-
-  @Field(() => String)
-  tag: string;
-
-  @Field(() => String)
-  brandname: string;
 }

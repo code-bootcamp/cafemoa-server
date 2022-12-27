@@ -4,6 +4,7 @@ import { createCommentInput } from './dto/createComment.input';
 import { Comment } from './entities/comment.entity';
 import { UpdateCommentInput } from './dto/updateComment.input';
 
+
 @Resolver()
 export class CommentResolver {
   constructor(
@@ -40,4 +41,11 @@ export class CommentResolver {
   ) {
     return this.commentService.delete({ commentId });
   }
+  @Query(()=>[Comment])
+  fetchbestcomment(
+    
+  ){
+    return this.commentService.sendBestComment()
+  }
+
 }

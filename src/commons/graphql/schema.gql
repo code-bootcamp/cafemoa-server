@@ -7,10 +7,39 @@ type Category {
   category: String!
 }
 
+type Comment {
+  id: String!
+  reply: String!
+  like: Int!
+  time: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
+  fetchComments: [Comment!]!
+  fetchComment(commentId: String!): Comment!
+  fetchbestcomment: [Comment!]!
   fetchCategory: [Category!]!
 }
 
 type Mutation {
+  createComment(createCommentinput: createCommentInput!, ownerId: String!): Comment!
+  updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
+  deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
+  deleteCategory(categoryId: String!): Boolean!
+}
+
+input createCommentInput {
+  reply: String!
+  like: Int!
+}
+
+input UpdateCommentInput {
+  reply: String
+  like: Int
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
@@ -43,4 +43,24 @@ export class CommentService {
       withDeleted: true,
     });
   }
+
+  async sendBestComment() {
+    const Like = await this.commentRepository.find()
+    Like.sort((a, b) => b.like - a.like)
+    console.log(Like)
+    if(Like[0].like < 5){
+      throw new ConflictException("해당하는 댓글이 없습니다.")
+    }
+    else{
+      return Like.slice(0,3)
+    }
+  }
+
+  
+
+
+
+  
+
+
 }

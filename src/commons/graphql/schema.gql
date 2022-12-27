@@ -21,16 +21,16 @@ type Comment {
   id: String!
   reply: String!
   like: Int!
-  cafeaddr: String!
-  tag: String!
-  brandname: String!
-  createAt: DateTime!
+
+  time: DateTime!
+
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
 
 type Owner {
   id: String!
@@ -44,6 +44,12 @@ type Owner {
 type Query {
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
+
+type Query {
+  fetchComments: [Comment!]!
+  fetchComment(commentId: String!): Comment!
+  fetchbestcomment: [Comment!]!
+
   fetchCategory: [Category!]!
   fetchOwners: [Owner!]!
   fetchOwner(ownerID: String!): Owner!
@@ -56,23 +62,24 @@ type Mutation {
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
+
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
   deleteOwner(ownerID: String!): Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
   updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
+
 }
 
 input createCommentInput {
   reply: String!
   like: Int!
-  cafeaddr: String!
-  tag: String!
-  brandname: String!
+
 }
 
 input UpdateCommentInput {
   reply: String
   like: Int
+
   cafeaddr: String
   tag: String
   brandname: String
@@ -113,4 +120,5 @@ input UpdateCafeInform {
   cafeAddr: String
   lat: Float
   lng: Float
+
 }

@@ -21,16 +21,13 @@ type Comment {
   id: String!
   reply: String!
   like: Int!
-
   time: DateTime!
-
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
 
 type Owner {
   id: String!
@@ -41,15 +38,23 @@ type Owner {
   brandName: String!
 }
 
-type Query {
-  fetchComments: [Comment!]!
-  fetchComment(commentId: String!): Comment!
+type User {
+  id: String!
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  image: String!
+  phoneNumber: String!
+  age: String!
+}
 
 type Query {
+  fetchUsers: [User!]!
+  fetchUser(email: String!): User!
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchbestcomment: [Comment!]!
-
   fetchCategory: [Category!]!
   fetchOwners: [Owner!]!
   fetchOwner(ownerID: String!): Owner!
@@ -57,32 +62,55 @@ type Query {
 }
 
 type Mutation {
+  userLogin(email: String!, password: String!): String!
+  restoreAccessToken: String!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  deleteUser(userId: String!): Boolean!
+  changeUserPwd(password: String!, email: String!): Boolean!
   createComment(createCommentinput: createCommentInput!, ownerId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
-
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
   deleteOwner(ownerID: String!): Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
   updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
+}
 
+input CreateUserInput {
+  id: String
+  name: String
+  email: String
+  address: String
+  personalNumber: String
+  image: String
+  phoneNumber: String
+  age: String
+  password: String!
+}
+
+input UpdateUserInput {
+  id: String
+  name: String
+  email: String
+  address: String
+  personalNumber: String
+  image: String
+  phoneNumber: String
+  age: String
+  password: String
 }
 
 input createCommentInput {
   reply: String!
   like: Int!
-
 }
 
 input UpdateCommentInput {
   reply: String
   like: Int
-
-  cafeaddr: String
-  tag: String
-  brandname: String
 }
 
 input OwnerInput {
@@ -120,5 +148,4 @@ input UpdateCafeInform {
   cafeAddr: String
   lat: Float
   lng: Float
-
 }

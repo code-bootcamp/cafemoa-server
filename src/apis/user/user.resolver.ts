@@ -40,4 +40,13 @@ export class UserResolver {
   deleteUser(@Args('userId') userId: string): Promise<boolean> {
     return this.userService.delete({ userId });
   }
+
+  //로그인 필요
+  @Mutation(() => Boolean)
+  async changeUserPwd(
+    @Args('password') password: string,
+    @Args('email') email: string,
+  ) {
+    return this.userService.changeUserPwd({ password, email });
+  }
 }

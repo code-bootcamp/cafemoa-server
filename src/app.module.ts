@@ -7,11 +7,13 @@ import { CafeInformModule } from './apis/cafeInform/cafeInform.module';
 import { CategoryModule } from './apis/category/category.module';
 import { CommentModule } from './apis/comment/comment.module';
 import { OwnerModule } from './apis/owner/owner.module';
+import { UserModule } from './apis/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
   imports: [
+    UserModule,
     CommentModule,
     CategoryModule,
     OwnerModule,

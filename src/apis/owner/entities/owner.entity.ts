@@ -1,12 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CafeInform } from 'src/apis/cafeInform/entities/cafeInform.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -25,10 +18,6 @@ export class Owner {
 
   @Column()
   @Field(() => String)
-  personalNum: string;
-
-  @Column()
-  @Field(() => String)
   phone: string;
 
   @Column()
@@ -42,9 +31,4 @@ export class Owner {
   @Column()
   // @Field(() => String)
   ownerPassword: string;
-
-  @JoinColumn()
-  // @Field(() => CafeInform)
-  @OneToOne(() => CafeInform)
-  cafeInform: CafeInform;
 }

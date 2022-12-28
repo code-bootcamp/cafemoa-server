@@ -1,8 +1,10 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Owner } from 'src/apis/owner/entities/owner.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -24,4 +26,8 @@ export class Comment {
   @CreateDateColumn()
   @Field(() => Date)
   time: Date;
+
+  @ManyToOne(() => Owner)
+  @Field(() => Owner)
+  owner: Owner;
 }

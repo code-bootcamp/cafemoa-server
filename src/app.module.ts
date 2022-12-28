@@ -13,6 +13,7 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
+    UserModule,
     CommentModule,
     CategoryModule,
     OwnerModule,

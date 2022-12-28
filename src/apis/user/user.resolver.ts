@@ -1,4 +1,6 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { CreateUserInput } from './dto/user-create.input';
 import { UpdateUserInput } from './dto/user-update.input';
 import { User } from './entities/user.entity';
@@ -22,11 +24,13 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
   fetchUser(@Args('email') email: string): Promise<User> {
     return this.userService.find({ email });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async updateUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
@@ -36,12 +40,13 @@ export class UserResolver {
     });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteUser(@Args('userId') userId: string): Promise<boolean> {
     return this.userService.delete({ userId });
   }
 
-  //로그인 필요
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   async changeUserPwd(
     @Args('password') password: string,

@@ -8,11 +8,15 @@ import { CategoryModule } from './apis/category/category.module';
 import { CommentModule } from './apis/comment/comment.module';
 import { OwnerModule } from './apis/owner/owner.module';
 import { UserModule } from './apis/user/user.module';
+import { UserAuthModule } from './apis/userauth/userauth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
+import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 
 @Module({
   imports: [
+    UserAuthModule,
     UserModule,
     CommentModule,
     CategoryModule,
@@ -23,6 +27,7 @@ import { AppService } from './app.service';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
+      context: ({ req, res }) => ({ req, res }),
     }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
@@ -34,9 +39,10 @@ import { AppService } from './app.service';
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,
+      socketPath: '/tmp/mysql.sock',
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AppModule {}

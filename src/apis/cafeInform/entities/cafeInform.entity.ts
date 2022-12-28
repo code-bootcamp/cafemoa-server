@@ -1,5 +1,14 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CafeTag } from 'src/apis/cafeTag/entities/cafeTag.entity';
+import { Owner } from 'src/apis/owner/entities/owner.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -31,4 +40,13 @@ export class CafeInform {
   @Column({ type: 'decimal', precision: 9, scale: 6 })
   @Field(() => Float)
   lng: number;
+
+  @JoinColumn()
+  @OneToOne(() => Owner)
+  @Field(() => Owner)
+  owner: Owner;
+
+  @ManyToMany(() => CafeTag, (cafeTag) => cafeTag.cafeInform)
+  @Field(() => [CafeTag])
+  cafeTag: CafeTag[];
 }

@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CafeInformService } from './cafeInform.service';
+import { CafeInformInput } from './dto/cafeinform.input';
 import { UpdateCafeInform } from './dto/updatecafeinform.input';
 import { CafeInform } from './entities/cafeInform.entity';
 
@@ -17,5 +18,12 @@ export class CafeInformResolver {
     @Args('CafeInformID') CafeInformID: string,
   ) {
     return this.cafeInformService.update({ updateCafeInform, CafeInformID });
+  }
+
+  @Mutation(() => CafeInform)
+  CreateOwnerAndCafeInform(
+    @Args('cafeInformAndOnwerInput') cafeInformAndOnwerInput: CafeInformInput, //
+  ) {
+    return this.cafeInformService.create({ cafeInformAndOnwerInput });
   }
 }

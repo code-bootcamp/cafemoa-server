@@ -14,36 +14,10 @@ export class OwnerService {
     private readonly cafeInformRepository: Repository<CafeInform>,
   ) {}
 
-  async create({ createOwnerInput }) {
-    const { password, personalNum, cafeInformInput, ...Owner } =
-      createOwnerInput;
-    const owner = await this.OwnerRepository.findOne({
-      where: {
-        email: Owner.email,
-      },
-    });
-    const Password = bcrypt.hash(password, 10);
-    if (owner) {
-      throw new ConflictException('이미 존재하는 이메일입니다.');
-    }
-    const result2 = await this.cafeInformRepository.save({
-      ...cafeInformInput,
-    });
-    const Personal = personalNum.slice(0, 8) + '******';
-    const result = await this.OwnerRepository.save({
-      password: Password,
-      personalNum: Personal,
-      cafeInform: {
-        ...result2,
-      },
-      ...Owner,
-    });
-
-    return result;
-  }
-
   async findAll() {
-    return this.OwnerRepository.find();
+    return this.OwnerRepository.find({
+      relations: ['cafeInform'],
+    });
   }
 
   async findOne({ ownerID }) {
@@ -65,25 +39,24 @@ export class OwnerService {
   }
 
   async update({ updateOwnerInput, ownerID }) {
-    const { password, ...owner } = updateOwnerInput;
+    let { password, ownerPassword, ...owner } = updateOwnerInput;
     const result = await this.OwnerRepository.findOne({
       where: {
         id: ownerID,
       },
     });
     if (password) {
-      const Password = bcrypt.hash(password, 10);
-      const ownerResult = await this.OwnerRepository.save({
-        ...result,
-        password: Password,
-        ...owner,
-      });
-      return ownerResult;
-    } else {
-      return this.OwnerRepository.save({
-        ...result,
-        ...owner,
-      });
+      password = await bcrypt.hash(password, 10);
     }
+    if (ownerPassword) {
+      ownerPassword = await bcrypt.hash(ownerPassword, 10);
+    }
+    console.log(password, ownerPassword);
+    return this.OwnerRepository.save({
+      ...result,
+      password,
+      ownerPassword,
+      ...owner,
+    });
   }
 }

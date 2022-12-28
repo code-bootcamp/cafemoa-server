@@ -22,6 +22,7 @@ import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
     CategoryModule,
     OwnerModule,
     CafeInformModule,
+    UserModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

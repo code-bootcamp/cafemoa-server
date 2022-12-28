@@ -2,6 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CafeTag {
+  id: String!
+  tagName: String!
+  cafeInform: [CafeInform!]!
+}
+
+type Owner {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  brandName: String!
+}
+
 type CafeInform {
   id: String!
   cafeinfo: String!
@@ -10,6 +24,8 @@ type CafeInform {
   cafeAddr: String!
   lat: Float!
   lng: Float!
+  owner: Owner!
+  cafeTag: [CafeTag!]!
 }
 
 type Category {
@@ -22,6 +38,9 @@ type Comment {
   reply: String!
   like: Int!
   time: DateTime!
+
+  owner: Owner!
+
 }
 
 """
@@ -29,16 +48,9 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Owner {
-  id: String!
-  name: String!
-  email: String!
-  personalNum: String!
-  phone: String!
-  brandName: String!
-}
 
 type User {
+
   id: String!
   name: String!
   email: String!
@@ -49,9 +61,10 @@ type User {
   age: String!
 }
 
+
+
 type Query {
-  fetchUsers: [User!]!
-  fetchUser(email: String!): User!
+
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchbestcomment: [Comment!]!
@@ -59,6 +72,8 @@ type Query {
   fetchOwners: [Owner!]!
   fetchOwner(ownerID: String!): Owner!
   fetchCafeInform(cafeInformID: String!): CafeInform!
+  fetchUsers: [User!]!
+  fetchUser(email: String!): User!
 }
 
 type Mutation {
@@ -73,34 +88,15 @@ type Mutation {
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
-  CreateOwner(createOwnerInput: OwnerInput!): Owner!
+
   deleteOwner(ownerID: String!): Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
   updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
-}
+  CreateOwnerAndCafeInform(cafeInformAndOnwerInput: CafeInformInput!): CafeInform!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  deleteUser(userId: String!): Boolean!
 
-input CreateUserInput {
-  id: String
-  name: String
-  email: String
-  address: String
-  personalNumber: String
-  image: String
-  phoneNumber: String
-  age: String
-  password: String!
-}
-
-input UpdateUserInput {
-  id: String
-  name: String
-  email: String
-  address: String
-  personalNumber: String
-  image: String
-  phoneNumber: String
-  age: String
-  password: String
 }
 
 input createCommentInput {
@@ -111,25 +107,8 @@ input createCommentInput {
 input UpdateCommentInput {
   reply: String
   like: Int
-}
 
-input OwnerInput {
-  name: String!
-  email: String!
-  personalNum: String!
-  phone: String!
-  brandName: String!
-  cafeInformInput: CafeInformInput!
-}
 
-input CafeInformInput {
-  id: String
-  cafeinfo: String
-  closedDay: String
-  operatingTime: String
-  cafeAddr: String
-  lat: Float
-  lng: Float
 }
 
 input OwnerUpdateInput {
@@ -148,4 +127,46 @@ input UpdateCafeInform {
   cafeAddr: String
   lat: Float
   lng: Float
+
+
+}
+
+input CafeInformInput {
+  cafeinfo: String!
+  closedDay: String!
+  operatingTime: String!
+  cafeAddr: String!
+  lat: Float!
+  lng: Float!
+  menu_imageUrl: [String!]!
+  cafe_imageUrl: [String!]!
+  ownerInput: OwnerInput!
+}
+
+input OwnerInput {
+  name: String!
+  email: String!
+  phone: String!
+  brandName: String!
+  password: String!
+  ownerPassword: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  image: String!
+  phoneNumber: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  address: String
+  personalNumber: String
+  image: String
+  phoneNumber: String
+
 }

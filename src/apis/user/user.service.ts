@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -11,6 +7,7 @@ import {
   IUserServiceUpdate,
 } from './interfaces/user-service.interface';
 import * as bcrypt from 'bcrypt';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UserService {
@@ -95,7 +92,7 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(password, 10);
     const maskingPersonalNumber = personalNumber.slice(0, 8).padEnd(14, '*');
 
-    return this.userRepository.save({
+    return await this.userRepository.save({
       password: hashedPassword,
       personalNumber: maskingPersonalNumber,
       email,
@@ -116,20 +113,19 @@ export class UserService {
     });
   }
 
-  async update({ updateUserInput }: IUserServiceUpdate): Promise<User> {
-    const { password, email, ...left } = updateUserInput;
-    const user = await this.userRepository.findOne({ where: { email } });
+  async update({ updateUserInput, userId }: IUserServiceUpdate): Promise<User> {
+    let { password, ...user } = updateUserInput;
 
-    if (!user) {
-      throw new UnauthorizedException('존재하지 않는 유저입니다.');
+    const result = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (password) {
+      password = await bcrypt.hash(password, 10);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    return this.userRepository.save({
+    return await this.userRepository.save({
+      ...result,
+      password,
       ...user,
-      password: hashedPassword,
-      ...left,
     });
   }
 
@@ -138,18 +134,50 @@ export class UserService {
     return result.affected ? true : false;
   }
 
-  async changeUserPwd({ password, email }): Promise<boolean> {
+  async findUserPwd({ email }) {
+    const password = String(Math.floor(Math.random() * 1000000)).padStart(
+      6,
+      '0',
+    );
+    const user = await this.userRepository.findOne({ where: { email } });
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.userRepository.findOne({
-      where: {
-        email,
-      },
-    });
 
-    const result = await this.userRepository.save({
+    await this.userRepository.save({
       ...user,
       password: hashedPassword,
     });
-    return result ? true : false;
+
+    const EMAIL_USER = process.env.EMAIL_USER;
+    const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+    const EMAIL_SENDER = process.env.EMAIL_SENDER;
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: EMAIL_SENDER,
+      to: email,
+      subject: '[카페모아] 임시비밀번호가 발급되었습니다.',
+      html: `
+      <html>
+        <body>
+            <div style ="display: flex; flex-direction: column; align-items: center;">
+                <div style = "width: 500px;">
+                    <h1>${user.name}님 임시비밀번호가 발급되었습니다.</h1>
+                    <hr />
+                    <div>이름: ${user.name}</div>
+                    <div>임시비밀번호: ${password}</div>
+                </div>
+            </div>
+        </body>
+    </html>`,
+    });
+
+    return '메일이 전송되었습니다.';
   }
 }

@@ -26,10 +26,6 @@ export class User {
 
   @Column()
   @Field(() => String)
-  image: string;
-
-  @Column()
-  @Field(() => String)
   phoneNumber: string;
 
   @Column({ default: true })
@@ -39,4 +35,8 @@ export class User {
   @Column()
   // @Field(() => String)
   password: string;
+
+  @Column()
+  @Field(() => String)
+  profileImage: string;
 }

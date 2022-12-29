@@ -1,7 +1,8 @@
 import {
-  // CACHE_MANAGER,
-  // Inject,
+  CACHE_MANAGER,
+  Inject,
   Injectable,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -11,15 +12,18 @@ import {
   IUserAuthServiceGetAccessToken,
   IUserAuthServiceLogout,
 } from './interfaces/auth-service.interface';
-// import { Cache } from 'cache-manager';
+import { Cache } from 'cache-manager';
 import * as bcrypt from 'bcrypt';
-// import * as jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserAuthService {
   constructor(
     private readonly jwtService: JwtService, //
-    private readonly userService: UserService, // @Inject(CACHE_MANAGER) // private readonly cacheManager: Cache,
+    private readonly userService: UserService,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async login({ email, password, context }: IUserAuthloginService) {
@@ -46,14 +50,47 @@ export class UserAuthService {
 
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '60s' },
+      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1hr' },
     );
   }
 
   getAccessToken({ user }: IUserAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '60s' },
+      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1hr' },
     );
+  }
+
+  async logout({ context }: IUserAuthServiceLogout): Promise<string> {
+    const accessToken = context.req.headers.authorization.replace(
+      'Bearer ',
+      '',
+    );
+
+    const refreshToken = context.req.headers.cookie.replace(
+      'refreshToken=',
+      '',
+    );
+
+    try {
+      const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_KEY);
+      const decoded2 = jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY);
+    } catch (error) {
+      throw new UnauthorizedException('토큰 검증 실패');
+    }
+
+    await this.cacheManager.set(
+      `accessToken:${accessToken}`,
+      `accessToken`,
+      context.req.user.exp,
+    );
+
+    await this.cacheManager.set(
+      `refreshToken:${refreshToken}`,
+      `refreshToken`,
+      context.req.user.exp,
+    );
+
+    return '로그아웃 되었습니다.';
   }
 }

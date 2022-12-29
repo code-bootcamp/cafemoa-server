@@ -27,4 +27,10 @@ export class UserAuthResolver {
   ): string {
     return this.userAuthService.getAccessToken({ user: context.req.user });
   }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => String)
+  async userLogout(@Context() context: IContext) {
+    return this.userAuthService.logout({ context });
+  }
 }

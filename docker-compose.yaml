@@ -15,7 +15,9 @@ services:
   my-database:
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'teamproject'
+
+      MYSQL_DATABASE: 'homework'
+
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
       - 3306:3306

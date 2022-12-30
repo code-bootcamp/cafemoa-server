@@ -16,6 +16,7 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
+
 import { CouponModule } from './apis/coupon/coupon.module';
 
 @Module({
@@ -35,6 +36,7 @@ import { CouponModule } from './apis/coupon/coupon.module';
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
+
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
       host: process.env.DATABASE_HOST,

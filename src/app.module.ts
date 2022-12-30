@@ -16,9 +16,15 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
+import { OwnerAuthModule } from './apis/ownerAuth/ownerAuth.module';
+import { CafeImageModule } from './apis/cafeImage/cafeImage.module';
+import { CafeMenuImageModule } from './apis/cafemenuimage/cafemenuImage.module';
 
 @Module({
   imports: [
+    CafeImageModule,
+    CafeMenuImageModule,
+    OwnerAuthModule,
     PickListModule,
     UserAuthModule,
     UserModule,
@@ -33,6 +39,7 @@ import { PickListModule } from './apis/pickList/pickList.module';
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
+
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
       host: process.env.DATABASE_HOST,

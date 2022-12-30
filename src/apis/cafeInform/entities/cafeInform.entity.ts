@@ -5,7 +5,9 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -57,11 +59,11 @@ export class CafeInform {
   @Field(() => Float)
   lng: number;
 
-  @JoinColumn()
-  @OneToOne(() => Owner)
+  @ManyToOne(() => Owner)
   @Field(() => Owner)
   owner: Owner;
 
+  @JoinTable()
   @ManyToMany(() => CafeTag, (cafeTag) => cafeTag.cafeInform)
   @Field(() => [CafeTag])
   cafeTag: CafeTag[];

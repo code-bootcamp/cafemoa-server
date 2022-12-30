@@ -16,9 +16,11 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
+import { CouponModule } from './apis/coupon/coupon.module';
 
 @Module({
   imports: [
+    CouponModule,
     PickListModule,
     UserAuthModule,
     UserModule,

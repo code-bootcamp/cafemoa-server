@@ -68,6 +68,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+
 type Query {
   fetchMyPickLists(userId: String!): [PickList!]!
   fetchMyPickListLocation(userId: String!, Location: String!): [PickList!]!
@@ -83,13 +84,14 @@ type Query {
 }
 
 type Mutation {
+  uploadFile(files: [Upload!]!): [String!]!
   userLogin(email: String!, password: String!): String!
   restoreAccessToken: String!
   userLogout: String!
   createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): Boolean!
-  changeUserPwd(password: String!, email: String!): Boolean!
+  findUserPwd(email: String!): String!
   createComment(createCommentinput: createCommentInput!, ownerId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
@@ -103,28 +105,27 @@ type Mutation {
   PickCafe(CafeInformID: String!, UserID: String!): String!
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input CreateUserInput {
-  id: String
-  name: String
-  email: String
-  address: String
-  personalNumber: String
-  image: String
-  phoneNumber: String
-  age: String
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  phoneNumber: String!
   password: String!
+  profileImage: String
 }
 
 input UpdateUserInput {
-  id: String
   name: String
   email: String
   address: String
   personalNumber: String
-  image: String
   phoneNumber: String
-  age: String
   password: String
+  profileImage: String
 }
 
 input createCommentInput {

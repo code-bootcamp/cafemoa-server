@@ -33,10 +33,12 @@ export class UserResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async updateUser(
+    @Args('userId') userId: string,
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
   ) {
     return await this.userService.update({
       updateUserInput,
+      userId,
     });
   }
 
@@ -46,12 +48,8 @@ export class UserResolver {
     return this.userService.delete({ userId });
   }
 
-  @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => Boolean)
-  async changeUserPwd(
-    @Args('password') password: string,
-    @Args('email') email: string,
-  ) {
-    return this.userService.changeUserPwd({ password, email });
+  @Mutation(() => String)
+  findUserPwd(@Args('email') email: string) {
+    return this.userService.findUserPwd({ email });
   }
 }

@@ -52,9 +52,9 @@ type User {
   email: String!
   address: String!
   personalNumber: String!
-  image: String!
   phoneNumber: String!
   age: String!
+  profileImage: String!
 }
 
 type Query {
@@ -75,9 +75,9 @@ type Mutation {
   restoreAccessToken: String!
   userLogout: String!
   createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): Boolean!
-  changeUserPwd(password: String!, email: String!): Boolean!
+  findUserPwd(email: String!): String!
   createComment(createCommentinput: createCommentInput!, ownerId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
@@ -93,27 +93,23 @@ type Mutation {
 scalar Upload
 
 input CreateUserInput {
-  id: String
-  name: String
-  email: String
-  address: String
-  personalNumber: String
-  image: String
-  phoneNumber: String
-  age: String
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  phoneNumber: String!
   password: String!
+  profileImage: String
 }
 
 input UpdateUserInput {
-  id: String
   name: String
   email: String
   address: String
   personalNumber: String
-  image: String
   phoneNumber: String
-  age: String
   password: String
+  profileImage: String
 }
 
 input createCommentInput {

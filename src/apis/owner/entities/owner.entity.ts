@@ -21,8 +21,12 @@ export class Owner {
   phone: string;
 
   @Column()
-  @Field(() => String)
-  brandName: string;
+  @Field(() => Boolean)
+  is_main: boolean;
+
+  @Column({ default: false })
+  @Field(() => Boolean)
+  is_cafeInform: boolean;
 
   @Column()
   // @Field(() => String)

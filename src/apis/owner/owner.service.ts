@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Owner } from './entities/owner.entity';
 import * as bcrypt from 'bcrypt';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
+
 @Injectable()
 export class OwnerService {
   constructor(
@@ -38,6 +39,19 @@ export class OwnerService {
     return result.affected ? true : false;
   }
 
+  async create({ createOwnerInput }) {
+    const { password, ownerPassword, ...owner } = createOwnerInput;
+
+    const Password = await bcrypt.hash(password, 10);
+    const OwnerPassword = await bcrypt.hash(ownerPassword, 10);
+
+    return this.OwnerRepository.save({
+      ...owner,
+      password: Password,
+      ownerPassword: OwnerPassword,
+    });
+  }
+
   async update({ updateOwnerInput, ownerID }) {
     let { password, ownerPassword, ...owner } = updateOwnerInput;
     const result = await this.OwnerRepository.findOne({
@@ -51,7 +65,7 @@ export class OwnerService {
     if (ownerPassword) {
       ownerPassword = await bcrypt.hash(ownerPassword, 10);
     }
-    console.log(password, ownerPassword);
+
     return this.OwnerRepository.save({
       ...result,
       password,

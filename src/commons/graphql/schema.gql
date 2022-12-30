@@ -13,7 +13,8 @@ type Owner {
   name: String!
   email: String!
   phone: String!
-  brandName: String!
+  is_main: Boolean!
+  is_cafeInform: Boolean!
 }
 
 type CafeInform {
@@ -22,10 +23,31 @@ type CafeInform {
   closedDay: String!
   operatingTime: String!
   cafeAddr: String!
+  like: Int!
+  ownerNum: String!
+  brandName: String!
+  thumbNail: String!
   lat: Float!
   lng: Float!
   owner: Owner!
   cafeTag: [CafeTag!]!
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  image: String!
+  phoneNumber: String!
+  age: String!
+}
+
+type PickList {
+  id: String!
+  user: User!
+  cafeInform: CafeInform!
 }
 
 type Category {
@@ -46,18 +68,10 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type User {
-  id: String!
-  name: String!
-  email: String!
-  address: String!
-  personalNumber: String!
-  phoneNumber: String!
-  age: String!
-  profileImage: String!
-}
 
 type Query {
+  fetchMyPickLists(userId: String!): [PickList!]!
+  fetchMyPickListLocation(userId: String!, Location: String!): [PickList!]!
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
   fetchComments: [Comment!]!
@@ -83,10 +97,12 @@ type Mutation {
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
+  CreateOwner(createOwnerInput: OwnerInput!): Owner!
   deleteOwner(ownerID: String!): Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
   updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
-  CreateOwnerAndCafeInform(cafeInformAndOnwerInput: CafeInformInput!): CafeInform!
+  CreatecafeInform(cafeInformInput: CafeInformInput!, OwnerId: String!): CafeInform!
+  PickCafe(CafeInformID: String!, UserID: String!): String!
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -122,11 +138,20 @@ input UpdateCommentInput {
   like: Int
 }
 
+input OwnerInput {
+  name: String!
+  email: String!
+  phone: String!
+  is_main: Boolean!
+  password: String!
+  ownerPassword: String!
+}
+
 input OwnerUpdateInput {
   name: String
   email: String
   phone: String
-  brandName: String
+  is_main: Boolean
   password: String
   ownerPassword: String
 }
@@ -138,6 +163,11 @@ input UpdateCafeInform {
   cafeAddr: String
   lat: Float
   lng: Float
+  ownerNum: String
+  brandName: String
+  menu_imageUrl: [String!]
+  cafe_imageUrl: [String!]
+  cafeTag: [String!]!
 }
 
 input CafeInformInput {
@@ -147,16 +177,9 @@ input CafeInformInput {
   cafeAddr: String!
   lat: Float!
   lng: Float!
+  ownerNum: String!
+  brandName: String!
+  cafeTag: [String!]!
   menu_imageUrl: [String!]!
   cafe_imageUrl: [String!]!
-  ownerInput: OwnerInput!
-}
-
-input OwnerInput {
-  name: String!
-  email: String!
-  phone: String!
-  brandName: String!
-  password: String!
-  ownerPassword: String!
 }

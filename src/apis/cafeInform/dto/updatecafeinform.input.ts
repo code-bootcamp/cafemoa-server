@@ -19,4 +19,19 @@ export class UpdateCafeInform {
 
   @Field(() => Float, { nullable: true })
   lng: number;
+
+  @Field(() => String, { nullable: true })
+  ownerNum: string;
+
+  @Field(() => String, { nullable: true })
+  brandName: string;
+
+  @Field(() => [String], { nullable: true })
+  menu_imageUrl: string[];
+
+  @Field(() => [String], { nullable: true })
+  cafe_imageUrl: string[];
+
+  @Field(() => [String])
+  cafeTag: string[];
 }

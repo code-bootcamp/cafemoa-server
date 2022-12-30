@@ -45,22 +45,13 @@ export class CommentService {
   }
 
   async sendBestComment() {
-    const Like = await this.commentRepository.find()
-    Like.sort((a, b) => b.like - a.like)
-    console.log(Like)
-    if(Like[0].like < 5){
-      throw new ConflictException("해당하는 댓글이 없습니다.")
-    }
-    else{
-      return Like.slice(0,3)
+    const Like = await this.commentRepository.find();
+    Like.sort((a, b) => b.like - a.like);
+    console.log(Like);
+    if (Like[0].like < 5) {
+      throw new ConflictException('해당하는 댓글이 없습니다.');
+    } else {
+      return Like.slice(0, 3);
     }
   }
-
-  
-
-
-
-  
-
-
 }

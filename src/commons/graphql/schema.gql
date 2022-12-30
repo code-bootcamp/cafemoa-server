@@ -39,9 +39,9 @@ type User {
   email: String!
   address: String!
   personalNumber: String!
-  image: String!
   phoneNumber: String!
   age: String!
+  profileImage: String!
 }
 
 type PickList {
@@ -60,14 +60,13 @@ type Comment {
   reply: String!
   like: Int!
   time: DateTime!
-  owner: Owner!
+  cafeinfo: CafeInform!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
 
 type Query {
   fetchMyPickLists(userId: String!): [PickList!]!
@@ -84,7 +83,6 @@ type Query {
 }
 
 type Mutation {
-  uploadFile(files: [Upload!]!): [String!]!
   userLogin(email: String!, password: String!): String!
   restoreAccessToken: String!
   userLogout: String!
@@ -92,7 +90,7 @@ type Mutation {
   updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): Boolean!
   findUserPwd(email: String!): String!
-  createComment(createCommentinput: createCommentInput!, ownerId: String!): Comment!
+  createComment(createCommentinput: createCommentInput!, cafeinformId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!
@@ -104,9 +102,6 @@ type Mutation {
   CreatecafeInform(cafeInformInput: CafeInformInput!, OwnerId: String!): CafeInform!
   PickCafe(CafeInformID: String!, UserID: String!): String!
 }
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input CreateUserInput {
   name: String!

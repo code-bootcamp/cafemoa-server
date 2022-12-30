@@ -73,7 +73,7 @@ type Comment {
   reply: String!
   like: Int!
   time: DateTime!
-  owner: Owner!
+  cafeinfo: CafeInform!
 }
 
 """
@@ -91,6 +91,7 @@ type Coupon {
   cafeInform: CafeInform!
   createdAt: DateTime!
 }
+
 
 type Query {
   fetchCoupon(couponId: String!): Coupon!
@@ -116,11 +117,13 @@ type Query {
 
 type Mutation {
 
+
   ownerLogin(email: String!, password: String!): String!
   restoreOwnerAccessToken: String!
   ownerLogout: String!
   createCoupon(createCouponInput: CreateCouponInput!): Coupon!
   deleteCoupon(couponId: String!): String!
+
 
   userLogin(email: String!, password: String!): String!
   restoreAccessToken: String!
@@ -129,7 +132,7 @@ type Mutation {
   updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): Boolean!
   findUserPwd(email: String!): String!
-  createComment(createCommentinput: createCommentInput!, ownerId: String!): Comment!
+  createComment(createCommentinput: createCommentInput!, cafeinformId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
   createCategory(category: String!): Category!

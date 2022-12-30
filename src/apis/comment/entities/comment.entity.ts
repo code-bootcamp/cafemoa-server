@@ -1,8 +1,9 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Owner } from 'src/apis/owner/entities/owner.entity';
+import { CafeInform } from 'src/apis/cafeInform/entities/cafeInform.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -19,7 +20,7 @@ export class Comment {
   @Field(() => String)
   reply: string;
 
-  @Column()
+  @Column({default: 0})
   @Field(() => Int)
   like: number;
 
@@ -27,7 +28,15 @@ export class Comment {
   @Field(() => Date)
   time: Date;
 
-  @ManyToOne(() => Owner)
-  @Field(() => Owner)
-  owner: Owner;
+  @ManyToOne(() => CafeInform)
+  @Field(() => CafeInform)
+  cafeinfo: CafeInform;
+
+  @DeleteDateColumn()
+  deletedAt: Date
+
+ 
+
+
+  
 }

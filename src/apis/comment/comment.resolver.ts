@@ -4,7 +4,6 @@ import { createCommentInput } from './dto/createComment.input';
 import { Comment } from './entities/comment.entity';
 import { UpdateCommentInput } from './dto/updateComment.input';
 
-
 @Resolver()
 export class CommentResolver {
   constructor(
@@ -24,14 +23,16 @@ export class CommentResolver {
   @Mutation(() => Comment)
   createComment(
     @Args('createCommentinput') createCommentInput: createCommentInput,
-    @Args('ownerId') ownerId: string,
+    @Args('cafeinformId') cafeinformId: string,
   ) {
-    return this.commentService.crate({ createCommentInput, ownerId });
+    return this.commentService.create({ createCommentInput, cafeinformId });
   }
+
   @Mutation(() => Comment)
   async updateComment(
     @Args('commentId') commentId: string,
     @Args('UpdateCommentInput') UpdateCommentInput: UpdateCommentInput,
+    // @Args('cafeinformId') cafeinformId: string,
   ) {
     return this.commentService.update({ commentId, UpdateCommentInput });
   }
@@ -41,9 +42,9 @@ export class CommentResolver {
   ) {
     return this.commentService.delete({ commentId });
   }
-  @Query(()=>[Comment])
+  @Query(() =>[Comment])
   fetchbestcomment(
-    
+  
   ){
     return this.commentService.sendBestComment()
   }

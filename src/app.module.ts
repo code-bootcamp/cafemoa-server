@@ -16,15 +16,12 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
-import { OwnerAuthModule } from './apis/ownerAuth/ownerAuth.module';
-import { CafeImageModule } from './apis/cafeImage/cafeImage.module';
-import { CafeMenuImageModule } from './apis/cafemenuimage/cafemenuImage.module';
+
+import { CouponModule } from './apis/coupon/coupon.module';
 
 @Module({
   imports: [
-    CafeImageModule,
-    CafeMenuImageModule,
-    OwnerAuthModule,
+    CouponModule,
     PickListModule,
     UserAuthModule,
     UserModule,

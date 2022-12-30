@@ -37,4 +37,9 @@ export class OwnerResolver {
   ) {
     return this.ownerService.update({ updateOwnerInput, ownerID });
   }
+
+  @Mutation(() => String)
+  findOwnerPassword(@Args('email') email: string) {
+    return this.ownerService.emailPassword({ email });
+  }
 }

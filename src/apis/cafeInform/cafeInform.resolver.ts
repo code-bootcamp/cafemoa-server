@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CafeInformService } from './cafeInform.service';
 import { CafeInformInput } from './dto/cafeinform.input';
 import { UpdateCafeInform } from './dto/updatecafeinform.input';
@@ -28,11 +28,25 @@ export class CafeInformResolver {
     return this.cafeInformService.create({ cafeInformInput, OwnerId });
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Int)
   PickCafe(
     @Args('CafeInformID') CafeInformID: string, //
     @Args('UserID') UserID: string,
   ) {
     return this.cafeInformService.pickCafe({ CafeInformID, UserID });
+  }
+
+  @Query(() => [CafeInform])
+  fetchCafeInformWithTag(
+    @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
+  ) {
+    return this.cafeInformService.findCafeInformWithTags({ Tags });
+  }
+
+  @Query(() => [CafeInform])
+  fetchCafeInformWithLocation(
+    @Args('Location') Location: string, //
+  ) {
+    return this.cafeInformService.findCafeInformWithLocation({ Location });
   }
 }

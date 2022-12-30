@@ -90,23 +90,24 @@ export class CafeInformService {
     }
 
     const temp = [];
-    cafeTag.forEach(async (el) => {
-      const tagName = el.replace('#', '');
+    for (let i = 0; i < cafeTag.length; i++) {
+      const tagName = cafeTag[i].replace('#', '');
 
       const prevTag = await this.cafeTagRepository.findOne({
         where: {
-          tagName,
+          tagName: tagName,
         },
       });
+
       if (prevTag) {
         temp.push(prevTag);
       } else {
         const newTag = await this.cafeTagRepository.save({
-          tagName,
+          tagName: tagName,
         });
         temp.push(newTag);
       }
-    });
+    }
     return this.cafeInformrRepository.save({
       ...cafeinform,
 
@@ -115,6 +116,7 @@ export class CafeInformService {
     });
   }
   async create({ cafeInformInput, OwnerId }) {
+    // 이메일 인증 버튼 및 중복확인, 체크까지
     const { menu_imageUrl, cafe_imageUrl, cafeTag, ...cafeInform } =
       cafeInformInput;
     const Owner = await this.ownerRepository.findOne({
@@ -122,40 +124,46 @@ export class CafeInformService {
         id: OwnerId,
       },
     });
-    if (Owner.is_cafeInform === true) {
-      throw new ConflictException('이미 한개의 카페를 등록하셨습니다.');
+    if (Owner.is_cafeInform === false) {
+      await this.ownerRepository.save({
+        ...Owner,
+        is_cafeInform: true,
+      });
     }
-    await this.ownerRepository.save({
-      ...Owner,
-      is_cafeInform: true,
-    });
+    // if (Owner.is_cafeInform === true) {
+    //   throw new ConflictException('이미 한개의 카페가 존재합니다.');
+    // }
 
     const temp = [];
-    cafeTag.forEach(async (el) => {
-      const tagName = el.replace('#', '');
+
+    for (let i = 0; i < cafeTag.length; i++) {
+      const tagName = cafeTag[i].replace('#', '');
 
       const prevTag = await this.cafeTagRepository.findOne({
         where: {
-          tagName,
+          tagName: tagName,
         },
       });
+
       if (prevTag) {
         temp.push(prevTag);
       } else {
         const newTag = await this.cafeTagRepository.save({
-          tagName,
+          tagName: tagName,
         });
         temp.push(newTag);
       }
-    });
+    }
+
+    console.log(temp, cafeTag);
 
     const result2 = await this.cafeInformrRepository.save({
       owner: {
         ...Owner,
       },
+      ...cafeInform,
       thumbNail: cafe_imageUrl[0],
       cafeTag: temp,
-      ...cafeInform,
     });
 
     await Promise.all(
@@ -211,7 +219,13 @@ export class CafeInformService {
           like: cafeInform.like - 1,
         },
       );
-      return '찜이 해제 되었습니다.';
+      const cafeInform2 = await this.cafeInformrRepository.findOne({
+        where: {
+          id: CafeInformID,
+        },
+      });
+
+      return cafeInform2.like;
     } else {
       await this.cafeInformrRepository.update(
         {
@@ -221,6 +235,11 @@ export class CafeInformService {
           like: cafeInform.like + 1,
         },
       );
+      const cafeInform2 = await this.cafeInformrRepository.findOne({
+        where: {
+          id: CafeInformID,
+        },
+      });
       await this.pickListRepository.save({
         cafeInform: {
           ...cafeInform,
@@ -229,7 +248,35 @@ export class CafeInformService {
           ...user,
         },
       });
-      return '찜하였습니다.';
+      return cafeInform2.like;
     }
+  }
+  async findCafeInformWithTags({ Tags }) {
+    const result = await this.cafeInformrRepository.find({
+      relations: ['cafeTag'],
+    });
+    const arr = [];
+    result.forEach((el) => {
+      el.cafeTag.forEach((e) => {
+        for (let i = 0; i < Tags.length; i++) {
+          if (e.tagName === Tags[i]) {
+            if (arr.includes(el)) {
+              continue;
+            } else {
+              arr.push(el);
+            }
+          }
+        }
+      });
+    });
+
+    console.log(arr);
+    return arr;
+  }
+
+  async findCafeInformWithLocation({ Location }) {
+    const result = await this.cafeInformrRepository.find();
+    const answer = result.filter((el) => el.cafeAddr.includes(Location));
+    return answer;
   }
 }

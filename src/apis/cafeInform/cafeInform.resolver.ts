@@ -21,9 +21,18 @@ export class CafeInformResolver {
   }
 
   @Mutation(() => CafeInform)
-  CreateOwnerAndCafeInform(
-    @Args('cafeInformAndOnwerInput') cafeInformAndOnwerInput: CafeInformInput, //
+  CreatecafeInform(
+    @Args('cafeInformInput') cafeInformInput: CafeInformInput, //
+    @Args('OwnerId') OwnerId: string,
   ) {
-    return this.cafeInformService.create({ cafeInformAndOnwerInput });
+    return this.cafeInformService.create({ cafeInformInput, OwnerId });
+  }
+
+  @Mutation(() => String)
+  PickCafe(
+    @Args('CafeInformID') CafeInformID: string, //
+    @Args('UserID') UserID: string,
+  ) {
+    return this.cafeInformService.pickCafe({ CafeInformID, UserID });
   }
 }

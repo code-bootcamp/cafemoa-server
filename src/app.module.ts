@@ -15,9 +15,11 @@ import { AppService } from './app.service';
 import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
+import { PickListModule } from './apis/pickList/pickList.module';
 
 @Module({
   imports: [
+    PickListModule,
     UserAuthModule,
     UserModule,
     CommentModule,

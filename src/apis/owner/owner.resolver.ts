@@ -10,12 +10,12 @@ export class OwnerResolver {
     private readonly ownerService: OwnerService, //
   ) {}
 
-  // @Mutation(() => Owner)
-  // CreateOwner(
-  //   @Args('createOwnerInput') createOwnerInput: OwnerInput, //
-  // ) {
-  //   return this.ownerService.create({ createOwnerInput });
-  // }
+  @Mutation(() => Owner)
+  CreateOwner(
+    @Args('createOwnerInput') createOwnerInput: OwnerInput, //
+  ) {
+    return this.ownerService.create({ createOwnerInput });
+  }
   @Query(() => [Owner])
   fetchOwners() {
     return this.ownerService.findAll();

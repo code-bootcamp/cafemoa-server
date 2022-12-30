@@ -1,5 +1,4 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { OwnerInput } from 'src/apis/owner/dto/owner.input';
 
 @InputType()
 export class CafeInformInput {
@@ -21,12 +20,18 @@ export class CafeInformInput {
   @Field(() => Float)
   lng: number;
 
+  @Field(() => String)
+  ownerNum: string;
+
+  @Field(() => String)
+  brandName: string;
+
+  @Field(() => [String])
+  cafeTag: string[];
+
   @Field(() => [String])
   menu_imageUrl: string[];
 
   @Field(() => [String])
   cafe_imageUrl: string[];
-
-  @Field(() => OwnerInput)
-  ownerInput: OwnerInput;
 }

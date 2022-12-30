@@ -1,4 +1,4 @@
-import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { CafeTag } from 'src/apis/cafeTag/entities/cafeTag.entity';
 import { Owner } from 'src/apis/owner/entities/owner.entity';
 import {
@@ -32,6 +32,22 @@ export class CafeInform {
   @Column()
   @Field(() => String)
   cafeAddr: string;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  like: number;
+
+  @Column()
+  @Field(() => String)
+  ownerNum: string;
+
+  @Column()
+  @Field(() => String)
+  brandName: string;
+
+  @Column()
+  @Field(() => String)
+  thumbNail: string;
 
   @Column({ type: 'decimal', precision: 9, scale: 6 })
   @Field(() => Float)

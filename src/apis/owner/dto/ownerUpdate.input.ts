@@ -11,8 +11,8 @@ export class OwnerUpdateInput {
   @Field(() => String, { nullable: true })
   phone: string;
 
-  @Field(() => String, { nullable: true })
-  brandName: string;
+  @Field(() => Boolean, { nullable: true })
+  is_main: boolean;
 
   @Field(() => String, { nullable: true })
   password: string;

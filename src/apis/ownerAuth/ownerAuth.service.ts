@@ -38,13 +38,35 @@ export class OwnerAuthService {
     if (!isAuth) throw new UnprocessableEntityException('암호가 틀렸습니다.');
   }
 
-  setRefreshToken({ user, res }) {
+  setRefreshToken({ user, res, req }) {
     const refreshToken = this.jwtService.sign(
       { email: user.email, sub: user.id }, //
       { secret: process.env.JWT_REFRESH_KEY, expiresIn: '2w' },
     );
 
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+    const permittedOrigins = [
+      'http://localhost:3000',
+      'https://mydatabase.backkim.shop',
+      'http://127.0.0.1:5500',
+      'http://backkim.shop',
+      'http://localhost:5500',
+      'http://localhost:5501',
+    ];
+    const origin = req.headers.origin;
+    if (permittedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Headers, Origin, Accept, X-Requested-with, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
+    );
+
+    res.setHeader(
+      'Set-Cookie',
+      `refreshToken=${refreshToken}; path=/; domain=.backkim.shop; SameSite=None; Secure; httpOnly`,
+    );
     // res.setHeader('Set-Cookie', `refreshToken= ${refreshToken}`);
   }
 

@@ -45,19 +45,42 @@ export class UserAuthService {
       { secret: process.env.JWT_REFRESH_KEY, expiresIn: '2w' },
     );
 
+    const permittedOrigins = [
+      'http://localhost:3000',
+      'https://mydatabase.backkim.shop',
+      'http://127.0.0.1:5500',
+      'https://backkim.shop',
+      'http://localhost:5500',
+      'http://localhost:5501',
+    ];
+    const req = context.req;
     const res = context.res;
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+    const origin = req.headers.origin;
+    if (permittedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+
+    res.setHeader('Access-Control-Allow-Crdential', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
+    );
+    res.setHeader(
+      'Set-Cookie',
+      `refreshToken=${refreshToken}; path=/; domain=.backkim.shop; SameSite=None; Secure; httpOnly;`,
+    );
 
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1hr' },
+      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1h' },
     );
   }
 
   getAccessToken({ user }: IUserAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1hr' },
+      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1h' },
     );
   }
 
@@ -73,23 +96,35 @@ export class UserAuthService {
     );
 
     try {
-      const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_KEY);
-      const decoded2 = jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY);
+      const decodedAccessToken = jwt.verify(
+        accessToken,
+        process.env.JWT_ACCESS_KEY,
+      );
+      const decodedRefreshToken = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_KEY,
+      );
+
+      const currentTime = new Date().getTime();
+      const accessTokenTtl =
+        decodedAccessToken['exp'] - Number(String(currentTime).slice(0, -3));
+      const refreshTokenTtl =
+        decodedRefreshToken['exp'] - Number(String(currentTime).slice(0, -3));
+
+      await this.cacheManager.set(
+        `accessToken:${accessToken}`,
+        `accessToken`,
+        accessTokenTtl,
+      );
+
+      await this.cacheManager.set(
+        `refreshToken:${refreshToken}`,
+        `refreshToken`,
+        refreshTokenTtl,
+      );
     } catch (error) {
-      throw new UnauthorizedException('토큰 검증 실패');
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
-
-    await this.cacheManager.set(
-      `accessToken:${accessToken}`,
-      `accessToken`,
-      context.req.user.exp,
-    );
-
-    await this.cacheManager.set(
-      `refreshToken:${refreshToken}`,
-      `refreshToken`,
-      context.req.user.exp,
-    );
 
     return '로그아웃 되었습니다.';
   }

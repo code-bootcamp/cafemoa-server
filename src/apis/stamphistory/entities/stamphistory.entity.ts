@@ -35,5 +35,5 @@ export class StampHistory {
 
   @CreateDateColumn()
   @Field(() => Date)
-  createdAt;
+  createdAt: Date;
 }

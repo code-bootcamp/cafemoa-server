@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { Owner } from '../owner/entities/owner.entity';
-import { StampHistory } from '../stamphistory/entities/stamphistory.entity';
 import { User } from '../user/entities/user.entity';
 import { Coupon } from './entities/coupon.entity';
+import * as bcrypt from 'bcrypt';
+import { StampHistory } from '../stamphistory/entities/stamphistory.entity';
 
 @Injectable()
 export class CouponService {
@@ -103,6 +104,43 @@ export class CouponService {
       });
       return result;
     }
+  }
+
+  async useCoupon({ password, couponId }) {
+    const coupon = await this.couponRepository.findOne({
+      where: { id: couponId },
+      relations: ['user', 'cafeInform'],
+    });
+
+    const cafeInform = await this.cafeInformRepository.findOne({
+      where: { id: coupon.cafeInform.id },
+      relations: ['owner'],
+    });
+
+    const owner = await this.ownerRepository.findOne({
+      where: {
+        id: cafeInform.owner.id,
+      },
+    });
+
+    const validOwnerPwd = await bcrypt.compare(password, owner.password);
+    if (!validOwnerPwd) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    }
+
+    if (coupon.stamp < 10) {
+      throw new UnauthorizedException('스탬프 수가 부족합니다.');
+    }
+
+    const reduceStamp = coupon.stamp - 10;
+
+    await this.couponRepository.save({
+      id: couponId,
+      ...coupon,
+      stamp: reduceStamp,
+    });
+
+    return coupon.user.name;
   }
 
   async deleteCoupon({ couponId }) {

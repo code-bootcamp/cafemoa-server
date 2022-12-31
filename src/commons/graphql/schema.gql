@@ -56,10 +56,27 @@ type CafeInform {
   cafeTag: [CafeTag!]!
 }
 
+
 type CafeImage {
   id: String!
   cafe_image: String!
   is_main: Boolean!
+}
+type User {
+  id: String!
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  phoneNumber: String!
+  age: String!
+  profileImage: String!
+}
+
+type PickList {
+  id: String!
+  user: User!
+
   cafeInform: CafeInform!
 }
 
@@ -95,8 +112,10 @@ type Query {
   fetchCoupons: [Coupon!]!
   fetchUserCoupons(userId: String!): [Coupon!]!
   fetchCafeCoupons(cafeId: String!): [Coupon!]!
+
   fetchMyPickLists: [PickList!]!
   fetchMyPickListLocation(Location: String!): [PickList!]!
+
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
   fetchComments: [Comment!]!
@@ -120,6 +139,7 @@ type Mutation {
   restoreAccessToken: String!
   userLogout: String!
   createUser(createUserInput: CreateUserInput!): User!
+  emailVerify(email: String!): String!
   updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): Boolean!
   findUserPwd(email: String!): String!

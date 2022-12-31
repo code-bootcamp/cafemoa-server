@@ -19,86 +19,74 @@ export class UserService {
   async create({ createUserInput }: IUserServiceCreate): Promise<User> {
     const { password, email, personalNumber, ...User } = createUserInput;
 
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (user) throw new ConflictException('이미 등록된 회원입니다');
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    function AgeCalculate(personalNumber) {
-      if (personalNumber.includes('-')) {
-        personalNumber = personalNumber.replace('-', '');
-      }
+    const date = new Date();
+    const year = date.getFullYear();
+    const yearend = Number(String(year).slice(2, 4));
+    const personalfirst = Number(personalNumber.slice(0, 2));
+    let age;
 
-      const today = new Date(); // 현재 시간
-
-      // let personalFront = personalNumber.substr(0, 6); // 주민번호 앞자리
-      const personalBackFirstValue = personalNumber.substr(6, 1); // 주민번호뒷자리 첫 문자열(2000년생 이전 인지 이후 인지 확인)
-
-      let age = 0;
-      let birthDate;
-      let personalYear;
-
-      const personalMonth = personalNumber.substr(2, 2); // 월
-      const personalDate = personalNumber.substr(4, 2); // 일
-
-      let monthCheck = 0;
-
-      if (personalBackFirstValue == 1 || personalBackFirstValue == 2) {
-        // 2000년생 이전
-        personalYear = '19' + personalNumber.substr(0, 2); // 년도
-
-        birthDate = new Date(personalYear, personalMonth - 1, personalDate);
-
-        // 현재 년도 - 태어난 년도
-        age = today.getFullYear() - birthDate.getFullYear();
-
-        // 현재 월 - 태어난 월
-        monthCheck = today.getMonth() - birthDate.getMonth();
-
-        // 생일이 지나지 않았다면
-        if (
-          monthCheck < 0 ||
-          (monthCheck === 0 && today.getDate() < birthDate.getDate())
-        ) {
-          age--;
-        }
-      } else {
-        // 2000년생 이후
-        personalYear = '20' + personalNumber.substr(0, 2); // 주민번호 앞자리
-
-        birthDate = new Date(personalYear, personalMonth - 1, personalDate);
-
-        age = today.getFullYear() - birthDate.getFullYear();
-
-        monthCheck = today.getMonth() - birthDate.getMonth();
-
-        if (
-          monthCheck < 0 ||
-          (monthCheck === 0 && today.getDate() < birthDate.getDate())
-        ) {
-          age--;
-        }
-      }
-
-      const strAge = age.toString();
-
-      if (strAge.length === 1) {
-        return '10대 이하';
-      } else {
-        return strAge[0] + '0대';
-      }
+    if (personalfirst <= yearend) {
+      age = '20' + personalfirst;
+      age = year - Number(age);
+    } else {
+      age = '19' + personalfirst;
+      age = year - Number(age);
     }
 
-    const age = AgeCalculate(personalNumber);
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const maskingPersonalNumber = personalNumber.slice(0, 8).padEnd(14, '*');
+    if (String(age).length === 1) {
+      age = '10대 이하';
+    } else {
+      age = String(age)[0] + '0대';
+    }
 
     return await this.userRepository.save({
       password: hashedPassword,
-      personalNumber: maskingPersonalNumber,
+      personalNumber,
       email,
       age,
       ...User,
     });
+  }
+
+  async emailVerify({ email }) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) throw new ConflictException('이미 등록된 회원입니다');
+
+    const EMAIL_USER = process.env.EMAIL_USER;
+    const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+    const EMAIL_SENDER = process.env.EMAIL_SENDER;
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASSWORD,
+      },
+    });
+    const verifyNum = String(Math.floor(Math.random() * 1000000)).padStart(
+      6,
+      '0',
+    );
+
+    await transporter.sendMail({
+      from: EMAIL_SENDER,
+      to: email,
+      subject: '[카페모아] 이메일 인증번호가 발급되었습니다.',
+      html: `
+      <html>
+        <body>
+            <div style ="display: flex; flex-direction: column; align-items: center;">
+                <div style = "width: 500px;">
+                    <div>인증번호: ${verifyNum}</div>
+                </div>
+            </div>
+        </body>
+    </html>`,
+    });
+
+    return verifyNum;
   }
 
   async findAll(): Promise<User[]> {

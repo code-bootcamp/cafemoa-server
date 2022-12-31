@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { PartialType } from "@nestjs/graphql";
-import { createCommentInput } from "src/apis/comment/dto/createComment.input";
+import { InputType, PartialType } from '@nestjs/graphql';
+import { CreateOwnerCommentInput } from './createownercomment.input';
 
-@Injectable()
-export class UpdateCommentInput extends PartialType(createCommentInput) {}
+@InputType()
+export class UpdateOwnerCommentInput extends PartialType(
+  CreateOwnerCommentInput, //
+) {}

@@ -13,7 +13,9 @@ export class CafeTag {
   @Field(() => String)
   tagName: string;
 
-  @ManyToMany(() => CafeInform, (cafeInform) => cafeInform.cafeTag)
+  @ManyToMany(() => CafeInform, (cafeInform) => cafeInform.cafeTag, {
+    onDelete: 'CASCADE',
+  })
   @Field(() => [CafeInform])
   cafeInform: CafeInform[];
 }

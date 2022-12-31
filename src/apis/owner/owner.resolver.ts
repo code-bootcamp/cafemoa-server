@@ -1,4 +1,7 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { OwnerInput } from './dto/owner.input';
 import { OwnerUpdateInput } from './dto/ownerUpdate.input';
 import { Owner } from './entities/owner.entity';
@@ -20,26 +23,41 @@ export class OwnerResolver {
   fetchOwners() {
     return this.ownerService.findAll();
   }
+
   @Query(() => Owner)
   fetchOwner(@Args('ownerID') ownerID: string) {
     return this.ownerService.findOne({ ownerID });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteOwner(@Args('ownerID') ownerID: string) {
-    return this.ownerService.delete({ ownerID });
+  deleteOwner(
+    @Context() context: IContext, //
+  ) {
+    return this.ownerService.delete({ ownerID: context.req.user.id });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Owner)
   updateOwner(
     @Args('updateOwnerInput') updateOwnerInput: OwnerUpdateInput, //
-    @Args('ownerID') ownerID: string,
+    @Context() context: IContext,
   ) {
-    return this.ownerService.update({ updateOwnerInput, ownerID });
+    return this.ownerService.update({
+      updateOwnerInput,
+      ownerID: context.req.user.id,
+    });
   }
 
   @Mutation(() => String)
   findOwnerPassword(@Args('email') email: string) {
     return this.ownerService.emailPassword({ email });
+  }
+
+  @Mutation(() => Int)
+  sendTokenToEmail(
+    @Args('email') email: string, //
+  ) {
+    return this.ownerService.sendToken({ email });
   }
 }

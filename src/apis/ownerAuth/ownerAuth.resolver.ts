@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
+import { endianness } from 'os';
 import {
   GqlAuthAccessGuard,
   GqlAuthRefreshGuard,
@@ -49,7 +50,7 @@ export class OwnerAuthResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => String)
-  async ownerLogout(@Context() context: IContext) {
+  ownerLogout(@Context() context: IContext) {
     return this.ownerAuthLogin.logout({ context });
   }
 }

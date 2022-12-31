@@ -17,7 +17,7 @@ export class CafeImage {
   @Field(() => Boolean)
   is_main: boolean;
 
-  @ManyToOne(() => CafeInform)
+  @ManyToOne(() => CafeInform, { onDelete: 'CASCADE' })
   @Field(() => CafeInform)
   cafeInform: CafeInform;
 }

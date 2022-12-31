@@ -130,9 +130,9 @@ export class CafeInformService {
         is_cafeInform: true,
       });
     }
-    // if (Owner.is_cafeInform === true) {
-    //   throw new ConflictException('이미 한개의 카페가 존재합니다.');
-    // }
+    if (Owner.is_cafeInform === true) {
+      throw new ConflictException('이미 한개의 카페가 존재합니다.');
+    }
 
     const temp = [];
 
@@ -278,5 +278,19 @@ export class CafeInformService {
     const result = await this.cafeInformrRepository.find();
     const answer = result.filter((el) => el.cafeAddr.includes(Location));
     return answer;
+  }
+
+  async deleteCafeInform({ cafeInformID }) {
+    const result = await this.cafeInformrRepository.delete({
+      id: cafeInformID,
+    });
+    return result.affected ? true : false;
+  }
+  async findBestCafe() {
+    const result = await this.cafeInformrRepository.find();
+
+    result.sort((a, b) => b.like - a.like);
+
+    return result;
   }
 }

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CafeInform } from 'src/apis/cafeInform/entities/cafeInform.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -35,4 +36,9 @@ export class Owner {
   @Column()
   // @Field(() => String)
   ownerPassword: string;
+
+  @OneToMany(() => CafeInform, (cafeinform) => cafeinform.owner, {
+    onDelete: 'CASCADE',
+  })
+  cafeInform: CafeInform[];
 }

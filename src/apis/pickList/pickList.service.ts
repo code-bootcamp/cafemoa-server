@@ -15,7 +15,9 @@ export class PickListService {
       where: { user: { id: userID } },
       relations: ['user', 'cafeInform'],
     });
-    console.log(result);
+    if (!result) {
+      throw new ConflictException('찜한 카페가 없습니다.');
+    }
     return result;
   }
 

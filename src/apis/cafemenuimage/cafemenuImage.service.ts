@@ -20,4 +20,11 @@ export class CafeMenuImageService {
       },
     });
   }
+
+  async delete({ cafeMenuImageID }) {
+    const result = await this.cafeMenuImageRepository.delete({
+      id: cafeMenuImageID,
+    });
+    return result.affected ? true : false;
+  }
 }

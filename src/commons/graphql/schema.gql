@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CafeMenuImage {
+  id: String!
+  menu_imageUrl: String!
+  cafeInform: CafeInform!
+}
+
 type CafeTag {
   id: String!
   tagName: String!
@@ -15,6 +21,23 @@ type Owner {
   phone: String!
   is_main: Boolean!
   is_cafeInform: Boolean!
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  phoneNumber: String!
+  age: String!
+  profileImage: String!
+}
+
+type PickList {
+  id: String!
+  user: User!
+  cafeInform: CafeInform!
 }
 
 type CafeInform {
@@ -33,6 +56,12 @@ type CafeInform {
   cafeTag: [CafeTag!]!
 }
 
+
+type CafeImage {
+  id: String!
+  cafe_image: String!
+  is_main: Boolean!
+}
 type User {
   id: String!
   name: String!
@@ -47,6 +76,7 @@ type User {
 type PickList {
   id: String!
   user: User!
+
   cafeInform: CafeInform!
 }
 
@@ -82,8 +112,10 @@ type Query {
   fetchCoupons: [Coupon!]!
   fetchUserCoupons(userId: String!): [Coupon!]!
   fetchCafeCoupons(cafeId: String!): [Coupon!]!
-  fetchMyPickLists(userId: String!): [PickList!]!
-  fetchMyPickListLocation(userId: String!, Location: String!): [PickList!]!
+
+  fetchMyPickLists: [PickList!]!
+  fetchMyPickListLocation(Location: String!): [PickList!]!
+
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
   fetchComments: [Comment!]!
@@ -95,6 +127,9 @@ type Query {
   fetchCafeInform(cafeInformID: String!): CafeInform!
   fetchCafeInformWithTag(Tags: [String!]!): [CafeInform!]!
   fetchCafeInformWithLocation(Location: String!): [CafeInform!]!
+  fetchBestCafe: [CafeInform!]!
+  fetchCafeImage(cafeInformID: String!): [CafeImage!]!
+  fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
 }
 
 type Mutation {
@@ -114,12 +149,19 @@ type Mutation {
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
-  deleteOwner(ownerID: String!): Boolean!
-  updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
+  deleteOwner: Boolean!
+  updateOwner(updateOwnerInput: OwnerUpdateInput!): Owner!
   findOwnerPassword(email: String!): String!
+  sendTokenToEmail(email: String!): Int!
   updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
-  CreatecafeInform(cafeInformInput: CafeInformInput!, OwnerId: String!): CafeInform!
+  CreatecafeInform(cafeInformInput: CafeInformInput!): CafeInform!
   PickCafe(CafeInformID: String!, UserID: String!): Int!
+  deleteCafeInform(cafeInformID: String!): Boolean!
+  deleteCafeImage(cafeImageID: String!): Boolean!
+  deleteCafeMenuImage(cafeMenuImageID: String!): Boolean!
+  ownerLogin(email: String!, password: String!): String!
+  restoreOwnerAccessToken: String!
+  ownerLogout: String!
 }
 
 input CreateCouponInput {

@@ -1,4 +1,7 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { CafeImageService } from './cafeImage.service';
 import { CafeImage } from './entities/cafeImage.entity';
 
@@ -10,5 +13,11 @@ export class CafeImageResolver {
     @Args('cafeInformID') cafeInformID: string, //
   ) {
     return this.cafeImageService.find({ cafeInformID });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => Boolean)
+  deleteCafeImage(@Args('cafeImageID') cafeImageID: string) {
+    return this.cafeImageService.delete({ cafeImageID });
   }
 }

@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
-// import {cafeInformrRepository} 
+// import {cafeInformrRepository}
 
 @Injectable()
 export class CommentService {
@@ -12,44 +12,44 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(CafeInform)
     private readonly cafeInformrRepository: Repository<CafeInform>,
-    
   ) {}
   async findAll() {
     return await this.commentRepository.find({
-      relations:['cafeinfo']
+      relations: ['cafeinfo'],
     });
   }
 
   async findOne({ commentId }) {
-    const result = await this.commentRepository.findOne({ where: { id: commentId } ,
-      relations:['cafeinfo','cafeinfo.cafeTag']});
-      // const result2 = await this.cafeInformrRepository.findOne({
-      //   where: {
-      //     id: result.cafeinfo.id
-      //   },
-      //   relations: ['cafeTag']
-      // })
-      console.log(result)
-      return result
-  }
-   
-  async create({ createCommentInput, cafeinformId }) {
-   const result = await this.cafeInformrRepository.findOne({
-    where:{ id: cafeinformId }
-  });
-  
-   const result2 = await this.commentRepository.save({
-   
-    cafeinfo: {
-      ...result
-    },
-    ...createCommentInput,
-  });
-  console.log(result2.cafeinform)
-  return result2
+    const result = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: ['cafeinfo', 'cafeinfo.cafeTag'],
+    });
+    // const result2 = await this.cafeInformrRepository.findOne({
+    //   where: {
+    //     id: result.cafeinfo.id
+    //   },
+    //   relations: ['cafeTag']
+    // })
+    console.log(result);
+    return result;
   }
 
-  async update({ commentId, UpdateCommentInput  }) {
+  async create({ createCommentInput, cafeinformId }) {
+    const result = await this.cafeInformrRepository.findOne({
+      where: { id: cafeinformId },
+    });
+
+    const result2 = await this.commentRepository.save({
+      cafeinfo: {
+        ...result,
+      },
+      ...createCommentInput,
+    });
+    console.log(result2.cafeinform);
+    return result2;
+  }
+
+  async update({ commentId, UpdateCommentInput }) {
     const mycomment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
@@ -58,14 +58,11 @@ export class CommentService {
       ...commentId,
       ...UpdateCommentInput,
     };
-    return this.commentRepository.save(newComment)
-
-
+    return this.commentRepository.save(newComment);
   }
   async delete({ commentId }) {
     const result = await this.commentRepository.softDelete({ id: commentId });
   }
-
 
   withdelete(): Promise<Comment[]> {
     return this.commentRepository.find({
@@ -73,8 +70,6 @@ export class CommentService {
     });
   }
 
-
-  
   async sendBestComment() {
     const Like = await this.commentRepository.find();
     Like.sort((a, b) => b.like - a.like);

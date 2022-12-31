@@ -1,6 +1,7 @@
-import { Field } from "@nestjs/graphql";
+import { Field, InputType } from '@nestjs/graphql';
 
-export class OwnerCommentInput{
-    @Field(()=> String)
-    content: string;
+@InputType()
+export class CreateOwnerCommentInput {
+  @Field(() => String)
+  content: string;
 }

@@ -6,9 +6,8 @@ import { CommentService } from './comment.service';
 import { Comment } from './entities/comment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Comment,CafeInform])],
+  imports: [TypeOrmModule.forFeature([Comment, CafeInform])],
   providers: [
-  
     CommentResolver, //
     CommentService,
   ],

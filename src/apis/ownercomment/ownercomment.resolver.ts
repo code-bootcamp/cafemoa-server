@@ -1,35 +1,46 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { OwnerCommentService } from './ownercomment.service';
 import { OwnerComment } from './entities/ownercomment.entity';
-import { OwnerCommentInput } from './dto/createownercomment.input';
-import { UpdateCommentInput } from './dto/updateownercomment.input';
-
+import { UpdateOwnerCommentInput } from './dto/updateownercomment.input';
+import { CreateOwnerCommentInput } from './dto/createownercomment.input';
 @Resolver()
 export class OwnerCommentResolver {
   constructor(
-    private readonly ownerService: OwnerCommentService, //
+    private readonly ownercommentService: OwnerCommentService, //
   ) {}
 
   @Query(() => OwnerComment)
   fetchOwnerComment(
     @Args('ownercommentId') ownercommentId: string, //
   ) {
-    return this.ownerService.findOne({ ownercommentId });
+    return this.ownercommentService.findOne({ ownercommentId });
   }
   @Mutation(() => OwnerComment)
-  createOwnerComment(
-    @Args('createownercommentinput') createownercommentinput: OwnerCommentInput,
-    // @Args('')
-  ) {}
+  async createOwnerComment(
+    @Args('createOwnerCommentInput')
+    createOwnerCommentInput: CreateOwnerCommentInput, //
+    @Args('ownerId') OwnerId: string,
+    @Args('commentID') commentID: string,
+  ) {
+    return this.ownercommentService.create({
+      createOwnerCommentInput,
+      OwnerId,
+      commentID,
+    });
+  }
+  //   @Mutation(() => OwnerComment)
+  //   async createOwnerComment(@Args('commentId') Comment: string) {
+  //     return this.ownercommentService.create({ Comment }); //
+  //   }
 
   @Mutation(() => OwnerComment)
-  updateOwnerComment(
-    @Args('ownercommentIdc') ownercommentId: string,
+  async updateOwnerComment(
+    @Args('OwnerId') OwnerId: string,
     @Args('UpdateOwnerCommentInput')
-    UpdateOwnerCommentInput: UpdateCommentInput,
+    UpdateOwnerCommentInput: UpdateOwnerCommentInput,
   ) {
-    return this.ownerService.update({
-      ownercommentId,
+    return this.ownercommentService.update({
+      OwnerId,
       UpdateOwnerCommentInput,
     });
   }

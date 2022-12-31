@@ -20,6 +20,7 @@ export class CommentResolver {
   ) {
     return this.commentService.findOne({ commentId });
   }
+
   @Mutation(() => Comment)
   createComment(
     @Args('createCommentinput') createCommentInput: createCommentInput,
@@ -42,11 +43,8 @@ export class CommentResolver {
   ) {
     return this.commentService.delete({ commentId });
   }
-  @Query(() =>[Comment])
-  fetchbestcomment(
-  
-  ){
-    return this.commentService.sendBestComment()
+  @Query(() => [Comment])
+  fetchbestcomment() {
+    return this.commentService.sendBestComment();
   }
-
 }

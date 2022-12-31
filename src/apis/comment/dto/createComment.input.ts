@@ -4,7 +4,4 @@ import { InputType, Field, Int } from '@nestjs/graphql';
 export class createCommentInput {
   @Field(() => String)
   reply: string;
-
-  @Field(() => Int)
-  like: number;
 }

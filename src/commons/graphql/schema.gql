@@ -33,19 +33,6 @@ type CafeInform {
   cafeTag: [CafeTag!]!
 }
 
-type CafeImage {
-  id: String!
-  cafe_image: String!
-  is_main: Boolean!
-  cafeInform: CafeInform!
-}
-
-type CafeMenuImage {
-  id: String!
-  menu_imageUrl: String!
-  cafeInform: CafeInform!
-}
-
 type User {
   id: String!
   name: String!
@@ -81,8 +68,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-
-
 type Coupon {
   id: String!
   stamp: Int!
@@ -92,14 +77,11 @@ type Coupon {
   createdAt: DateTime!
 }
 
-
 type Query {
   fetchCoupon(couponId: String!): Coupon!
   fetchCoupons: [Coupon!]!
   fetchUserCoupons(userId: String!): [Coupon!]!
   fetchCafeCoupons(cafeId: String!): [Coupon!]!
-  fetchCafeImage(cafeInformID: String!): [CafeImage!]!
-  fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchMyPickLists(userId: String!): [PickList!]!
   fetchMyPickListLocation(userId: String!, Location: String!): [PickList!]!
   fetchUsers: [User!]!
@@ -116,19 +98,13 @@ type Query {
 }
 
 type Mutation {
-
-
-  ownerLogin(email: String!, password: String!): String!
-  restoreOwnerAccessToken: String!
-  ownerLogout: String!
   createCoupon(createCouponInput: CreateCouponInput!): Coupon!
   deleteCoupon(couponId: String!): String!
-
-
   userLogin(email: String!, password: String!): String!
   restoreAccessToken: String!
   userLogout: String!
   createUser(createUserInput: CreateUserInput!): User!
+  emailVerify(email: String!): String!
   updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): Boolean!
   findUserPwd(email: String!): String!
@@ -146,14 +122,11 @@ type Mutation {
   PickCafe(CafeInformID: String!, UserID: String!): Int!
 }
 
-
-
 input CreateCouponInput {
   userId: String!
   cafeId: String!
   stamp: Int!
 }
-
 
 input CreateUserInput {
   name: String!

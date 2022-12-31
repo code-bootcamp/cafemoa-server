@@ -24,6 +24,11 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
+  @Mutation(() => String)
+  emailVerify(@Args('email') email: string) {
+    return this.userService.emailVerify({ email });
+  }
+
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
   fetchUser(@Args('email') email: string): Promise<User> {

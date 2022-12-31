@@ -20,7 +20,7 @@ export class PickList {
   @Field(() => User)
   user: User;
 
-  @ManyToOne(() => CafeInform)
+  @ManyToOne(() => CafeInform, { cascade: true })
   @Field(() => CafeInform)
   cafeInform: CafeInform;
 }

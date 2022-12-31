@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CafeMenuImage {
+  id: String!
+  menu_imageUrl: String!
+  cafeInform: CafeInform!
+}
+
 type CafeTag {
   id: String!
   tagName: String!
@@ -15,6 +21,23 @@ type Owner {
   phone: String!
   is_main: Boolean!
   is_cafeInform: Boolean!
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  phoneNumber: String!
+  age: String!
+  profileImage: String!
+}
+
+type PickList {
+  id: String!
+  user: User!
+  cafeInform: CafeInform!
 }
 
 type CafeInform {
@@ -40,29 +63,6 @@ type CafeImage {
   cafeInform: CafeInform!
 }
 
-type CafeMenuImage {
-  id: String!
-  menu_imageUrl: String!
-  cafeInform: CafeInform!
-}
-
-type User {
-  id: String!
-  name: String!
-  email: String!
-  address: String!
-  personalNumber: String!
-  phoneNumber: String!
-  age: String!
-  profileImage: String!
-}
-
-type PickList {
-  id: String!
-  user: User!
-  cafeInform: CafeInform!
-}
-
 type Category {
   id: String!
   category: String!
@@ -81,8 +81,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-
-
 type Coupon {
   id: String!
   stamp: Int!
@@ -92,16 +90,13 @@ type Coupon {
   createdAt: DateTime!
 }
 
-
 type Query {
   fetchCoupon(couponId: String!): Coupon!
   fetchCoupons: [Coupon!]!
   fetchUserCoupons(userId: String!): [Coupon!]!
   fetchCafeCoupons(cafeId: String!): [Coupon!]!
-  fetchCafeImage(cafeInformID: String!): [CafeImage!]!
-  fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
-  fetchMyPickLists(userId: String!): [PickList!]!
-  fetchMyPickListLocation(userId: String!, Location: String!): [PickList!]!
+  fetchMyPickLists: [PickList!]!
+  fetchMyPickListLocation(Location: String!): [PickList!]!
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
   fetchComments: [Comment!]!
@@ -113,18 +108,14 @@ type Query {
   fetchCafeInform(cafeInformID: String!): CafeInform!
   fetchCafeInformWithTag(Tags: [String!]!): [CafeInform!]!
   fetchCafeInformWithLocation(Location: String!): [CafeInform!]!
+  fetchBestCafe: [CafeInform!]!
+  fetchCafeImage(cafeInformID: String!): [CafeImage!]!
+  fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
 }
 
 type Mutation {
-
-
-  ownerLogin(email: String!, password: String!): String!
-  restoreOwnerAccessToken: String!
-  ownerLogout: String!
   createCoupon(createCouponInput: CreateCouponInput!): Coupon!
   deleteCoupon(couponId: String!): String!
-
-
   userLogin(email: String!, password: String!): String!
   restoreAccessToken: String!
   userLogout: String!
@@ -138,22 +129,26 @@ type Mutation {
   createCategory(category: String!): Category!
   deleteCategory(categoryId: String!): Boolean!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
-  deleteOwner(ownerID: String!): Boolean!
-  updateOwner(updateOwnerInput: OwnerUpdateInput!, ownerID: String!): Owner!
+  deleteOwner: Boolean!
+  updateOwner(updateOwnerInput: OwnerUpdateInput!): Owner!
   findOwnerPassword(email: String!): String!
+  sendTokenToEmail(email: String!): Int!
   updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
-  CreatecafeInform(cafeInformInput: CafeInformInput!, OwnerId: String!): CafeInform!
+  CreatecafeInform(cafeInformInput: CafeInformInput!): CafeInform!
   PickCafe(CafeInformID: String!, UserID: String!): Int!
+  deleteCafeInform(cafeInformID: String!): Boolean!
+  deleteCafeImage(cafeImageID: String!): Boolean!
+  deleteCafeMenuImage(cafeMenuImageID: String!): Boolean!
+  ownerLogin(email: String!, password: String!): String!
+  restoreOwnerAccessToken: String!
+  ownerLogout: String!
 }
-
-
 
 input CreateCouponInput {
   userId: String!
   cafeId: String!
   stamp: Int!
 }
-
 
 input CreateUserInput {
   name: String!

@@ -1,4 +1,7 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Query, Resolver } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { PickList } from './entities/pickList.entity';
 import { PickListService } from './pickList.service';
 
@@ -6,18 +9,23 @@ import { PickListService } from './pickList.service';
 export class PickListResolver {
   constructor(private readonly pickListService: PickListService) {}
 
+  @UseGuards(GqlAuthAccessGuard)
   @Query(() => [PickList])
   fetchMyPickLists(
-    @Args('userId') userID: string, //
+    @Context() context: IContext, //
   ) {
-    return this.pickListService.find({ userID });
+    return this.pickListService.find({ userID: context.req.user.id });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Query(() => [PickList])
   fetchMyPickListLocation(
-    @Args('userId') userID: string, //
-    @Args('Location') Location: string,
+    @Args('Location') Location: string, //
+    @Context() context: IContext,
   ) {
-    return this.pickListService.findWithLocation({ userID, Location });
+    return this.pickListService.findWithLocation({
+      userID: context.req.user.id,
+      Location,
+    });
   }
 }

@@ -36,7 +36,7 @@ export class OwnerService {
   }
 
   async delete({ ownerID }) {
-    const result = await this.OwnerRepository.softDelete({ id: ownerID });
+    const result = await this.OwnerRepository.delete({ id: ownerID });
     return result.affected ? true : false;
   }
 
@@ -97,7 +97,6 @@ export class OwnerService {
     if (!owner) {
       throw new ConflictException('이메일을 확인해주세요');
     }
-    console.log(owner);
     const Password = await bcrypt.hash(password, 10);
     await this.OwnerRepository.save({
       ...owner,
@@ -132,5 +131,45 @@ export class OwnerService {
     });
 
     return '메일이 전송되었습니다.';
+  }
+
+  async sendToken({ email }) {
+    const owner = await this.OwnerRepository.findOne({
+      where: {
+        email,
+      },
+    });
+    if (owner) {
+      throw new ConflictException('이미 존재하는 이메일입니다.');
+    }
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    const token = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_SENDER,
+      to: email,
+      subject: '[카페모아] 인증번호가 발급되었습니다.',
+      html: `
+      <html>
+        <body>
+            <div style ="display: flex; flex-direction: column; align-items: center;">
+                <div style = "width: 500px;">
+                    <h1>인증번호가 발급되었습니다.</h1>
+                    <hr />
+                    
+                    <div>인증번호: ${token}</div>
+                </div>
+            </div>
+        </body>
+    </html>`,
+    });
+
+    return token;
   }
 }

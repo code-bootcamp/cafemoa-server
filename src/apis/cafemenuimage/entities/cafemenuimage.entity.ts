@@ -13,7 +13,7 @@ export class CafeMenuImage {
   @Field(() => String)
   menu_imageUrl: string;
 
-  @ManyToOne(() => CafeInform)
+  @ManyToOne(() => CafeInform, { onDelete: 'CASCADE' })
   @Field(() => CafeInform)
   cafeInform: CafeInform;
 }

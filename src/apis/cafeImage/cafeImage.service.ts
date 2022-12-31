@@ -14,7 +14,13 @@ export class CafeImageService {
       where: {
         cafeInform: { id: cafeInformID },
       },
+      relations: ['cafeInform'],
     });
     return result;
+  }
+
+  async delete({ cafeImageID }) {
+    const result = await this.cafeImageRepository.delete({ id: cafeImageID });
+    return result.affected ? true : false;
   }
 }

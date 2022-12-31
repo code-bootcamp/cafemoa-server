@@ -31,7 +31,11 @@ export class OwnerAuthResolver {
     });
     await this.ownerAuthLogin.checkEmail({ email, password });
 
-    this.ownerAuthLogin.setRefreshToken({ user, res: context.res });
+    this.ownerAuthLogin.setRefreshToken({
+      user,
+      res: context.res,
+      req: context.req,
+    });
 
     return this.ownerAuthLogin.getAccessToken({ user });
   }

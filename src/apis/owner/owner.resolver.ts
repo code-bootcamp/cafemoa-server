@@ -55,7 +55,7 @@ export class OwnerResolver {
   }
 
   @Mutation(() => Int)
-  sendTokenToEmail(
+  sendTokenToOwnerEmail(
     @Args('email') email: string, //
   ) {
     return this.ownerService.sendToken({ email });

@@ -47,4 +47,11 @@ export class CommentResolver {
   fetchbestcomment() {
     return this.commentService.sendBestComment();
   }
+
+  @Query(() => [Comment])
+  fetchCommentWithTag(
+    @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
+  ) {
+    return this.commentService.findcommentwithTags({ Tags });
+  }
 }

@@ -18,10 +18,19 @@ import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
 
 import { CouponModule } from './apis/coupon/coupon.module';
+
+import { OwnerAuthModule } from './apis/ownerAuth/ownerAuth.module';
+import { CommentImageModule } from './apis/commentImage.ts/commentimage.module';
+import { OwnerCommentModule } from './apis/ownercomment/ownercomment.module';
+
 import { FilesUploadModule } from './fileupload/filesupload.module';
+
 
 @Module({
   imports: [
+    OwnerCommentModule,
+    CommentImageModule,
+    OwnerAuthModule,
     CouponModule,
     PickListModule,
     UserAuthModule,
@@ -71,7 +80,7 @@ import { FilesUploadModule } from './fileupload/filesupload.module';
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://10.14.81.3:6379',
+      url: 'redis://my-redis:6379',
       isGlobal: true,
     }),
   ],

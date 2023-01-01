@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type CafeMenuImage {
-  id: String!
-  menu_imageUrl: String!
-  cafeInform: CafeInform!
-}
-
 type CafeTag {
   id: String!
   tagName: String!
@@ -56,30 +50,6 @@ type CafeInform {
   cafeTag: [CafeTag!]!
 }
 
-
-type CafeImage {
-  id: String!
-  cafe_image: String!
-  is_main: Boolean!
-}
-type User {
-  id: String!
-  name: String!
-  email: String!
-  address: String!
-  personalNumber: String!
-  phoneNumber: String!
-  age: String!
-  profileImage: String!
-}
-
-type PickList {
-  id: String!
-  user: User!
-
-  cafeInform: CafeInform!
-}
-
 type Category {
   id: String!
   category: String!
@@ -112,10 +82,8 @@ type Query {
   fetchCoupons: [Coupon!]!
   fetchUserCoupons(userId: String!): [Coupon!]!
   fetchCafeCoupons(cafeId: String!): [Coupon!]!
-
   fetchMyPickLists: [PickList!]!
   fetchMyPickListLocation(Location: String!): [PickList!]!
-
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
   fetchComments: [Comment!]!
@@ -128,12 +96,11 @@ type Query {
   fetchCafeInformWithTag(Tags: [String!]!): [CafeInform!]!
   fetchCafeInformWithLocation(Location: String!): [CafeInform!]!
   fetchBestCafe: [CafeInform!]!
-  fetchCafeImage(cafeInformID: String!): [CafeImage!]!
-  fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
 }
 
 type Mutation {
   createCoupon(createCouponInput: CreateCouponInput!): Coupon!
+  useCoupon(couponId: String!, password: String!): String!
   deleteCoupon(couponId: String!): String!
   userLogin(email: String!, password: String!): String!
   restoreAccessToken: String!
@@ -157,11 +124,7 @@ type Mutation {
   CreatecafeInform(cafeInformInput: CafeInformInput!): CafeInform!
   PickCafe(CafeInformID: String!, UserID: String!): Int!
   deleteCafeInform(cafeInformID: String!): Boolean!
-  deleteCafeImage(cafeImageID: String!): Boolean!
-  deleteCafeMenuImage(cafeMenuImageID: String!): Boolean!
-  ownerLogin(email: String!, password: String!): String!
-  restoreOwnerAccessToken: String!
-  ownerLogout: String!
+  uploadFile(files: [Upload!]!): [String!]!
 }
 
 input CreateCouponInput {
@@ -192,12 +155,10 @@ input UpdateUserInput {
 
 input createCommentInput {
   reply: String!
-  like: Int!
 }
 
 input UpdateCommentInput {
   reply: String
-  like: Int
 }
 
 input OwnerInput {
@@ -245,3 +206,6 @@ input CafeInformInput {
   menu_imageUrl: [String!]!
   cafe_imageUrl: [String!]!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

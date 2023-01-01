@@ -18,6 +18,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
 
 import { CouponModule } from './apis/coupon/coupon.module';
+import { FilesUploadModule } from './fileupload/filesupload.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CouponModule } from './apis/coupon/coupon.module';
     OwnerModule,
     CafeInformModule,
     UserModule,
+    FilesUploadModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

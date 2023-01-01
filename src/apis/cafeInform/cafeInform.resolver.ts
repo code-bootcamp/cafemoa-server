@@ -18,6 +18,7 @@ export class CafeInformResolver {
     return this.cafeInformService.findOne({ cafeInformID });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeInform)
   updateCafeInform(
     @Args('updateCafeInform') updateCafeInform: UpdateCafeInform, //
@@ -36,13 +37,16 @@ export class CafeInformResolver {
       OwnerId: context.req.user.id,
     });
   }
-
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Int)
   PickCafe(
     @Args('CafeInformID') CafeInformID: string, //
-    @Args('UserID') UserID: string,
+    @Context() context: IContext,
   ) {
-    return this.cafeInformService.pickCafe({ CafeInformID, UserID });
+    return this.cafeInformService.pickCafe({
+      CafeInformID,
+      UserID: context.req.user.id,
+    });
   }
 
   @Query(() => [CafeInform])

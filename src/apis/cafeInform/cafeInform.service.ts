@@ -155,8 +155,6 @@ export class CafeInformService {
       }
     }
 
-    console.log(temp, cafeTag);
-
     const result2 = await this.cafeInformrRepository.save({
       owner: {
         ...Owner,

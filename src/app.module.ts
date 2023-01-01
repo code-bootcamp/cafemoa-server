@@ -18,9 +18,13 @@ import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
 
 import { CouponModule } from './apis/coupon/coupon.module';
+
 import { OwnerAuthModule } from './apis/ownerAuth/ownerAuth.module';
 import { CommentImageModule } from './apis/commentImage.ts/commentimage.module';
 import { OwnerCommentModule } from './apis/ownercomment/ownercomment.module';
+
+import { FilesUploadModule } from './fileupload/filesupload.module';
+
 
 @Module({
   imports: [
@@ -36,6 +40,7 @@ import { OwnerCommentModule } from './apis/ownercomment/ownercomment.module';
     OwnerModule,
     CafeInformModule,
     UserModule,
+    FilesUploadModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

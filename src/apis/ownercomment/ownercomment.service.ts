@@ -20,16 +20,13 @@ export class OwnerCommentService {
       relations: ['comment', 'owner'],
     });
   }
+
   async findOne({ ownercommentId }) {
-    const result = await this.commentRepository.findOne({
-      where: { id: ownercommentId },
-    });
-    return result;
-  }
-  async findOne1({ ownerCommentId }) {
     const result = await this.ownercommentRepository.findOne({
-      where: { id: ownerCommentId },
+      where: { id: ownercommentId },
+      relations: ['comment', 'owner'],
     });
+
     return result;
   }
 
@@ -62,5 +59,15 @@ export class OwnerCommentService {
       ...UpdateOwnerCommentInput,
     };
     return this.ownercommentRepository.save(newOwner);
+  }
+  async delete({ ownercommentId }) {
+    const result = await this.ownercommentRepository.softDelete({
+      id: ownercommentId,
+    });
+  }
+  withdelete(): Promise<OwnerComment[]> {
+    return this.ownercommentRepository.find({
+      withDeleted: true,
+    });
   }
 }

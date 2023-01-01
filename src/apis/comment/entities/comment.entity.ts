@@ -20,7 +20,7 @@ export class Comment {
   @Field(() => String)
   reply: string;
 
-  @Column({default: 0})
+  @Column({ default: 0 })
   @Field(() => Int)
   like: number;
 
@@ -33,10 +33,5 @@ export class Comment {
   cafeinfo: CafeInform;
 
   @DeleteDateColumn()
-  deletedAt: Date
-
- 
-
-
-  
+  deletedAt: Date;
 }

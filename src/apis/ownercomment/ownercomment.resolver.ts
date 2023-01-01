@@ -44,10 +44,10 @@ export class OwnerCommentResolver {
       UpdateOwnerCommentInput,
     });
   }
-  //    @Mutation(()=> Boolean)
-  //    deleteOwnerComment(
-  //     @Args('ownerCommentId') ownerCommentId: string,//
-  //    ){
-  //     return this.ownerService.delete()
-  //    }
+  @Mutation(() => Boolean)
+  deleteOwnerComment(
+    @Args('ownerCommentId') ownercommentId: string, //
+  ) {
+    return this.ownercommentService.delete({ ownercommentId });
+  }
 }

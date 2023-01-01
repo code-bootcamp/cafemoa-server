@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
+import { CommentImage } from '../commentImage.ts/entities/commentImage.entity';
 // import {cafeInformrRepository}
 
 @Injectable()
@@ -12,6 +13,8 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(CafeInform)
     private readonly cafeInformrRepository: Repository<CafeInform>,
+    @InjectRepository(CommentImage)
+    private readonly commentImageRepository: Repository<CommentImage>,
   ) {}
   async findAll() {
     return await this.commentRepository.find({
@@ -35,6 +38,8 @@ export class CommentService {
   }
 
   async create({ createCommentInput, cafeinformId }) {
+    const { image_Url, ...Comment } = createCommentInput;
+
     const result = await this.cafeInformrRepository.findOne({
       where: { id: cafeinformId },
     });
@@ -43,22 +48,43 @@ export class CommentService {
       cafeinfo: {
         ...result,
       },
-      ...createCommentInput,
+      ...Comment,
     });
-    console.log(result2.cafeinform);
+    for (let i = 0; i < image_Url.length; i++) {
+      this.commentImageRepository.save({
+        image_url: image_Url[i],
+        comment: {
+          ...result2,
+        },
+      });
+    }
+
     return result2;
   }
 
   async update({ commentId, UpdateCommentInput }) {
+    const { image_Url, ...comment } = UpdateCommentInput;
     const mycomment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
-    const newComment = {
+
+    const result = await this.commentRepository.save({
       ...mycomment,
-      ...commentId,
-      ...UpdateCommentInput,
-    };
-    return this.commentRepository.save(newComment);
+      ...comment,
+    });
+    if (image_Url) {
+      await this.commentImageRepository.delete({ comment: { id: commentId } });
+
+      for (let i = 0; i < image_Url.length; i++) {
+        this.commentImageRepository.save({
+          image_url: image_Url[i],
+          comment: {
+            ...result,
+          },
+        });
+      }
+    }
+    return result;
   }
   async delete({ commentId }) {
     const result = await this.commentRepository.softDelete({ id: commentId });
@@ -100,6 +126,28 @@ export class CommentService {
     });
 
     console.log(arr);
+    return arr;
+  }
+  async findcommentwithTags({ Tags }) {
+    const result = await this.commentRepository.find({
+      relations: ['cafeinfo', 'cafeinfo.cafeTag'],
+    });
+    console.log(result);
+    const arr = [];
+    result.forEach((el) => {
+      el.cafeinfo.cafeTag.forEach((e) => {
+        for (let i = 0; i < Tags.length; i++) {
+          if (e.tagName === Tags[i]) {
+            if (arr.includes(el)) {
+              continue;
+            } else {
+              arr.push(el);
+            }
+          }
+        }
+      });
+    });
+    console.log(result[3].cafeinfo.cafeTag[0].tagName);
     return arr;
   }
 }

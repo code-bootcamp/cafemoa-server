@@ -36,6 +36,12 @@ export class CouponResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [Coupon])
+  fetchCouponWithLocation(@Args('cafeAddr') cafeAddr: string) {
+    return this.couponService.findCouponLocation({ cafeAddr });
+  }
+
+  // @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Coupon)
   createCoupon(
     @Args('createCouponInput') createCouponInput: CreateCouponInput,

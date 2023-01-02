@@ -53,11 +53,18 @@ export class CouponService {
     });
   }
 
+  async findCouponLocation({ cafeAddr }) {
+    const cafe = await this.couponRepository.find({
+      relations: ['cafeInform'],
+    });
+    return cafe.filter((el) => el.cafeInform.cafeAddr.includes(cafeAddr));
+  }
+
   async createCoupon({ createCouponInput }) {
-    const { stamp, userId, cafeId } = createCouponInput;
+    const { stamp, phoneNumber, cafeId } = createCouponInput;
 
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { phoneNumber },
     });
 
     const cafeInform = await this.cafeInformRepository.findOne({
@@ -70,7 +77,7 @@ export class CouponService {
     });
 
     const coupon = await this.couponRepository.findOne({
-      where: { user: { id: userId }, cafeInform: { id: cafeId } },
+      where: { user: { phoneNumber }, cafeInform: { id: cafeId } },
     });
     console.log(coupon, owner);
 

@@ -60,4 +60,9 @@ export class OwnerResolver {
   ) {
     return this.ownerService.sendToken({ email });
   }
+
+  @Mutation(() => Int)
+  sendTokenToSMS(@Args('phone') phone: string) {
+    return this.ownerService.sendTokenToSMS({ phone });
+  }
 }

@@ -5,7 +5,9 @@ import { Owner } from './entities/owner.entity';
 import * as bcrypt from 'bcrypt';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import * as nodemailer from 'nodemailer';
-
+import * as coolsms from 'coolsms-node-sdk';
+import { SchemaTextFieldPhonetics } from 'redis';
+const mysms = coolsms.default;
 @Injectable()
 export class OwnerService {
   constructor(
@@ -170,6 +172,23 @@ export class OwnerService {
     </html>`,
     });
 
+    return token;
+  }
+
+  async sendTokenToSMS({ phone }) {
+    const token = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+
+    const messageService = new mysms(
+      process.env.SMS_KEY,
+      process.env.SMS_SECRET,
+    );
+
+    const result = await messageService.sendOne({
+      to: phone,
+      from: process.env.SMS_SENDER,
+      text: `안녕하세요 요청하신 인증번호는 ${token} 입니다.`,
+      autoTypeDetect: true,
+    });
     return token;
   }
 }

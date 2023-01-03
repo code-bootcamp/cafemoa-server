@@ -72,4 +72,22 @@ export class CafeInformResolver {
   fetchBestCafe() {
     return this.cafeInformService.findBestCafe();
   }
+
+  @Query(() => [CafeInform])
+  fetchCafeInforms() {
+    return this.cafeInformService.findAll();
+  }
+
+  @Query(() => [CafeInform])
+  fetchCafeWithLocationAndTag(
+    @Args({ name: 'Location', type: () => String, nullable: true })
+    Location: string, //
+    @Args({ name: 'Tags', type: () => [String], nullable: true })
+    Tags: string[],
+  ) {
+    return this.cafeInformService.findCafeWithLocationAndTag({
+      Location,
+      Tags,
+    });
+  }
 }

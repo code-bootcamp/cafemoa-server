@@ -38,7 +38,7 @@ export class CafeInformService {
       where: {
         id: cafeInformID,
       },
-      relations: ['owner'],
+      relations: ['cafeTag', 'owner'],
     });
 
     return result;
@@ -194,6 +194,7 @@ export class CafeInformService {
       where: {
         id: CafeInformID,
       },
+      relations: ['cafeTag', 'owner'],
     });
     const user = await this.userRepository.findOne({
       where: {
@@ -251,7 +252,7 @@ export class CafeInformService {
   }
   async findCafeInformWithTags({ Tags }) {
     const result = await this.cafeInformrRepository.find({
-      relations: ['cafeTag'],
+      relations: ['cafeTag', 'owner'],
     });
     const arr = [];
     result.forEach((el) => {
@@ -273,7 +274,9 @@ export class CafeInformService {
   }
 
   async findCafeInformWithLocation({ Location }) {
-    const result = await this.cafeInformrRepository.find();
+    const result = await this.cafeInformrRepository.find({
+      relations: ['cafeTag', 'owner'],
+    });
     const answer = result.filter((el) => el.cafeAddr.includes(Location));
     return answer;
   }
@@ -290,5 +293,64 @@ export class CafeInformService {
     result.sort((a, b) => b.like - a.like);
 
     return result;
+  }
+  async findAll() {
+    const result = await this.cafeInformrRepository.find({
+      relations: ['cafeTag', 'owner'],
+    });
+    return result;
+  }
+  async findCafeWithLocationAndTag({ Location, Tags }) {
+    if (Location && Tags.length === 0) {
+      const result = await this.cafeInformrRepository.find({
+        relations: ['cafeTag', 'owner'],
+      });
+      const answer = result.filter((el) => el.cafeAddr.includes(Location));
+      return answer;
+    } else if (!Location && Tags.length > 0) {
+      const result = await this.cafeInformrRepository.find({
+        relations: ['cafeTag', 'owner'],
+      });
+      const arr = [];
+      result.forEach((el) => {
+        el.cafeTag.forEach((e) => {
+          for (let i = 0; i < Tags.length; i++) {
+            if (e.tagName === Tags[i]) {
+              if (arr.includes(el)) {
+                continue;
+              } else {
+                arr.push(el);
+              }
+            }
+          }
+        });
+      });
+      return arr;
+    } else if (Location && Tags.length > 0) {
+      const result = await this.cafeInformrRepository.find({
+        relations: ['cafeTag', 'owner'],
+      });
+      const answer = result.filter((el) => el.cafeAddr.includes(Location));
+      const arr = [];
+      answer.forEach((el) => {
+        el.cafeTag.forEach((e) => {
+          for (let i = 0; i < Tags.length; i++) {
+            if (e.tagName === Tags[i]) {
+              if (arr.includes(el)) {
+                continue;
+              } else {
+                arr.push(el);
+              }
+            }
+          }
+        });
+      });
+      return arr;
+    } else {
+      const result = await this.cafeInformrRepository.find({
+        relations: ['cafeTag', 'owner'],
+      });
+      return result;
+    }
   }
 }

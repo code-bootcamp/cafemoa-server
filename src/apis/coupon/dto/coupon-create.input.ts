@@ -10,4 +10,7 @@ export class CreateCouponInput {
 
   @Field(() => Int)
   stamp: number;
+
+  @Field(() => String)
+  password: string;
 }

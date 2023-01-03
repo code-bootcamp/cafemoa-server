@@ -1,3 +1,4 @@
+import { IContext } from 'src/commons/types/context';
 import { CreateUserInput } from '../dto/user-create.input';
 import { UpdateUserInput } from '../dto/user-update.input';
 
@@ -7,5 +8,5 @@ export interface IUserServiceCreate {
 
 export interface IUserServiceUpdate {
   updateUserInput: UpdateUserInput;
-  userId: string;
+  context: IContext;
 }

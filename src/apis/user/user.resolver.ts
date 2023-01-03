@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { CreateUserInput } from './dto/user-create.input';
 import { UpdateUserInput } from './dto/user-update.input';
 import { User } from './entities/user.entity';
@@ -38,19 +39,19 @@ export class UserResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async updateUser(
-    @Args('userId') userId: string,
+    @Context() context: IContext,
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
   ) {
     return await this.userService.update({
       updateUserInput,
-      userId,
+      context,
     });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteUser(@Args('userId') userId: string): Promise<boolean> {
-    return this.userService.delete({ userId });
+  deleteUser(@Context() context: IContext): Promise<boolean> {
+    return this.userService.delete({ userId: context.req.user.id });
   }
 
   @Mutation(() => String)

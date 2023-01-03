@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { CouponService } from './coupon.service';
 import { CreateCouponInput } from './dto/coupon-create.input';
 import { Coupon } from './entities/coupon.entity';
@@ -25,8 +26,8 @@ export class CouponResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Coupon])
-  fetchUserCoupons(@Args('userId') userId: string) {
-    return this.couponService.findUserCoupon({ userId });
+  fetchUserCoupons(@Context() context: IContext) {
+    return this.couponService.findUserCoupon({ userId: context.req.user.id });
   }
 
   @UseGuards(GqlAuthAccessGuard)

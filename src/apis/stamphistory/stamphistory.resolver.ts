@@ -14,7 +14,7 @@ export class StampHistoryResolver {
     return this.stampHistory.findStamps({ cafeId });
   }
 
-  // @UseGuards(GqlAuthAccessGuard)
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Int)
   deleteStamp(
     @Args('ownerpassword') ownerpassword: string,

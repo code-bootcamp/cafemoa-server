@@ -42,7 +42,7 @@ export class CouponResolver {
     return this.couponService.findCouponLocation({ cafeAddr });
   }
 
-  // @UseGuards(GqlAuthAccessGuard)
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Coupon)
   createCoupon(
     @Args('createCouponInput') createCouponInput: CreateCouponInput,

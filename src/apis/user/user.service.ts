@@ -101,10 +101,16 @@ export class UserService {
     });
   }
 
-  async update({ updateUserInput, userId }: IUserServiceUpdate): Promise<User> {
+  async update({
+    updateUserInput,
+    context,
+  }: IUserServiceUpdate): Promise<User> {
+    const userId = context.req.user.id;
     let { password, ...user } = updateUserInput;
 
-    const result = await this.userRepository.findOne({ where: { id: userId } });
+    const result = await this.userRepository.findOne({
+      where: { id: userId },
+    });
 
     if (password) {
       password = await bcrypt.hash(password, 10);

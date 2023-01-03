@@ -36,12 +36,13 @@ export class CouponService {
   }
 
   async findUserCoupon({ userId }) {
-    return await this.couponRepository.find({
+    const result = await this.couponRepository.find({
       where: {
         user: { id: userId },
       },
       relations: ['user'],
     });
+    return result.sort((a, b) => b.stamp - a.stamp);
   }
 
   async findCafeCoupon({ cafeId }) {

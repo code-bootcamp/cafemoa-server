@@ -2,7 +2,11 @@ import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { CafeImage } from 'src/apis/cafeImage/entities/cafeImage.entity';
 import { CafeMenuImage } from 'src/apis/cafemenuimage/entities/cafemenuimage.entity';
 import { CafeTag } from 'src/apis/cafeTag/entities/cafeTag.entity';
+
+import { Comment } from 'src/apis/comment/entities/comment.entity';
+
 import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
+
 import { Owner } from 'src/apis/owner/entities/owner.entity';
 import { PickList } from 'src/apis/pickList/entities/pickList.entity';
 import {
@@ -89,8 +93,16 @@ export class CafeInform {
     onDelete: 'CASCADE',
   })
   pickList: PickList[];
+
+
+  @OneToMany(() => Comment, (comment) => comment.cafeinfo, {
+    onDelete: 'CASCADE',
+  })
+  comment: Comment;
+
   @OneToMany(() => Coupon, (coupon) => coupon.cafeInform, {
     onDelete: 'CASCADE',
   })
   coupon: Coupon[];
+
 }

@@ -1,6 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeInform } from 'src/apis/cafeInform/entities/cafeInform.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { OwnerComment } from 'src/apis/ownercomment/entities/ownercomment.entity';
+import { OwnerCommentModule } from 'src/apis/ownercomment/ownercomment.module';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -41,4 +49,9 @@ export class Owner {
     onDelete: 'CASCADE',
   })
   cafeInform: CafeInform[];
+
+  @OneToMany(() => OwnerComment, (ownerComment) => ownerComment.owner, {
+    onDelete: 'CASCADE',
+  })
+  ownerComment: OwnerComment[];
 }

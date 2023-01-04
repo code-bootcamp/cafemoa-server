@@ -1,8 +1,11 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { CommentService } from './comment.service';
 import { createCommentInput } from './dto/createComment.input';
 import { Comment } from './entities/comment.entity';
 import { UpdateCommentInput } from './dto/updateComment.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 
 @Resolver()
 export class CommentResolver {
@@ -20,28 +23,42 @@ export class CommentResolver {
   ) {
     return this.commentService.findOne({ commentId });
   }
-
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   createComment(
     @Args('createCommentinput') createCommentInput: createCommentInput,
     @Args('cafeinformId') cafeinformId: string,
+    @Context() context: IContext,
   ) {
-    return this.commentService.create({ createCommentInput, cafeinformId });
+    return this.commentService.create({
+      createCommentInput,
+      cafeinformId,
+      userID: context.req.user.id,
+    });
   }
-
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   async updateComment(
     @Args('commentId') commentId: string,
     @Args('UpdateCommentInput') UpdateCommentInput: UpdateCommentInput,
-    // @Args('cafeinformId') cafeinformId: string,
+    @Context() context: IContext,
   ) {
-    return this.commentService.update({ commentId, UpdateCommentInput });
+    return this.commentService.update({
+      commentId,
+      UpdateCommentInput,
+      userID: context.req.user.id,
+    });
   }
-  @Mutation(() => Boolean)
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => String)
   deleteComment(
     @Args('commentId') commentId: string, //
+    @Context() context: IContext,
   ) {
-    return this.commentService.delete({ commentId });
+    return this.commentService.delete({
+      commentId,
+      userID: context.req.user.id,
+    });
   }
   @Query(() => [Comment])
   fetchbestcomment() {

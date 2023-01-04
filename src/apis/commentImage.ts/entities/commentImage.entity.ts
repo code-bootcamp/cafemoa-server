@@ -13,7 +13,7 @@ export class CommentImage {
   @Field(() => String)
   image_url: string;
 
-  @ManyToOne(() => Comment)
+  @ManyToOne(() => Comment, { onDelete: 'CASCADE' })
   @Field(() => Comment)
   comment: Comment;
 }

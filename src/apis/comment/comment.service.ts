@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { CommentImage } from '../commentImage.ts/entities/commentImage.entity';
-// import {cafeInformrRepository}
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class CommentService {
@@ -15,17 +15,20 @@ export class CommentService {
     private readonly cafeInformrRepository: Repository<CafeInform>,
     @InjectRepository(CommentImage)
     private readonly commentImageRepository: Repository<CommentImage>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
   async findAll() {
     return await this.commentRepository.find({
-      relations: ['cafeinfo'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'ownerComment'],
     });
   }
 
   async findOne({ commentId }) {
     const result = await this.commentRepository.findOne({
       where: { id: commentId },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'ownerComment'],
     });
     // const result2 = await this.cafeInformrRepository.findOne({
     //   where: {
@@ -37,8 +40,17 @@ export class CommentService {
     return result;
   }
 
-  async create({ createCommentInput, cafeinformId }) {
+  async create({ createCommentInput, cafeinformId, userID }) {
     const { image_Url, ...Comment } = createCommentInput;
+
+    const resultUser = await this.userRepository.findOne({
+      where: {
+        id: userID,
+      },
+    });
+    if (!resultUser) {
+      throw new ConflictException('댓글은 유저만 작성가능합니다.');
+    }
 
     const result = await this.cafeInformrRepository.findOne({
       where: { id: cafeinformId },
@@ -48,25 +60,35 @@ export class CommentService {
       cafeinfo: {
         ...result,
       },
+      user: {
+        ...resultUser,
+      },
       ...Comment,
     });
-    for (let i = 0; i < image_Url.length; i++) {
-      this.commentImageRepository.save({
-        image_url: image_Url[i],
-        comment: {
-          ...result2,
-        },
-      });
+    if (image_Url) {
+      for (let i = 0; i < image_Url.length; i++) {
+        this.commentImageRepository.save({
+          image_url: image_Url[i],
+          comment: {
+            ...result2,
+          },
+        });
+      }
     }
 
     return result2;
   }
 
-  async update({ commentId, UpdateCommentInput }) {
+  async update({ commentId, UpdateCommentInput, userID }) {
     const { image_Url, ...comment } = UpdateCommentInput;
     const mycomment = await this.commentRepository.findOne({
       where: { id: commentId },
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
     });
+
+    if (mycomment.user.id !== userID) {
+      throw new ConflictException('자신의 댓글이 아닙니다.');
+    }
 
     const result = await this.commentRepository.save({
       ...mycomment,
@@ -86,8 +108,18 @@ export class CommentService {
     }
     return result;
   }
-  async delete({ commentId }) {
+  async delete({ commentId, userID }) {
+    const resultUser = await this.commentRepository.findOne({
+      where: {
+        id: commentId,
+      },
+      relations: ['user'],
+    });
+    if (resultUser.user.id !== userID) {
+      throw new ConflictException('자신의 댓글이 아닙니다.');
+    }
     const result = await this.commentRepository.softDelete({ id: commentId });
+    return result.affected ? '삭제에 성공했습니다.' : '삭제에 실패했습니다.';
   }
 
   withdelete(): Promise<Comment[]> {
@@ -97,7 +129,9 @@ export class CommentService {
   }
 
   async sendBestComment() {
-    const Like = await this.commentRepository.find();
+    const Like = await this.commentRepository.find({
+      relations: ['user', 'ownerComment', 'cafeinfo'],
+    });
     Like.sort((a, b) => b.like - a.like);
     console.log(Like);
     if (Like[0].like < 5) {
@@ -106,33 +140,12 @@ export class CommentService {
       return Like.slice(0, 3);
     }
   }
-  async findCafeInformWithTags({ Tags }) {
-    const result = await this.cafeInformrRepository.find({
-      relations: ['cafeTag'],
-    });
-    const arr = [];
-    result.forEach((el) => {
-      el.cafeTag.forEach((e) => {
-        for (let i = 0; i < Tags.length; i++) {
-          if (e.tagName === Tags[i]) {
-            if (arr.includes(el)) {
-              continue;
-            } else {
-              arr.push(el);
-            }
-          }
-        }
-      });
-    });
 
-    console.log(arr);
-    return arr;
-  }
   async findcommentwithTags({ Tags }) {
     const result = await this.commentRepository.find({
-      relations: ['cafeinfo', 'cafeinfo.cafeTag'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
     });
-    console.log(result);
+
     const arr = [];
     result.forEach((el) => {
       el.cafeinfo.cafeTag.forEach((e) => {
@@ -147,7 +160,7 @@ export class CommentService {
         }
       });
     });
-    console.log(result[3].cafeinfo.cafeTag[0].tagName);
+
     return arr;
   }
 }

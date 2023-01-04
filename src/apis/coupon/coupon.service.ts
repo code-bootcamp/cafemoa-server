@@ -162,6 +162,8 @@ export class CouponService {
       where: { phoneNumber },
     });
 
+    // if user가 없다면 error => conflict 존재하지 않는 회원입니다.
+
     const cafeInform = await this.cafeInformRepository.findOne({
       where: { id: cafeId },
       relations: ['owner'],

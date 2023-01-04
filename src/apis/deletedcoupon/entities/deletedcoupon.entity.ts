@@ -1,6 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeInform } from 'src/apis/cafeInform/entities/cafeInform.entity';
-import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 

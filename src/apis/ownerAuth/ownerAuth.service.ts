@@ -35,6 +35,7 @@ export class OwnerAuthService {
     }
 
     const isAuth = await bcrypt.compare(password, user.password);
+
     if (!isAuth) throw new UnprocessableEntityException('암호가 틀렸습니다.');
   }
 

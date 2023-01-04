@@ -1,8 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Comment } from 'src/apis/comment/entities/comment.entity';
 import {
   Column,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -48,4 +50,7 @@ export class User {
   // @DeleteDateColumn()
   // @Field(() => Date)
   // deletedAt: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.user, { onDelete: 'CASCADE' })
+  comment: Comment;
 }

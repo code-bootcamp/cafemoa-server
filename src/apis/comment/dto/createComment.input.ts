@@ -5,6 +5,6 @@ export class createCommentInput {
   @Field(() => String)
   reply: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   image_Url: string;
 }

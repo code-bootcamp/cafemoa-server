@@ -4,8 +4,11 @@ import { Owner } from 'src/apis/owner/entities/owner.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -25,13 +28,15 @@ export class OwnerComment {
   @Field(() => Date)
   time: Date;
 
-  @JoinColumn()
-  @OneToOne(() => Owner)
+  @ManyToOne(() => Owner, { onDelete: 'CASCADE' })
   @Field(() => Owner)
   owner: Owner;
 
-  @JoinColumn()
-  @OneToOne(() => Comment)
+  @ManyToOne(() => Comment)
   @Field(() => Comment)
   comment: Comment;
+
+  @DeleteDateColumn()
+  @Field(() => Date)
+  deletedAt: Date;
 }

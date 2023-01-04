@@ -1,12 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
-import {
-  Column,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -18,6 +12,10 @@ export class User {
   @Column()
   @Field(() => String)
   name: string;
+
+  @Column()
+  @Field(() => String)
+  nickname: string;
 
   @Column({ default: true })
   @Field(() => String)

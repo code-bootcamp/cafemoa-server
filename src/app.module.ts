@@ -22,24 +22,30 @@ import { CouponModule } from './apis/coupon/coupon.module';
 import { OwnerAuthModule } from './apis/ownerAuth/ownerAuth.module';
 import { CommentImageModule } from './apis/commentImage.ts/commentimage.module';
 import { OwnerCommentModule } from './apis/ownercomment/ownercomment.module';
-
-import { FilesUploadModule } from './fileupload/filesupload.module';
+import { FilesUploadModule } from './apis/fileupload/filesupload.module';
+import { CafeImageModule } from './apis/cafeImage/cafeImage.module';
+import { CafeMenuImageModule } from './apis/cafemenuimage/cafemenuImage.module';
+import { DeletedCouponModule } from './apis/deletedcoupon/deletedcoupon.module';
+import { StampHistoryModule } from './apis/stamphistory/stamphistory.module';
 
 @Module({
   imports: [
-    OwnerCommentModule,
-    CommentImageModule,
-    OwnerAuthModule,
-    CouponModule,
-    PickListModule,
-    UserAuthModule,
-    UserModule,
-    CommentModule,
-    CategoryModule,
-    OwnerModule,
+    CafeImageModule,
     CafeInformModule,
-    UserModule,
+    CafeMenuImageModule,
+    CategoryModule,
+    CommentModule,
+    CommentImageModule,
+    CouponModule,
+    DeletedCouponModule,
     FilesUploadModule,
+    OwnerModule,
+    OwnerAuthModule,
+    OwnerCommentModule,
+    PickListModule,
+    StampHistoryModule,
+    UserModule,
+    UserAuthModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -79,7 +85,8 @@ import { FilesUploadModule } from './fileupload/filesupload.module';
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://10.14.81.3:6379',
+      url: 'redis://my-redis:6379',
+      // url: 'redis://10.14.81.3:6379',
       isGlobal: true,
     }),
   ],

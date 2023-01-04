@@ -24,4 +24,12 @@ export class CommentImageService {
     });
     return result;
   }
+
+  async find({ commentId }) {
+    const result = await this.CommentImageRepository.find({
+      where: { comment: { id: commentId } },
+      relations: ['comment'],
+    });
+    return result;
+  }
 }

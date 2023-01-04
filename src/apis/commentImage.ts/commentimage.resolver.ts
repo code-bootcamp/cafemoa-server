@@ -12,10 +12,18 @@ export class CommentImageResolver {
   fetchCommentImages() {
     return this.commentImageService.findAll();
   }
+
   @Query(() => CommentImage)
   fetchCommentImage(
     @Args('commentId') commentId: string, //
   ) {
     return this.commentImageService.findOne({ commentId });
+  }
+
+  @Query(() => [CommentImage])
+  fetchCommentImagesbyID(
+    @Args('commentId') commentId: string, //
+  ) {
+    return this.commentImageService.find({ commentId });
   }
 }

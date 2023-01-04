@@ -6,19 +6,10 @@ export class CafeInformInput {
   cafeinfo: string;
 
   @Field(() => String)
-  closedDay: string;
-
-  @Field(() => String)
-  operatingTime: string;
+  operatinginfo: string;
 
   @Field(() => String)
   cafeAddr: string;
-
-  @Field(() => Float)
-  lat: number;
-
-  @Field(() => Float)
-  lng: number;
 
   @Field(() => String)
   ownerNum: string;

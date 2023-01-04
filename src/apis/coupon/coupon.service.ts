@@ -7,6 +7,7 @@ import { User } from '../user/entities/user.entity';
 import { Coupon } from './entities/coupon.entity';
 import * as bcrypt from 'bcrypt';
 import { StampHistory } from '../stamphistory/entities/stamphistory.entity';
+import { DeletedCoupon } from '../deletedcoupon/entities/deletedcoupon.entity';
 
 @Injectable()
 export class CouponService {
@@ -25,6 +26,9 @@ export class CouponService {
 
     @InjectRepository(StampHistory)
     private readonly stampHistoryRepository: Repository<StampHistory>,
+
+    @InjectRepository(DeletedCoupon)
+    private readonly deletedCouponRepository: Repository<DeletedCoupon>,
   ) {}
 
   async find({ couponId }) {
@@ -40,9 +44,92 @@ export class CouponService {
       where: {
         user: { id: userId },
       },
-      relations: ['user'],
+      relations: ['user', 'cafeInform'],
     });
-    return result.sort((a, b) => b.stamp - a.stamp);
+    const date = new Date();
+
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    for (let i = 0; i < result.length; i++) {
+      if (Number(result[i].expiredDate.split('-')[0]) < year) {
+        const user = await this.userRepository.findOne({
+          where: {
+            id: result[i].user.id,
+          },
+        });
+        const cafeInforms = await this.cafeInformRepository.findOne({
+          where: {
+            id: result[i].cafeInform.id,
+          },
+        });
+        await this.deletedCouponRepository.save({
+          user: {
+            ...user,
+          },
+          cafeInform: {
+            ...cafeInforms,
+          },
+          expired: true,
+        });
+        await this.couponRepository.delete({ id: result[i].id });
+      } else {
+        if (Number(result[i].expiredDate.split('-')[1]) < month) {
+          const user = await this.userRepository.findOne({
+            where: {
+              id: result[i].user.id,
+            },
+          });
+          const cafeInforms = await this.cafeInformRepository.findOne({
+            where: {
+              id: result[i].cafeInform.id,
+            },
+          });
+          await this.deletedCouponRepository.save({
+            user: {
+              ...user,
+            },
+            cafeInform: {
+              ...cafeInforms,
+            },
+            expired: true,
+          });
+          await this.couponRepository.delete({ id: result[i].id });
+        } else {
+          if (Number(result[i].expiredDate.split('-')[2]) < day) {
+            const user = await this.userRepository.findOne({
+              where: {
+                id: result[i].user.id,
+              },
+            });
+            const cafeInforms = await this.cafeInformRepository.findOne({
+              where: {
+                id: result[i].cafeInform.id,
+              },
+            });
+            await this.deletedCouponRepository.save({
+              user: {
+                ...user,
+              },
+              cafeInform: {
+                ...cafeInforms,
+              },
+              expired: true,
+            });
+            await this.couponRepository.delete({ id: result[i].id });
+          }
+        }
+      }
+    }
+    const result2 = await this.couponRepository.find({
+      where: {
+        user: { id: userId },
+      },
+      relations: ['user', 'cafeInform'],
+    });
+
+    return result2.sort((a, b) => b.stamp - a.stamp);
   }
 
   async findCafeCoupon({ cafeId }) {
@@ -62,11 +149,20 @@ export class CouponService {
   }
 
   async createCoupon({ createCouponInput }) {
-    const { stamp, phoneNumber, cafeId } = createCouponInput;
+    const { stamp, phoneNumber, cafeId, password } = createCouponInput;
+
+    const create = new Date();
+    const year = create.getFullYear();
+    const month = create.getMonth() + 7;
+    const day = create.getDate();
+
+    const expiredDate = `${year}-${month}-${day}`;
 
     const user = await this.userRepository.findOne({
       where: { phoneNumber },
     });
+
+    // if user가 없다면 error => conflict 존재하지 않는 회원입니다.
 
     const cafeInform = await this.cafeInformRepository.findOne({
       where: { id: cafeId },
@@ -77,10 +173,14 @@ export class CouponService {
       where: { id: cafeInform.owner.id },
     });
 
+    const validOwnerPwd = await bcrypt.compare(password, owner.password);
+    if (!validOwnerPwd) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    }
+
     const coupon = await this.couponRepository.findOne({
       where: { user: { phoneNumber }, cafeInform: { id: cafeId } },
     });
-    console.log(coupon, owner);
 
     if (coupon) {
       const result = await this.couponRepository.save({
@@ -103,6 +203,7 @@ export class CouponService {
         accstamp: stamp,
         user: { ...user },
         cafeInform: { ...cafeInform },
+        expiredDate,
       });
       await this.stampHistoryRepository.save({
         stamp,
@@ -152,6 +253,15 @@ export class CouponService {
   }
 
   async deleteCoupon({ couponId }) {
+    const result = await this.couponRepository.findOne({
+      where: { id: couponId },
+    });
+
+    await this.deletedCouponRepository.save({
+      expired: false,
+      coupon: { ...result },
+    });
+
     await this.couponRepository.delete({ id: couponId });
     return '삭제가 완료되었습니다.';
   }

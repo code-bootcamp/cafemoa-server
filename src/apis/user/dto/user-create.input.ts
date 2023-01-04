@@ -4,9 +4,12 @@ import { User } from '../entities/user.entity';
 @InputType()
 export class CreateUserInput extends OmitType(
   User,
-  ['id', 'age', 'profileImage'],
+  ['id', 'age', 'profileImage', 'address'],
   InputType,
 ) {
+  @Field(() => String)
+  address: string;
+
   @Field(() => String)
   password: string;
 

@@ -19,6 +19,12 @@ export class UserService {
   async create({ createUserInput }: IUserServiceCreate): Promise<User> {
     const { password, email, personalNumber, ...User } = createUserInput;
 
+    const is_Valid = await this.userRepository.findOne({ where: { email } });
+
+    if (is_Valid) {
+      throw new ConflictException('이미 존재하는 이메일입니다.');
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const date = new Date();

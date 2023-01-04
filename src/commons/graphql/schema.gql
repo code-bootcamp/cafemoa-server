@@ -2,10 +2,66 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CafeMenuImage {
+  id: String!
+  menu_imageUrl: String!
+  cafeInform: CafeInform!
+}
+
 type CafeTag {
   id: String!
   tagName: String!
   cafeInform: [CafeInform!]!
+}
+
+type CommentImage {
+  id: String!
+  image_url: String!
+  comment: Comment!
+}
+
+type Coupon {
+  id: String!
+  stamp: Int!
+  accstamp: Int!
+  user: User!
+  cafeInform: CafeInform!
+  expiredDate: String!
+}
+
+type User {
+  id: String!
+  name: String!
+  nickname: String!
+  email: String!
+  address: String!
+  personalNumber: String!
+  phoneNumber: String!
+  age: String!
+  profileImage: String!
+}
+
+type Comment {
+  id: String!
+  reply: String!
+  like: Int!
+  time: DateTime!
+  user: User!
+  cafeinfo: CafeInform!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type OwnerComment {
+  id: String!
+  content: String!
+  time: DateTime!
+  owner: Owner!
+  comment: Comment!
+  deletedAt: DateTime!
 }
 
 type Owner {
@@ -15,17 +71,6 @@ type Owner {
   phone: String!
   is_main: Boolean!
   is_cafeInform: Boolean!
-}
-
-type User {
-  id: String!
-  name: String!
-  email: String!
-  address: String!
-  personalNumber: String!
-  phoneNumber: String!
-  age: String!
-  profileImage: String!
 }
 
 type PickList {
@@ -50,172 +95,106 @@ type CafeInform {
   cafeTag: [CafeTag!]!
 }
 
+type CafeImage {
+  id: String!
+  cafe_image: String!
+  is_main: Boolean!
+  cafeInform: CafeInform!
+}
+
 type Category {
   id: String!
   category: String!
 }
 
-type Comment {
+type DeletedCoupon {
   id: String!
-  reply: String!
-  like: Int!
-  time: DateTime!
-  cafeinfo: CafeInform!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type CommentImage {
-  id: String!
-  image_url: String!
-  comment: Comment!
-}
-
-type Coupon {
-  id: String!
-  stamp: Int!
-  accstamp: Int!
+  expired: Boolean!
   user: User!
   cafeInform: CafeInform!
+}
+
+type StampHistory {
+  id: String!
+  stamp: Int!
+  user: User!
+  owner: Owner!
+  coupon: Coupon!
   createdAt: DateTime!
 }
 
-type OwnerComment {
-  id: String!
-  content: String!
-  time: DateTime!
-  owner: Owner!
-  comment: Comment!
-}
-
 type Query {
-  fetchOwnerComment(ownercommentId: String!): OwnerComment!
-  fetchCommentImages: [CommentImage!]!
-  fetchCommentImage(commentId: String!): CommentImage!
-  fetchCoupon(couponId: String!): Coupon!
-  fetchCoupons: [Coupon!]!
-  fetchUserCoupons(userId: String!): [Coupon!]!
-  fetchCafeCoupons(cafeId: String!): [Coupon!]!
-  fetchMyPickLists: [PickList!]!
-  fetchMyPickListLocation(Location: String!): [PickList!]!
-  fetchUsers: [User!]!
-  fetchUser(email: String!): User!
-  fetchComments: [Comment!]!
-  fetchComment(commentId: String!): Comment!
-  fetchbestcomment: [Comment!]!
-  fetchCommentWithTag(Tags: [String!]!): [Comment!]!
-  fetchCategory: [Category!]!
-  fetchOwners: [Owner!]!
-  fetchOwner(ownerID: String!): Owner!
+  fetchCafeImage(cafeInformID: String!): [CafeImage!]!
   fetchCafeInform(cafeInformID: String!): CafeInform!
   fetchCafeInformWithTag(Tags: [String!]!): [CafeInform!]!
   fetchCafeInformWithLocation(Location: String!): [CafeInform!]!
   fetchBestCafe: [CafeInform!]!
+  fetchCafeInforms: [CafeInform!]!
+  fetchCafeWithLocationAndTag(Location: String, Tags: [String!]): [CafeInform!]!
+  fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
+  fetchCategory: [Category!]!
+  fetchComments: [Comment!]!
+  fetchComment(commentId: String!): Comment!
+  fetchbestcomment: [Comment!]!
+  fetchCommentWithTag(Tags: [String!]!): [Comment!]!
+  fetchCommentImages: [CommentImage!]!
+  fetchCommentImage(commentId: String!): CommentImage!
+  fetchCommentImagesbyID(commentId: String!): [CommentImage!]!
+  fetchCoupon(couponId: String!): Coupon!
+  fetchCoupons: [Coupon!]!
+  fetchUserCoupons: [Coupon!]!
+  fetchCafeCoupons(cafeId: String!): [Coupon!]!
+  fetchCouponWithLocation(cafeAddr: String!): [Coupon!]!
+  fetchDeletedCoupon: [DeletedCoupon!]!
+  fetchOwners: [Owner!]!
+  fetchOwner(ownerID: String!): Owner!
+  fetchOwnerComment(ownercommentId: String!): OwnerComment!
+  fetchMyOwnerComments(OwnerID: String!): [OwnerComment!]!
+  fetchOwnerCommentByCommentID(commentID: String!): OwnerComment!
+  fetchMyPickLists: [PickList!]!
+  fetchMyPickListLocation(Location: String!): [PickList!]!
+  fetchStamps(cafeId: String!): [StampHistory!]!
+  fetchUsers: [User!]!
+  fetchUser(email: String!): User!
 }
 
 type Mutation {
-  createOwnerComment(createOwnerCommentInput: CreateOwnerCommentInput!, ownerId: String!, commentID: String!): OwnerComment!
-  updateOwnerComment(OwnerId: String!, UpdateOwnerCommentInput: UpdateOwnerCommentInput!): OwnerComment!
-  deleteOwnerComment(ownerCommentId: String!): Boolean!
-  ownerLogin(email: String!, password: String!): String!
-  restoreOwnerAccessToken: String!
-  ownerLogout: String!
+  deleteCafeImage(cafeImageID: String!): Boolean!
+  updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
+  CreatecafeInform(cafeInformInput: CafeInformInput!): CafeInform!
+  PickCafe(CafeInformID: String!): Int!
+  deleteCafeInform(cafeInformID: String!): Boolean!
+  deleteCafeMenuImage(cafeMenuImageID: String!): Boolean!
+  createCategory(category: String!): Category!
+  deleteCategory(categoryId: String!): Boolean!
+  createComment(createCommentinput: createCommentInput!, cafeinformId: String!): Comment!
+  updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
+  deleteComment(commentId: String!): String!
   createCoupon(createCouponInput: CreateCouponInput!): Coupon!
   useCoupon(couponId: String!, password: String!): String!
   deleteCoupon(couponId: String!): String!
-  userLogin(email: String!, password: String!): String!
-  restoreAccessToken: String!
-  userLogout: String!
-  createUser(createUserInput: CreateUserInput!): User!
-  emailVerify(email: String!): String!
-  updateUser(userId: String!, updateUserInput: UpdateUserInput!): User!
-  deleteUser(userId: String!): Boolean!
-  findUserPwd(email: String!): String!
-  createComment(createCommentinput: createCommentInput!, cafeinformId: String!): Comment!
-  updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
-  deleteComment(commentId: String!): Boolean!
-  createCategory(category: String!): Category!
-  deleteCategory(categoryId: String!): Boolean!
+  uploadFile(files: [Upload!]!): [String!]!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
   deleteOwner: Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!): Owner!
   findOwnerPassword(email: String!): String!
-  sendTokenToEmail(email: String!): Int!
-  updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
-  CreatecafeInform(cafeInformInput: CafeInformInput!): CafeInform!
-  PickCafe(CafeInformID: String!, UserID: String!): Int!
-  deleteCafeInform(cafeInformID: String!): Boolean!
-
-}
-
-input CreateOwnerCommentInput {
-  content: String!
-}
-
-input UpdateOwnerCommentInput {
-  content: String
-
-}
-
-input CreateCouponInput {
-  userId: String!
-  cafeId: String!
-  stamp: Int!
-}
-
-input CreateUserInput {
-  name: String!
-  email: String!
-  address: String!
-  personalNumber: String!
-  phoneNumber: String!
-  password: String!
-  profileImage: String
-}
-
-input UpdateUserInput {
-  name: String
-  email: String
-  address: String
-  personalNumber: String
-  phoneNumber: String
-  password: String
-  profileImage: String
-}
-
-input createCommentInput {
-  reply: String!
-
-  image_Url: [String!]!
-
-}
-
-input UpdateCommentInput {
-  reply: String
-
-  image_Url: [String!]
-
-}
-
-input OwnerInput {
-  name: String!
-  email: String!
-  phone: String!
-  is_main: Boolean!
-  password: String!
-  ownerPassword: String!
-}
-
-input OwnerUpdateInput {
-  name: String
-  email: String
-  phone: String
-  is_main: Boolean
-  password: String
-  ownerPassword: String
+  sendTokenToOwnerEmail(email: String!): Int!
+  sendTokenToSMS(phone: String!): Int!
+  ownerLogin(email: String!, password: String!): String!
+  restoreOwnerAccessToken: String!
+  ownerLogout: String!
+  createOwnerComment(createOwnerCommentInput: CreateOwnerCommentInput!, commentID: String!): OwnerComment!
+  updateOwnerComment(UpdateOwnerCommentInput: UpdateOwnerCommentInput!, ownerCommentID: String!): OwnerComment!
+  deleteOwnerComment(ownerCommentId: String!): Boolean!
+  deleteStamp(ownerpassword: String!, stamphistoryId: String!): Int!
+  createUser(createUserInput: CreateUserInput!): User!
+  emailVerify(email: String!): String!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  deleteUser: Boolean!
+  findUserPwd(email: String!): String!
+  userLogin(email: String!, password: String!): String!
+  restoreAccessToken: String!
+  userLogout: String!
 }
 
 input UpdateCafeInform {
@@ -246,5 +225,68 @@ input CafeInformInput {
   cafe_imageUrl: [String!]!
 }
 
+input createCommentInput {
+  reply: String!
+  image_Url: [String!]
+}
+
+input UpdateCommentInput {
+  reply: String
+  image_Url: [String!]
+}
+
+input CreateCouponInput {
+  phoneNumber: String!
+  cafeId: String!
+  stamp: Int!
+  password: String!
+}
+
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input OwnerInput {
+  name: String!
+  email: String!
+  phone: String!
+  is_main: Boolean!
+  password: String!
+  ownerPassword: String!
+}
+
+input OwnerUpdateInput {
+  name: String
+  email: String
+  phone: String
+  is_main: Boolean
+  password: String
+  ownerPassword: String
+}
+
+input CreateOwnerCommentInput {
+  content: String!
+}
+
+input UpdateOwnerCommentInput {
+  content: String
+}
+
+input CreateUserInput {
+  name: String!
+  nickname: String!
+  email: String!
+  personalNumber: String!
+  phoneNumber: String!
+  address: String!
+  password: String!
+  profileImage: String
+}
+
+input UpdateUserInput {
+  email: String
+  address: String
+  personalNumber: String
+  phoneNumber: String
+  password: String
+  profileImage: String
+}

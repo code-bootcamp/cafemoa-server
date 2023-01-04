@@ -1,17 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-
 import { Comment } from 'src/apis/comment/entities/comment.entity';
-import {
-  Column,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-
-import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
 
 @Entity()
 @ObjectType()
@@ -28,7 +18,7 @@ export class User {
   @Field(() => String)
   nickname: string;
 
-  @Column({ default: true })
+  @Column()
   @Field(() => String)
   email: string;
 
@@ -44,7 +34,7 @@ export class User {
   @Field(() => String)
   phoneNumber: string;
 
-  @Column({ default: true })
+  @Column()
   @Field(() => String)
   age: string;
 
@@ -60,11 +50,9 @@ export class User {
   // @Field(() => Date)
   // deletedAt: Date;
 
-
   @OneToMany(() => Comment, (comment) => comment.user, { onDelete: 'CASCADE' })
   comment: Comment;
 
   @OneToMany(() => Coupon, (coupon) => coupon.user, { onDelete: 'CASCADE' })
   coupon: Coupon;
-
 }

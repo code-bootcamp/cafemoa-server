@@ -6,19 +6,10 @@ export class UpdateCafeInform {
   cafeinfo: string;
 
   @Field(() => String, { nullable: true })
-  closedDay: string;
-
-  @Field(() => String, { nullable: true })
-  operatingTime: string;
+  operatingInfo: string;
 
   @Field(() => String, { nullable: true })
   cafeAddr: string;
-
-  @Field(() => Float, { nullable: true })
-  lat: number;
-
-  @Field(() => Float, { nullable: true })
-  lng: number;
 
   @Field(() => String, { nullable: true })
   ownerNum: string;

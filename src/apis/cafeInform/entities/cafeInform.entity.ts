@@ -34,11 +34,7 @@ export class CafeInform {
 
   @Column()
   @Field(() => String)
-  closedDay: string;
-
-  @Column()
-  @Field(() => String)
-  operatingTime: string;
+  operatingInfo: string;
 
   @Column()
   @Field(() => String)
@@ -59,14 +55,6 @@ export class CafeInform {
   @Column()
   @Field(() => String)
   thumbNail: string;
-
-  @Column({ type: 'decimal', precision: 9, scale: 6 })
-  @Field(() => Float)
-  lat: number;
-
-  @Column({ type: 'decimal', precision: 9, scale: 6 })
-  @Field(() => Float)
-  lng: number;
 
   @ManyToOne(() => Owner, { onDelete: 'CASCADE' })
   @Field(() => Owner)
@@ -94,7 +82,6 @@ export class CafeInform {
   })
   pickList: PickList[];
 
-
   @OneToMany(() => Comment, (comment) => comment.cafeinfo, {
     onDelete: 'CASCADE',
   })
@@ -104,5 +91,4 @@ export class CafeInform {
     onDelete: 'CASCADE',
   })
   coupon: Coupon[];
-
 }

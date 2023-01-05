@@ -8,6 +8,8 @@ import { CafeMenuImage } from '../cafemenuimage/entities/cafemenuimage.entity';
 import { CafeTag } from '../cafeTag/entities/cafeTag.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { User } from '../user/entities/user.entity';
+import { ignoreElements } from 'rxjs';
+import { CommentResolver } from '../comment/comment.resolver';
 @Injectable()
 export class CafeInformService {
   constructor(
@@ -130,9 +132,9 @@ export class CafeInformService {
         is_cafeInform: true,
       });
     }
-    if (Owner.is_cafeInform === true) {
-      throw new ConflictException('이미 한개의 카페가 존재합니다.');
-    }
+    // if (Owner.is_cafeInform === true) {
+    //   throw new ConflictException('이미 한개의 카페가 존재합니다.');
+    // }
 
     const temp = [];
 
@@ -189,7 +191,7 @@ export class CafeInformService {
     return result2;
   }
 
-  async pickCafe({ CafeInformID, UserID }) {
+  async pickcafe({ CafeInformID, UserID }) {
     const cafeInform = await this.cafeInformrRepository.findOne({
       where: {
         id: CafeInformID,
@@ -203,21 +205,29 @@ export class CafeInformService {
     });
     const pickList = await this.pickListRepository.findOne({
       where: {
-        user,
-        cafeInform,
+        user: { id: UserID },
+        cafeInform: { id: CafeInformID },
       },
       relations: ['user', 'cafeInform'],
     });
     if (pickList) {
+      console.log('=====================');
+      console.log('있을 때');
+      console.log('=====================');
+
       await this.pickListRepository.delete({ id: pickList.id });
-      await this.cafeInformrRepository.update(
-        {
-          id: CafeInformID,
-        },
-        {
-          like: cafeInform.like - 1,
-        },
-      );
+      if (cafeInform.like > 0) {
+        await this.cafeInformrRepository.update(
+          {
+            id: CafeInformID,
+          },
+          {
+            like: cafeInform.like - 1,
+          },
+        );
+      } else {
+      }
+
       const cafeInform2 = await this.cafeInformrRepository.findOne({
         where: {
           id: CafeInformID,
@@ -226,7 +236,8 @@ export class CafeInformService {
 
       return cafeInform2.like;
     } else {
-      await this.cafeInformrRepository.update(
+      console.log(cafeInform, '없을 때');
+      const result = await this.cafeInformrRepository.update(
         {
           id: CafeInformID,
         },
@@ -234,6 +245,7 @@ export class CafeInformService {
           like: cafeInform.like + 1,
         },
       );
+
       const cafeInform2 = await this.cafeInformrRepository.findOne({
         where: {
           id: CafeInformID,
@@ -241,12 +253,13 @@ export class CafeInformService {
       });
       await this.pickListRepository.save({
         cafeInform: {
-          ...cafeInform,
+          ...cafeInform2,
         },
         user: {
           ...user,
         },
       });
+
       return cafeInform2.like;
     }
   }
@@ -292,7 +305,7 @@ export class CafeInformService {
 
     result.sort((a, b) => b.like - a.like);
 
-    return result;
+    return result.slice(0, 5);
   }
   async findAll() {
     const result = await this.cafeInformrRepository.find({
@@ -300,15 +313,20 @@ export class CafeInformService {
     });
     return result;
   }
-  async findCafeWithLocationAndTag({ Location, Tags }) {
+  async findCafeWithLocationAndTag({ Location, Tags, page }) {
     if (Location && Tags.length === 0) {
       const result = await this.cafeInformrRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       const answer = result.filter((el) => el.cafeAddr.includes(Location));
+
       return answer;
     } else if (!Location && Tags.length > 0) {
       const result = await this.cafeInformrRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       const arr = [];
@@ -328,6 +346,8 @@ export class CafeInformService {
       return arr;
     } else if (Location && Tags.length > 0) {
       const result = await this.cafeInformrRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       const answer = result.filter((el) => el.cafeAddr.includes(Location));
@@ -348,6 +368,8 @@ export class CafeInformService {
       return arr;
     } else {
       const result = await this.cafeInformrRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       return result;

@@ -12,7 +12,6 @@ import { CafeInform } from './entities/cafeInform.entity';
 export class CafeInformResolver {
   constructor(private readonly cafeInformService: CafeInformService) {}
 
-  @UseGuards(GqlAuthAccessGuard)
   @Query(() => CafeInform)
   fetchCafeInform(@Args('cafeInformID') cafeInformID: string) {
     return this.cafeInformService.findOne({ cafeInformID });
@@ -43,7 +42,7 @@ export class CafeInformResolver {
     @Args('CafeInformID') CafeInformID: string, //
     @Context() context: IContext,
   ) {
-    return this.cafeInformService.pickCafe({
+    return this.cafeInformService.pickcafe({
       CafeInformID,
       UserID: context.req.user.id,
     });
@@ -84,10 +83,12 @@ export class CafeInformResolver {
     Location: string, //
     @Args({ name: 'Tags', type: () => [String], nullable: true })
     Tags: string[],
+    @Args('page') page: number,
   ) {
     return this.cafeInformService.findCafeWithLocationAndTag({
       Location,
       Tags,
+      page,
     });
   }
 }

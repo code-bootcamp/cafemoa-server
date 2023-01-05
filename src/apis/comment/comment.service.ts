@@ -5,6 +5,7 @@ import { Comment } from './entities/comment.entity';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { CommentImage } from '../commentImage.ts/entities/commentImage.entity';
 import { User } from '../user/entities/user.entity';
+import { skip } from 'rxjs';
 
 @Injectable()
 export class CommentService {
@@ -19,8 +20,10 @@ export class CommentService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  async findAll() {
+  async findAll({ page }) {
     return await this.commentRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'ownerComment'],
     });
   }
@@ -37,6 +40,13 @@ export class CommentService {
     //   relations: ['cafeTag']
     // })
     console.log(result);
+    return result;
+  }
+  async findusercomments({ userID }) {
+    const result = await this.commentRepository.find({
+      where: { user: { id: userID } },
+      relations: ['user'],
+    });
     return result;
   }
 

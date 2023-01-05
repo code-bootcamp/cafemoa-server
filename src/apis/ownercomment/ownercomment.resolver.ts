@@ -12,8 +12,13 @@ export class OwnerCommentResolver {
     private readonly ownercommentService: OwnerCommentService, //
   ) {}
 
+  @Query(() => [OwnerComment])
+  fetchOwnerComment(@Args('page') page: number) {
+    return this.ownercommentService.findAll({ page });
+  }
+
   @Query(() => OwnerComment)
-  fetchOwnerComment(
+  fetchOwnerComment1(
     @Args('ownercommentId') ownercommentId: string, //
   ) {
     return this.ownercommentService.findOne({ ownercommentId });

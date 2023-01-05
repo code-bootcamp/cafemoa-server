@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Owner } from '../owner/entities/owner.entity';
 import { OwnerComment } from './entities/ownercomment.entity';
 import { Comment } from '../comment/entities/comment.entity';
-import { resourceLimits } from 'worker_threads';
 
 @Injectable()
 export class OwnerCommentService {
@@ -16,8 +15,10 @@ export class OwnerCommentService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
   ) {}
-  async findAll() {
+  async findAll({ page }) {
     return await this.ownercommentRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['comment', 'owner'],
     });
   }

@@ -13,8 +13,9 @@ export class PickListResolver {
   @Query(() => [PickList])
   fetchMyPickLists(
     @Context() context: IContext, //
+    @Args('page') page: number,
   ) {
-    return this.pickListService.find({ userID: context.req.user.id });
+    return this.pickListService.find({ userID: context.req.user.id, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)
@@ -22,10 +23,12 @@ export class PickListResolver {
   fetchMyPickListLocation(
     @Args('Location') Location: string, //
     @Context() context: IContext,
+    @Args('page') page: number,
   ) {
     return this.pickListService.findWithLocation({
       userID: context.req.user.id,
       Location,
+      page,
     });
   }
 }

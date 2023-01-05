@@ -51,15 +51,20 @@ export class CafeInformResolver {
   @Query(() => [CafeInform])
   fetchCafeInformWithTag(
     @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
+    @Args('page') page: number, //
   ) {
-    return this.cafeInformService.findCafeInformWithTags({ Tags });
+    return this.cafeInformService.findCafeInformWithTags({ Tags, page });
   }
 
   @Query(() => [CafeInform])
   fetchCafeInformWithLocation(
     @Args('Location') Location: string, //
+    @Args('page') page: number, //
   ) {
-    return this.cafeInformService.findCafeInformWithLocation({ Location });
+    return this.cafeInformService.findCafeInformWithLocation({
+      Location,
+      page,
+    });
   }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
@@ -73,8 +78,10 @@ export class CafeInformResolver {
   }
 
   @Query(() => [CafeInform])
-  fetchCafeInforms() {
-    return this.cafeInformService.findAll();
+  fetchCafeInforms(
+    @Args('page') page: number, //
+  ) {
+    return this.cafeInformService.findAll({ page });
   }
 
   @Query(() => [CafeInform])
@@ -83,7 +90,7 @@ export class CafeInformResolver {
     Location: string, //
     @Args({ name: 'Tags', type: () => [String], nullable: true })
     Tags: string[],
-    @Args('page') page: number,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     return this.cafeInformService.findCafeWithLocationAndTag({
       Location,

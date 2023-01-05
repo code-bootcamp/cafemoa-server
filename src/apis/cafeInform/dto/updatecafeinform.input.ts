@@ -23,6 +23,6 @@ export class UpdateCafeInform {
   @Field(() => [String], { nullable: true })
   cafe_imageUrl: string[];
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   cafeTag: string[];
 }

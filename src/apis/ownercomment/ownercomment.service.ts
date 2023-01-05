@@ -123,6 +123,6 @@ export class OwnerCommentService {
       relations: ['comment'],
     });
     console.log(result);
-    return result;
+    return result.content;
   }
 }

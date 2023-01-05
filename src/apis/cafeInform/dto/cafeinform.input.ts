@@ -6,7 +6,7 @@ export class CafeInformInput {
   cafeinfo: string;
 
   @Field(() => String)
-  operatinginfo: string;
+  operatingInfo: string;
 
   @Field(() => String)
   cafeAddr: string;

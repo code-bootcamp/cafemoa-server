@@ -68,7 +68,7 @@ export class OwnerCommentResolver {
     return this.ownercommentService.findById({ OwnerID });
   }
 
-  @Query(() => OwnerComment)
+  @Query(() => String)
   fetchOwnerCommentByCommentID(@Args('commentID') commentID: string) {
     return this.ownercommentService.findByCommentID({ commentID });
   }

@@ -6,6 +6,7 @@ import { UpdateCommentInput } from './dto/updateComment.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
+import { query } from 'express';
 
 @Resolver()
 export class CommentResolver {
@@ -14,15 +15,14 @@ export class CommentResolver {
   ) {}
 
   @Query(() => [Comment])
-  fetchComments() {
-    return this.commentService.findAll();
+  fetchComments(@Args('page') page: number) {
+    return this.commentService.findAll({ page });
   }
   @Query(() => Comment)
-  fetchComment(
-    @Args('commentId') commentId: string, //
-  ) {
+  fetchComment(@Args('commentId') commentId: string) {
     return this.commentService.findOne({ commentId });
   }
+
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   createComment(
@@ -36,6 +36,7 @@ export class CommentResolver {
       userID: context.req.user.id,
     });
   }
+
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   async updateComment(
@@ -70,5 +71,16 @@ export class CommentResolver {
     @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
   ) {
     return this.commentService.findcommentwithTags({ Tags });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [Comment])
+  fetchUserComments(
+    @Args('commentId') commentId: string,
+    @Context() Context: IContext,
+  ) {
+    return this.commentService.findusercomments({
+      userID: Context.req.user.id,
+    });
   }
 }

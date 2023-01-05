@@ -78,7 +78,7 @@ export class CafeInformResolver {
   }
 
   @Query(() => [CafeInform])
-  fetchCafeWithLocationAndTag(
+  fetchCafes(
     @Args({ name: 'Location', type: () => String, nullable: true })
     Location: string, //
     @Args({ name: 'Tags', type: () => [String], nullable: true })

@@ -91,7 +91,7 @@ export class OwnerAuthService {
 
     try {
       const decoded = jwt.verify(access_token, process.env.JWT_ACCESS_KEY);
-      const decodedR = jwt.verify(access_token, process.env.JWT_REFRESH_KEY);
+      const decodedR = jwt.verify(refresh_token, process.env.JWT_REFRESH_KEY);
       const expireTime = decoded['exp'] - decoded['iat'];
       const expireTimeR = decodedR['exp'] - decodedR['iat'];
 

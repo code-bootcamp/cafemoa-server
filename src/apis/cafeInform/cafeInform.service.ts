@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Owner } from '../owner/entities/owner.entity';
 import { CafeInform } from './entities/cafeInform.entity';
 import { CafeImage } from '../cafeImage/entities/cafeImage.entity';
@@ -8,8 +8,7 @@ import { CafeMenuImage } from '../cafemenuimage/entities/cafemenuimage.entity';
 import { CafeTag } from '../cafeTag/entities/cafeTag.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { User } from '../user/entities/user.entity';
-import { ignoreElements } from 'rxjs';
-import { CommentResolver } from '../comment/comment.resolver';
+
 @Injectable()
 export class CafeInformService {
   constructor(
@@ -55,12 +54,6 @@ export class CafeInformService {
       },
     });
     if (menu_imageUrl) {
-      await this.menuImageRepository.delete({
-        cafeInform: {
-          id: CafeInformID,
-        },
-      });
-
       await Promise.all(
         menu_imageUrl.map(async (el) => {
           await this.menuImageRepository.save({
@@ -74,10 +67,20 @@ export class CafeInformService {
     }
 
     if (cafe_imageUrl) {
-      await this.cafeImageRepository.delete({
-        cafeInform: { id: CafeInformID },
+      const arr = [];
+      const result = await this.cafeImageRepository.find({
+        where: {
+          cafeInform: { id: CafeInformID },
+        },
       });
-
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].is_main !== false) {
+          arr.push(result[i].cafe_image);
+        } else {
+          arr.unshift(result[i].cafe_image);
+        }
+      }
+      cafe_imageUrl.concat(arr);
       await Promise.all(
         cafe_imageUrl.map(async (el, i) => {
           await this.cafeImageRepository.save({
@@ -91,31 +94,39 @@ export class CafeInformService {
       );
     }
 
-    const temp = [];
-    for (let i = 0; i < cafeTag.length; i++) {
-      const tagName = cafeTag[i].replace('#', '');
+    if (cafeTag) {
+      const temp = [];
+      for (let i = 0; i < cafeTag.length; i++) {
+        const tagName = cafeTag[i].replace('#', '');
 
-      const prevTag = await this.cafeTagRepository.findOne({
-        where: {
-          tagName: tagName,
-        },
-      });
-
-      if (prevTag) {
-        temp.push(prevTag);
-      } else {
-        const newTag = await this.cafeTagRepository.save({
-          tagName: tagName,
+        const prevTag = await this.cafeTagRepository.findOne({
+          where: {
+            tagName: tagName,
+          },
         });
-        temp.push(newTag);
-      }
-    }
-    return this.cafeInformrRepository.save({
-      ...cafeinform,
 
-      ...CafeInform,
-      cafeTag: temp,
-    });
+        if (prevTag) {
+          temp.push(prevTag);
+        } else {
+          const newTag = await this.cafeTagRepository.save({
+            tagName: tagName,
+          });
+          temp.push(newTag);
+        }
+      }
+      return this.cafeInformrRepository.save({
+        ...cafeinform,
+        cafeTag: temp,
+        thumbnail: cafe_imageUrl[0],
+        ...CafeInform,
+      });
+    } else {
+      return this.cafeInformrRepository.save({
+        ...cafeinform,
+        thumbnail: cafe_imageUrl[0],
+        ...CafeInform,
+      });
+    }
   }
   async create({ cafeInformInput, OwnerId }) {
     // 이메일 인증 버튼 및 중복확인, 체크까지
@@ -263,7 +274,7 @@ export class CafeInformService {
       return cafeInform2.like;
     }
   }
-  async findCafeInformWithTags({ Tags }) {
+  async findCafeInformWithTags({ Tags, page }) {
     const result = await this.cafeInformrRepository.find({
       relations: ['cafeTag', 'owner'],
     });
@@ -281,16 +292,31 @@ export class CafeInformService {
         }
       });
     });
-
+    if (arr.length > 10) {
+      const pageNum = Math.ceil(arr.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = arr.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
     console.log(arr);
     return arr;
   }
 
-  async findCafeInformWithLocation({ Location }) {
+  async findCafeInformWithLocation({ Location, page }) {
     const result = await this.cafeInformrRepository.find({
       relations: ['cafeTag', 'owner'],
     });
     const answer = result.filter((el) => el.cafeAddr.includes(Location));
+    if (answer.length > 10) {
+      const pageNum = Math.ceil(answer.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = answer.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
     return answer;
   }
 
@@ -307,8 +333,10 @@ export class CafeInformService {
 
     return result.slice(0, 5);
   }
-  async findAll() {
+  async findAll({ page }) {
     const result = await this.cafeInformrRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['cafeTag', 'owner'],
     });
     return result;
@@ -316,17 +344,21 @@ export class CafeInformService {
   async findCafeWithLocationAndTag({ Location, Tags, page }) {
     if (Location && Tags.length === 0) {
       const result = await this.cafeInformrRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       const answer = result.filter((el) => el.cafeAddr.includes(Location));
+      if (answer.length > 10) {
+        const pageNum = Math.ceil(answer.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = answer.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
 
       return answer;
     } else if (!Location && Tags.length > 0) {
       const result = await this.cafeInformrRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       const arr = [];
@@ -343,11 +375,17 @@ export class CafeInformService {
           }
         });
       });
+      if (arr.length > 10) {
+        const pageNum = Math.ceil(arr.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = arr.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
       return arr;
     } else if (Location && Tags.length > 0) {
       const result = await this.cafeInformrRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner'],
       });
       const answer = result.filter((el) => el.cafeAddr.includes(Location));

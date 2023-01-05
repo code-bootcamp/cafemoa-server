@@ -82,15 +82,12 @@ type PickList {
 type CafeInform {
   id: String!
   cafeinfo: String!
-  closedDay: String!
-  operatingTime: String!
+  operatingInfo: String!
   cafeAddr: String!
   like: Int!
   ownerNum: String!
   brandName: String!
   thumbNail: String!
-  lat: Float!
-  lng: Float!
   owner: Owner!
   cafeTag: [CafeTag!]!
 }
@@ -126,11 +123,11 @@ type StampHistory {
 type Query {
   fetchCafeImage(cafeInformID: String!): [CafeImage!]!
   fetchCafeInform(cafeInformID: String!): CafeInform!
-  fetchCafeInformWithTag(Tags: [String!]!): [CafeInform!]!
-  fetchCafeInformWithLocation(Location: String!): [CafeInform!]!
+  fetchCafeInformWithTag(Tags: [String!]!, page: Float!): [CafeInform!]!
+  fetchCafeInformWithLocation(Location: String!, page: Float!): [CafeInform!]!
   fetchBestCafe: [CafeInform!]!
-  fetchCafeInforms: [CafeInform!]!
-  fetchCafeWithLocationAndTag(Location: String, Tags: [String!]): [CafeInform!]!
+  fetchCafeInforms(page: Float!): [CafeInform!]!
+  fetchCafes(Location: String, Tags: [String!], page: Int): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
   fetchComments: [Comment!]!
@@ -150,9 +147,9 @@ type Query {
   fetchOwner(ownerID: String!): Owner!
   fetchOwnerComment(ownercommentId: String!): OwnerComment!
   fetchMyOwnerComments(OwnerID: String!): [OwnerComment!]!
-  fetchOwnerCommentByCommentID(commentID: String!): OwnerComment!
-  fetchMyPickLists: [PickList!]!
-  fetchMyPickListLocation(Location: String!): [PickList!]!
+  fetchOwnerCommentByCommentID(commentID: String!): String!
+  fetchMyPickLists(page: Float!): [PickList!]!
+  fetchMyPickListLocation(Location: String!, page: Float!): [PickList!]!
   fetchStamps(cafeId: String!): [StampHistory!]!
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
@@ -199,25 +196,19 @@ type Mutation {
 
 input UpdateCafeInform {
   cafeinfo: String
-  closedDay: String
-  operatingTime: String
+  operatingInfo: String
   cafeAddr: String
-  lat: Float
-  lng: Float
   ownerNum: String
   brandName: String
   menu_imageUrl: [String!]
   cafe_imageUrl: [String!]
-  cafeTag: [String!]!
+  cafeTag: [String!]
 }
 
 input CafeInformInput {
   cafeinfo: String!
-  closedDay: String!
-  operatingTime: String!
+  operatingInfo: String!
   cafeAddr: String!
-  lat: Float!
-  lng: Float!
   ownerNum: String!
   brandName: String!
   cafeTag: [String!]!

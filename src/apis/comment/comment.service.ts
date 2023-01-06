@@ -170,7 +170,7 @@ export class CommentService {
   }
   async findCommentWithLocation({ Location, page }) {
     const result = await this.commentRepository.find({
-      relations: ['cafeTag', 'owner'],
+      relations: ['cafeinfo', 'user', 'cafeinfo.cafeTag'],
     });
     const answer = result.filter((el) => el.commentAddr.includes(Location));
     if (answer.length > 10) {
@@ -182,5 +182,86 @@ export class CommentService {
       return result[page - 1];
     }
     return answer;
+  }
+
+  async findCommentWithLocationAndTag({ Location, Tags, page }) {
+    if (Location && Tags.length === 0) {
+      const result = await this.commentRepository.find({
+        relations: ['cafeinfo', 'user', 'cafeinfo.cafeTag'],
+      });
+      const answer = result.filter((el) => el.commentAddr.includes(Location));
+      if (answer.length > 10) {
+        const pageNum = Math.ceil(answer.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = answer.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
+      return answer;
+    } else if (!Location && Tags.length > 0) {
+      const result = await this.commentRepository.find({
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      });
+
+      const arr = [];
+      result.forEach((el) => {
+        el.cafeinfo.cafeTag.forEach((e) => {
+          for (let i = 0; i < Tags.length; i++) {
+            if (e.tagName === Tags[i]) {
+              if (arr.includes(el)) {
+                continue;
+              } else {
+                arr.push(el);
+              }
+            }
+          }
+        });
+      });
+      if (arr.length > 10) {
+        const pageNum = Math.ceil(arr.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = arr.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
+      return arr;
+    } else if (Location && Tags.length > 0) {
+      const result = await this.commentRepository.find({
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      });
+      const answer = result.filter((el) => el.commentAddr.includes(Location));
+      const arr = [];
+      answer.forEach((el) => {
+        el.cafeinfo.cafeTag.forEach((e) => {
+          for (let i = 0; i < Tags.length; i++) {
+            if (e.tagName === Tags[i]) {
+              if (arr.includes(el)) {
+                continue;
+              } else {
+                arr.push(el);
+              }
+            }
+          }
+        });
+      });
+      if (arr.length > 10) {
+        const pageNum = Math.ceil(arr.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = arr.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
+      return arr;
+    } else {
+      const result = await this.commentRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      });
+      return result;
+    }
   }
 }

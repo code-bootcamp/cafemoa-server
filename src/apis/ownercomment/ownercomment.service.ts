@@ -106,8 +106,10 @@ export class OwnerCommentService {
     });
   }
 
-  async findById({ OwnerID }) {
+  async findById({ OwnerID, page }) {
     const result = await this.ownercommentRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       where: {
         owner: { id: OwnerID },
       },

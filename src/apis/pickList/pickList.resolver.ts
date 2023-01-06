@@ -15,6 +15,7 @@ export class PickListResolver {
     @Context() context: IContext, //
     @Args('page') page: number,
   ) {
+    page = page === null ? 1 : page;
     return this.pickListService.find({ userID: context.req.user.id, page });
   }
 
@@ -25,6 +26,7 @@ export class PickListResolver {
     @Context() context: IContext,
     @Args('page') page: number,
   ) {
+    page = page === null ? 1 : page;
     return this.pickListService.findWithLocation({
       userID: context.req.user.id,
       Location,

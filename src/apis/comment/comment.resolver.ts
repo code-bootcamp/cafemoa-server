@@ -83,4 +83,10 @@ export class CommentResolver {
       userID: Context.req.user.id,
     });
   }
+  @Query(() => [Comment])
+  fetchCommentmWithLocation(
+    @Args('Location') Location: string, //
+  ) {
+    return this.commentService.findCommentWithLocation({ Location });
+  }
 }

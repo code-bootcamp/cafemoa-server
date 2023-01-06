@@ -30,6 +30,10 @@ export class Comment {
   @Field(() => Int)
   like: number;
 
+  @Column()
+  @Field(() => String)
+  commentAddr: string;
+
   @CreateDateColumn()
   @Field(() => Date)
   time: Date;

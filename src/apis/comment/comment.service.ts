@@ -42,8 +42,10 @@ export class CommentService {
     console.log(result);
     return result;
   }
-  async findusercomments({ userID }) {
+  async findusercomments({ userID, page }) {
     const result = await this.commentRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       where: { user: { id: userID } },
       relations: ['user'],
     });
@@ -172,5 +174,20 @@ export class CommentService {
     });
 
     return arr;
+  }
+  async findCommentWithLocation({ Location, page }) {
+    const result = await this.commentRepository.find({
+      relations: ['cafeTag', 'owner'],
+    });
+    const answer = result.filter((el) => el.commentAddr.includes(Location));
+    if (answer.length > 10) {
+      const pageNum = Math.ceil(answer.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = answer.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return answer;
   }
 }

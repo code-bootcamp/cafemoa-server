@@ -66,7 +66,7 @@ export class OwnerAuthService {
 
     res.setHeader(
       'Set-Cookie',
-      `refreshToken=${refreshToken}; path=/; domain=.backkim.shop; SameSite=None; Secure; httpOnly`,
+      `refreshToken=${refreshToken}; domain=.backkim.shop; SameSite=None; Secure; httpOnly; path=/; `,
     );
     // res.setHeader('Set-Cookie', `refreshToken= ${refreshToken}`);
   }

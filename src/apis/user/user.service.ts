@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import {
   IUserServiceCreate,
@@ -14,6 +14,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async create({ createUserInput }: IUserServiceCreate): Promise<User> {
@@ -105,6 +107,41 @@ export class UserService {
         email,
       },
     });
+  }
+
+  async findCouponUser({ name, page }) {
+    if (name.length === 1) {
+      const firstname = name[0];
+      return await this.userRepository
+        .createQueryBuilder()
+        .where('name Like :name', { name: `${firstname}%%` })
+        .take(10)
+        .skip(10 * (page - 1))
+        .getMany();
+    } else if (name.length === 2) {
+      const firstname = name[0];
+      const secondname = name[1];
+      return await this.userRepository
+        .createQueryBuilder()
+        .where('name Like :name', { name: `${firstname}%%` })
+        .andWhere('name Like :secondname', { secondname: `%${secondname}%` })
+        .take(10)
+        .skip(10 * (page - 1))
+        .getMany();
+    } else if (name.length === 3) {
+      const firstname = name[0];
+      const secondname = name[1];
+      const thirdname = name[2];
+
+      return await this.userRepository
+        .createQueryBuilder()
+        .where('name Like :name', { name: `${firstname}%%` })
+        .andWhere('name Like :secondname', { secondname: `%${secondname}%` })
+        .andWhere('name Like :thirdname', { thirdname: `%%${thirdname}` })
+        .take(10)
+        .skip(10 * (page - 1))
+        .getMany();
+    }
   }
 
   async update({

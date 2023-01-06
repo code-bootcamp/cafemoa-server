@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { Owner } from '../owner/entities/owner.entity';
 import { User } from '../user/entities/user.entity';
@@ -29,6 +29,8 @@ export class CouponService {
 
     @InjectRepository(DeletedCoupon)
     private readonly deletedCouponRepository: Repository<DeletedCoupon>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async find({ couponId }) {
@@ -39,11 +41,13 @@ export class CouponService {
     return await this.couponRepository.find();
   }
 
-  async findUserCoupon({ userId }) {
+  async findUserCoupon({ userId, page }) {
     const result = await this.couponRepository.find({
       where: {
         user: { id: userId },
       },
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['user', 'cafeInform'],
     });
     const date = new Date();
@@ -132,17 +136,18 @@ export class CouponService {
     return result2.sort((a, b) => b.stamp - a.stamp);
   }
 
-  async findCafeCoupon({ cafeId }) {
-    return await this.couponRepository.find({
-      where: {
-        cafeInform: { id: cafeId },
-      },
-      relations: ['cafeInform'],
+  async findCafeCoupon({ cafeId, page }) {
+    await this.couponRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
+      where: { cafeInform: { id: cafeId } },
     });
   }
 
-  async findCouponLocation({ cafeAddr }) {
+  async findCouponLocation({ cafeAddr, page }) {
     const cafe = await this.couponRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['cafeInform'],
     });
     return cafe.filter((el) => el.cafeInform.cafeAddr.includes(cafeAddr));
@@ -161,8 +166,6 @@ export class CouponService {
     const user = await this.userRepository.findOne({
       where: { phoneNumber },
     });
-
-    // if user가 없다면 error => conflict 존재하지 않는 회원입니다.
 
     const cafeInform = await this.cafeInformRepository.findOne({
       where: { id: cafeId },
@@ -249,19 +252,16 @@ export class CouponService {
       stamp: reduceStamp,
     });
 
+    await this.deletedCouponRepository.save({
+      expired: false,
+      user: { ...coupon.user },
+      cafeInform: { ...cafeInform },
+    });
+
     return coupon.user.name;
   }
 
   async deleteCoupon({ couponId }) {
-    const result = await this.couponRepository.findOne({
-      where: { id: couponId },
-    });
-
-    await this.deletedCouponRepository.save({
-      expired: false,
-      coupon: { ...result },
-    });
-
     await this.couponRepository.delete({ id: couponId });
     return '삭제가 완료되었습니다.';
   }

@@ -26,20 +26,26 @@ export class CouponResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Coupon])
-  fetchUserCoupons(@Context() context: IContext) {
-    return this.couponService.findUserCoupon({ userId: context.req.user.id });
+  fetchUserCoupons(@Context() context: IContext, @Args('page') page: number) {
+    return this.couponService.findUserCoupon({
+      userId: context.req.user.id,
+      page,
+    });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Coupon])
-  fetchCafeCoupons(@Args('cafeId') cafeId: string) {
-    return this.couponService.findCafeCoupon({ cafeId });
+  fetchCafeCoupons(@Args('cafeId') cafeId: string, @Args('page') page: number) {
+    return this.couponService.findCafeCoupon({ cafeId, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Coupon])
-  fetchCouponWithLocation(@Args('cafeAddr') cafeAddr: string) {
-    return this.couponService.findCouponLocation({ cafeAddr });
+  fetchCouponWithLocation(
+    @Args('cafeAddr') cafeAddr: string,
+    @Args('page') page: number,
+  ) {
+    return this.couponService.findCouponLocation({ cafeAddr, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)

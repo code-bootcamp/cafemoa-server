@@ -5,7 +5,6 @@ import { Comment } from './entities/comment.entity';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { CommentImage } from '../commentImage.ts/entities/commentImage.entity';
 import { User } from '../user/entities/user.entity';
-import { skip } from 'rxjs';
 
 @Injectable()
 export class CommentService {
@@ -33,13 +32,7 @@ export class CommentService {
       where: { id: commentId },
       relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'ownerComment'],
     });
-    // const result2 = await this.cafeInformrRepository.findOne({
-    //   where: {
-    //     id: result.cafeinfo.id
-    //   },
-    //   relations: ['cafeTag']
-    // })
-    console.log(result);
+
     return result;
   }
   async findusercomments({ userID, page }) {

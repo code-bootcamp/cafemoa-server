@@ -68,7 +68,7 @@ export class UserAuthService {
     );
     res.setHeader(
       'Set-Cookie',
-      `refreshToken=${refreshToken}; path=/; domain=.backkim.shop; SameSite=None; Secure; httpOnly;`,
+      `refreshToken=${refreshToken}; domain=.backkim.shop; SameSite=None; Secure; httpOnly; path=/;`,
     );
 
     return this.jwtService.sign(

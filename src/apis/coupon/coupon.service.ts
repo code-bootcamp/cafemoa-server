@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { Owner } from '../owner/entities/owner.entity';
 import { User } from '../user/entities/user.entity';
@@ -29,8 +29,6 @@ export class CouponService {
 
     @InjectRepository(DeletedCoupon)
     private readonly deletedCouponRepository: Repository<DeletedCoupon>,
-
-    private readonly dataSource: DataSource,
   ) {}
 
   async find({ couponId }) {
@@ -46,8 +44,6 @@ export class CouponService {
       where: {
         user: { id: userId },
       },
-      take: 10,
-      skip: (page - 1) * 10,
       relations: ['user', 'cafeInform'],
     });
     const date = new Date();
@@ -78,7 +74,7 @@ export class CouponService {
           expired: true,
         });
         await this.couponRepository.delete({ id: result[i].id });
-      } else {
+      } else if (Number(result[i].expiredDate.split('-')[0]) === year) {
         if (Number(result[i].expiredDate.split('-')[1]) < month) {
           const user = await this.userRepository.findOne({
             where: {
@@ -100,7 +96,7 @@ export class CouponService {
             expired: true,
           });
           await this.couponRepository.delete({ id: result[i].id });
-        } else {
+        } else if (Number(result[i].expiredDate.split('-')[1]) === month) {
           if (Number(result[i].expiredDate.split('-')[2]) < day) {
             const user = await this.userRepository.findOne({
               where: {
@@ -130,10 +126,22 @@ export class CouponService {
       where: {
         user: { id: userId },
       },
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['user', 'cafeInform'],
     });
 
-    return result2.sort((a, b) => b.stamp - a.stamp);
+    const sortedResult = result2.sort((a, b) => b.stamp - a.stamp);
+
+    if (sortedResult.length > 10) {
+      const pageNum = Math.ceil(sortedResult.length / 10);
+      const sortedResult10 = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        sortedResult10[i] = sortedResult.slice(i * 10, (i + 1) * 10);
+      }
+      return sortedResult10[page - 1];
+    }
+    return result;
   }
 
   async findCafeCoupon({ cafeId, page }) {

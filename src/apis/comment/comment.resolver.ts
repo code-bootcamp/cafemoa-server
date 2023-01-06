@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context, Int } from '@nestjs/graphql';
 import { CommentService } from './comment.service';
 import { createCommentInput } from './dto/createComment.input';
 import { Comment } from './entities/comment.entity';
@@ -15,7 +15,9 @@ export class CommentResolver {
   ) {}
 
   @Query(() => [Comment])
-  fetchComments(@Args('page') page: number) {
+  fetchComments(
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
     return this.commentService.findAll({ page });
   }
   @Query(() => Comment)
@@ -76,17 +78,19 @@ export class CommentResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Comment])
   fetchUserComments(
-    @Args('commentId') commentId: string,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
     @Context() Context: IContext,
   ) {
     return this.commentService.findusercomments({
       userID: Context.req.user.id,
+      page,
     });
   }
   @Query(() => [Comment])
   fetchCommentmWithLocation(
-    @Args('Location') Location: string, //
+    @Args('Location') Location: string,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    return this.commentService.findCommentWithLocation({ Location });
+    return this.commentService.findCommentWithLocation({ Location, page });
   }
 }

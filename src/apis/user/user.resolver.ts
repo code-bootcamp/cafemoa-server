@@ -37,6 +37,12 @@ export class UserResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [User])
+  fetchCouponAddUsers(@Args('name') name: string, @Args('page') page: number) {
+    return this.userService.findCouponUser({ name, page });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async updateUser(
     @Context() context: IContext,

@@ -23,19 +23,28 @@ export class StampHistoryService {
     private readonly couponRepository: Repository<Coupon>,
   ) {}
 
-  async findStamps({ cafeId }) {
+  async findStamps({ cafeId, page }) {
     const cafeStamp = await this.stampHistoryRepository.find({
       where: {
         coupon: { cafeInform: { id: cafeId } },
       },
+      take: 10,
+      skip: (page - 1) * 10,
       relations: ['coupon', 'owner', 'user'],
     });
-    console.log(String(cafeStamp[0].createdAt));
 
     const result = cafeStamp.filter((el) => {
       if (el.stamp > 3) return el;
     });
 
+    if (result.length > 10) {
+      const pageNum = Math.ceil(result.length / 10);
+      const result10 = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result10[i] = result.slice(i * 10, (i + 1) * 10);
+      }
+      return result10[page - 1];
+    }
     return result;
   }
 

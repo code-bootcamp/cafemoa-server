@@ -10,8 +10,11 @@ export class StampHistoryResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [StampHistory])
-  fetchStamps(@Args('cafeId') cafeId: string): Promise<StampHistory[]> {
-    return this.stampHistory.findStamps({ cafeId });
+  fetchStamps(
+    @Args('cafeId') cafeId: string,
+    @Args('page') page: number,
+  ): Promise<StampHistory[]> {
+    return this.stampHistory.findStamps({ cafeId, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)

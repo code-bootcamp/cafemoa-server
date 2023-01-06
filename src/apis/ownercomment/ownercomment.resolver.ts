@@ -1,4 +1,4 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { OwnerCommentService } from './ownercomment.service';
 import { OwnerComment } from './entities/ownercomment.entity';
 import { UpdateOwnerCommentInput } from './dto/updateownercomment.input';
@@ -13,7 +13,8 @@ export class OwnerCommentResolver {
   ) {}
 
   @Query(() => [OwnerComment])
-  fetchOwnerComment(@Args('page') page: number) {
+  fetchOwnerComment(@Args({ name: 'page', type: () => Int }) page: number) {
+    page = page === null ? 1 : page;
     return this.ownercommentService.findAll({ page });
   }
 
@@ -69,8 +70,12 @@ export class OwnerCommentResolver {
   }
 
   @Query(() => [OwnerComment])
-  fetchMyOwnerComments(@Args('OwnerID') OwnerID: string) {
-    return this.ownercommentService.findById({ OwnerID });
+  fetchMyOwnerComments(
+    @Args('OwnerID') OwnerID: string, //
+    @Args({ name: 'page', type: () => Int }) page: number,
+  ) {
+    page = page === null ? 1 : page;
+    return this.ownercommentService.findById({ OwnerID, page });
   }
 
   @Query(() => String)

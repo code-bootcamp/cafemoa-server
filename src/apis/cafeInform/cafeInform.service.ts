@@ -397,6 +397,14 @@ export class CafeInformService {
           }
         });
       });
+      if (arr.length > 10) {
+        const pageNum = Math.ceil(arr.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = arr.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
       return arr;
     } else {
       const result = await this.cafeInformrRepository.find({

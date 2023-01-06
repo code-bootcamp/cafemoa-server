@@ -6,7 +6,6 @@ import { UpdateCommentInput } from './dto/updateComment.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
-import { query } from 'express';
 
 @Resolver()
 export class CommentResolver {
@@ -18,6 +17,7 @@ export class CommentResolver {
   fetchComments(
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
+    page = page === null ? 1 : page;
     return this.commentService.findAll({ page });
   }
   @Query(() => Comment)
@@ -81,6 +81,7 @@ export class CommentResolver {
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
     @Context() Context: IContext,
   ) {
+    page = page === null ? 1 : page;
     return this.commentService.findusercomments({
       userID: Context.req.user.id,
       page,
@@ -91,6 +92,21 @@ export class CommentResolver {
     @Args('Location') Location: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
+    page = page === null ? 1 : page;
     return this.commentService.findCommentWithLocation({ Location, page });
+  }
+
+  @Query(() => [Comment])
+  fetchCommentsAll(
+    @Args('Location') Location: string, //
+    @Args({ name: 'Tags', type: () => [String] }) Tags: string[], //
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
+    page = page === null ? 1 : page;
+    return this.commentService.findCommentWithLocationAndTag({
+      Location,
+      Tags,
+      page,
+    });
   }
 }

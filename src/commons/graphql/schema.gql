@@ -150,10 +150,8 @@ type Query {
   fetchOwnerComment1(ownercommentId: String!): OwnerComment!
   fetchMyOwnerComments(OwnerID: String!): [OwnerComment!]!
   fetchOwnerCommentByCommentID(commentID: String!): String!
-
   fetchMyPickLists(page: Float!): [PickList!]!
   fetchMyPickListLocation(Location: String!, page: Float!): [PickList!]!
-
   fetchStamps(cafeId: String!): [StampHistory!]!
   fetchUsers: [User!]!
   fetchUser(email: String!): User!

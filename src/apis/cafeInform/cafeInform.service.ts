@@ -52,6 +52,7 @@ export class CafeInformService {
       where: {
         id: CafeInformID,
       },
+      relations: ['cafeTag'],
     });
     if (menu_imageUrl) {
       await Promise.all(
@@ -93,9 +94,8 @@ export class CafeInformService {
         }),
       );
     }
-
+    const temp = [];
     if (cafeTag) {
-      const temp = [];
       for (let i = 0; i < cafeTag.length; i++) {
         const tagName = cafeTag[i].replace('#', '');
 
@@ -114,19 +114,13 @@ export class CafeInformService {
           temp.push(newTag);
         }
       }
-      return this.cafeInformrRepository.save({
-        ...cafeinform,
-        cafeTag: temp,
-        thumbnail: cafe_imageUrl[0],
-        ...CafeInform,
-      });
-    } else {
-      return this.cafeInformrRepository.save({
-        ...cafeinform,
-        thumbnail: cafe_imageUrl[0],
-        ...CafeInform,
-      });
     }
+    return this.cafeInformrRepository.save({
+      ...cafeinform,
+      ...CafeInform,
+      cafeTag: [...cafeinform.cafeTag, ...temp],
+      thumbnail: cafe_imageUrl[0],
+    });
   }
   async create({ cafeInformInput, OwnerId }) {
     // 이메일 인증 버튼 및 중복확인, 체크까지

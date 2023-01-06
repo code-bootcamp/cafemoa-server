@@ -5,10 +5,9 @@ import { CafeTag } from 'src/apis/cafeTag/entities/cafeTag.entity';
 
 import { Comment } from 'src/apis/comment/entities/comment.entity';
 
-import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
-
 import { Owner } from 'src/apis/owner/entities/owner.entity';
 import { PickList } from 'src/apis/pickList/entities/pickList.entity';
+import { Stamp } from 'src/apis/stamp/entities/stamp.entity';
 import {
   Column,
   Entity,
@@ -87,8 +86,8 @@ export class CafeInform {
   })
   comment: Comment;
 
-  @OneToMany(() => Coupon, (coupon) => coupon.cafeInform, {
+  @OneToMany(() => Stamp, (stamp) => stamp.cafeInform, {
     onDelete: 'CASCADE',
   })
-  coupon: Coupon[];
+  stamp: Stamp[];
 }

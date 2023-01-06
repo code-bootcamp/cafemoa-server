@@ -1,7 +1,7 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
-export class CreateCouponInput {
+export class CreateStampInput {
   @Field(() => String)
   phoneNumber: string;
 
@@ -9,7 +9,7 @@ export class CreateCouponInput {
   cafeId: string;
 
   @Field(() => Int)
-  stamp: number;
+  count: number;
 
   @Field(() => String)
   password: string;

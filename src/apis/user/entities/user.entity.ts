@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Comment } from 'src/apis/comment/entities/comment.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
+import { Stamp } from 'src/apis/stamp/entities/stamp.entity';
 
 @Entity()
 @ObjectType()
@@ -53,6 +53,6 @@ export class User {
   @OneToMany(() => Comment, (comment) => comment.user, { onDelete: 'CASCADE' })
   comment: Comment;
 
-  @OneToMany(() => Coupon, (coupon) => coupon.user, { onDelete: 'CASCADE' })
-  coupon: Coupon;
+  @OneToMany(() => Stamp, (stamp) => stamp.user, { onDelete: 'CASCADE' })
+  stamp: Stamp;
 }

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import {
   IUserServiceCreate,
@@ -14,8 +14,6 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
-    private readonly dataSource: DataSource,
   ) {}
 
   async create({ createUserInput }: IUserServiceCreate): Promise<User> {

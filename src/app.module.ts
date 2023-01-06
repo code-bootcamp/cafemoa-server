@@ -16,9 +16,6 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { PickListModule } from './apis/pickList/pickList.module';
-
-import { CouponModule } from './apis/coupon/coupon.module';
-
 import { OwnerAuthModule } from './apis/ownerAuth/ownerAuth.module';
 import { CommentImageModule } from './apis/commentImage.ts/commentimage.module';
 import { OwnerCommentModule } from './apis/ownercomment/ownercomment.module';
@@ -27,6 +24,8 @@ import { CafeImageModule } from './apis/cafeImage/cafeImage.module';
 import { CafeMenuImageModule } from './apis/cafemenuimage/cafemenuImage.module';
 import { DeletedCouponModule } from './apis/deletedcoupon/deletedcoupon.module';
 import { StampHistoryModule } from './apis/stamphistory/stamphistory.module';
+import { StampModule } from './apis/stamp/stamp.module';
+import { CouponModule } from './apis/coupon/coupon.module';
 
 @Module({
   imports: [
@@ -43,6 +42,7 @@ import { StampHistoryModule } from './apis/stamphistory/stamphistory.module';
     OwnerAuthModule,
     OwnerCommentModule,
     PickListModule,
+    StampModule,
     StampHistoryModule,
     UserModule,
     UserAuthModule,

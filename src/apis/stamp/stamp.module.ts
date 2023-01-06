@@ -1,25 +1,27 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
+import { Coupon } from '../coupon/entities/coupon.entity';
 import { DeletedCoupon } from '../deletedcoupon/entities/deletedcoupon.entity';
 import { Owner } from '../owner/entities/owner.entity';
-import { Stamp } from '../stamp/entities/stamp.entity';
+import { StampHistory } from '../stamphistory/entities/stamphistory.entity';
 import { User } from '../user/entities/user.entity';
-import { CouponResolver } from './coupon.resolver';
-import { CouponService } from './coupon.service';
-import { Coupon } from './entities/coupon.entity';
+import { Stamp } from './entities/stamp.entity';
+import { StampResolver } from './stamp.resolver';
+import { StampService } from './stamp.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Stamp,
-      Coupon,
-      CafeInform,
-      DeletedCoupon,
+      Stamp, //
       User,
+      CafeInform,
       Owner,
+      StampHistory,
+      DeletedCoupon,
+      Coupon,
     ]),
   ],
-  providers: [CouponResolver, CouponService],
+  providers: [StampService, StampResolver],
 })
-export class CouponModule {}
+export class StampModule {}

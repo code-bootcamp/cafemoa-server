@@ -12,7 +12,7 @@ export class StampHistoryResolver {
   @Query(() => [StampHistory])
   fetchStamps(
     @Args('cafeId') cafeId: string,
-    @Args('page') page: number,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ): Promise<StampHistory[]> {
     return this.stampHistory.findStamps({ cafeId, page });
   }

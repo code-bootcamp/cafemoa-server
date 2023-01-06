@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
 import { CouponService } from './coupon.service';
@@ -26,7 +26,10 @@ export class CouponResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Coupon])
-  fetchUserCoupons(@Context() context: IContext, @Args('page') page: number) {
+  fetchUserCoupons(
+    @Context() context: IContext,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
     return this.couponService.findUserCoupon({
       userId: context.req.user.id,
       page,
@@ -35,7 +38,10 @@ export class CouponResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Coupon])
-  fetchCafeCoupons(@Args('cafeId') cafeId: string, @Args('page') page: number) {
+  fetchCafeCoupons(
+    @Args('cafeId') cafeId: string,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
     return this.couponService.findCafeCoupon({ cafeId, page });
   }
 
@@ -43,7 +49,7 @@ export class CouponResolver {
   @Query(() => [Coupon])
   fetchCouponWithLocation(
     @Args('cafeAddr') cafeAddr: string,
-    @Args('page') page: number,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     return this.couponService.findCouponLocation({ cafeAddr, page });
   }

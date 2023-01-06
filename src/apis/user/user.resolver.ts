@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
 import { CreateUserInput } from './dto/user-create.input';
@@ -38,7 +38,10 @@ export class UserResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [User])
-  fetchCouponAddUsers(@Args('name') name: string, @Args('page') page: number) {
+  fetchCouponAddUsers(
+    @Args('name') name: string,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
     return this.userService.findCouponUser({ name, page });
   }
 

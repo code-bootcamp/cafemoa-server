@@ -1,6 +1,5 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/apis/user/entities/user.entity';
-import { CafeInform } from 'src/apis/cafeInform/entities/cafeInform.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Stamp } from 'src/apis/stamp/entities/stamp.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -11,24 +10,10 @@ export class Coupon {
   id: string;
 
   @Column()
-  @Field(() => Int)
-  stamp: number;
-
-  @Column()
-  @Field(() => Int)
-  accstamp: number;
-
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @Field(() => User)
-  user: User;
-
-  @ManyToOne(() => CafeInform, {
-    onDelete: 'CASCADE',
-  })
-  @Field(() => CafeInform)
-  cafeInform: CafeInform;
-
-  @Column({ default: true })
   @Field(() => String)
   expiredDate: string;
+
+  @ManyToOne(() => Stamp)
+  @Field(() => Stamp)
+  stamp: Stamp;
 }

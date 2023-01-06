@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { Owner } from '../owner/entities/owner.entity';
 import { StampHistory } from './entities/stamphistory.entity';
 import * as bcrypt from 'bcrypt';
-import { Coupon } from '../coupon/entities/coupon.entity';
+import { Stamp } from '../stamp/entities/stamp.entity';
 
 @Injectable()
 export class StampHistoryService {
@@ -19,14 +19,14 @@ export class StampHistoryService {
     @InjectRepository(Owner)
     private readonly ownerRepository: Repository<Owner>,
 
-    @InjectRepository(Coupon)
-    private readonly couponRepository: Repository<Coupon>,
+    @InjectRepository(Stamp)
+    private readonly stampRepository: Repository<Stamp>,
   ) {}
 
   async findStamps({ cafeId, page }) {
     const cafeStamp = await this.stampHistoryRepository.find({
       where: {
-        coupon: { cafeInform: { id: cafeId } },
+        stamp: { cafeInform: { id: cafeId } },
       },
       take: 10,
       skip: (page - 1) * 10,
@@ -34,7 +34,7 @@ export class StampHistoryService {
     });
 
     const result = cafeStamp.filter((el) => {
-      if (el.stamp > 3) return el;
+      if (el.count > 3) return el;
     });
 
     if (result.length > 10) {
@@ -59,23 +59,22 @@ export class StampHistoryService {
         id: stamphistory.owner.id,
       },
     });
-    const coupon = await this.couponRepository.findOne({
-      where: { id: stamphistory.coupon.id },
+    const coupon = await this.stampRepository.findOne({
+      where: { id: stamphistory.stamp.id },
     });
 
-    await this.couponRepository.update(
+    await this.stampRepository.update(
       {
-        id: stamphistory.coupon.id,
+        id: stamphistory.stamp.id,
       },
       {
-        stamp: coupon.stamp - stamphistory.stamp,
-        accstamp: coupon.accstamp - stamphistory.stamp,
+        count: coupon.count - stamphistory.count,
       },
     );
-    const coupon2 = await this.couponRepository.findOne({
-      where: { id: stamphistory.coupon.id },
+    const coupon2 = await this.stampRepository.findOne({
+      where: { id: stamphistory.stamp.id },
     });
-    if (coupon2.stamp < 0) {
+    if (coupon2.count < 0) {
       throw new UnprocessableEntityException(
         '실제로 쿠폰 사용되었습니다. 경찰에 신고하십시오',
       );
@@ -89,10 +88,10 @@ export class StampHistoryService {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
 
-    const result = await this.stampHistoryRepository.delete({
+    await this.stampHistoryRepository.delete({
       id: stamphistoryId,
     });
 
-    return coupon2.stamp;
+    return coupon2.count;
   }
 }

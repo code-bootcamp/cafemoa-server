@@ -34,10 +34,12 @@ export class CouponService {
   async findUserCoupon({ userId, page }) {
     const result = await this.couponRepository.find({
       where: {
-        stamp: { user: { id: userId } },
+        user: { id: userId },
       },
-      relations: ['user', 'cafeInform', 'stamp'],
+      relations: ['user', 'cafeInform'],
     });
+
+    console.log(result[0].user.id);
 
     const date = new Date();
 
@@ -49,12 +51,12 @@ export class CouponService {
       if (Number(result[i].expiredDate.split('-')[0]) < year) {
         const user = await this.userRepository.findOne({
           where: {
-            id: result[i].stamp.user.id,
+            id: result[i].user.id,
           },
         });
         const cafeInforms = await this.cafeInformRepository.findOne({
           where: {
-            id: result[i].stamp.cafeInform.id,
+            id: result[i].cafeInform.id,
           },
         });
         await this.deletedCouponRepository.save({
@@ -71,12 +73,12 @@ export class CouponService {
         if (Number(result[i].expiredDate.split('-')[1]) < month) {
           const user = await this.userRepository.findOne({
             where: {
-              id: result[i].stamp.user.id,
+              id: result[i].user.id,
             },
           });
           const cafeInforms = await this.cafeInformRepository.findOne({
             where: {
-              id: result[i].stamp.cafeInform.id,
+              id: result[i].cafeInform.id,
             },
           });
           await this.deletedCouponRepository.save({
@@ -93,12 +95,12 @@ export class CouponService {
           if (Number(result[i].expiredDate.split('-')[2]) < day) {
             const user = await this.userRepository.findOne({
               where: {
-                id: result[i].stamp.user.id,
+                id: result[i].user.id,
               },
             });
             const cafeInforms = await this.cafeInformRepository.findOne({
               where: {
-                id: result[i].stamp.cafeInform.id,
+                id: result[i].cafeInform.id,
               },
             });
             await this.deletedCouponRepository.save({
@@ -117,7 +119,7 @@ export class CouponService {
     }
     const result2 = await this.couponRepository.find({
       where: {
-        stamp: { user: { id: userId } },
+        user: { id: userId },
       },
       take: 10,
       skip: (page - 1) * 10,
@@ -134,7 +136,7 @@ export class CouponService {
     });
 
     const stamp = await this.stampRepository.findOne({
-      where: { id: coupon.stamp.id },
+      where: { id: coupon.id },
       relations: ['cafeInform', 'user'],
     });
 

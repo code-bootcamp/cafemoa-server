@@ -6,7 +6,6 @@ import { Owner } from '../owner/entities/owner.entity';
 import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { StampHistory } from '../stamphistory/entities/stamphistory.entity';
-import { DeletedCoupon } from '../deletedcoupon/entities/deletedcoupon.entity';
 import { Coupon } from '../coupon/entities/coupon.entity';
 import { Stamp } from './entities/stamp.entity';
 
@@ -38,6 +37,14 @@ export class StampService {
 
   async findAll() {
     return await this.stampRepository.find();
+  }
+
+  async findUserStamp({ userId, page }) {
+    return await this.stampRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
+      where: { user: { id: userId } },
+    });
   }
 
   async findCafeStamp({ cafeId, page }) {
@@ -85,18 +92,16 @@ export class StampService {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
 
-    const coupon = await this.stampRepository.findOne({
+    const stamp = await this.stampRepository.findOne({
       where: { user: { phoneNumber }, cafeInform: { id: cafeId } },
       relations: ['user', 'cafeInform'],
     });
 
-    console.log(coupon);
-
-    if (coupon) {
-      if (coupon.count + count < 10) {
+    if (stamp) {
+      if (stamp.count + count < 10) {
         const result = await this.stampRepository.save({
-          id: coupon.id,
-          count: coupon.count + count,
+          id: stamp.id,
+          count: stamp.count + count,
           user: { ...user },
           cafeInform: { ...cafeInform },
         });
@@ -112,14 +117,15 @@ export class StampService {
         return result;
       } else {
         const result = await this.stampRepository.save({
-          id: coupon.id,
-          count: coupon.count + count - 10,
+          id: stamp.id,
+          count: stamp.count + count - 10,
           user: { ...user },
           cafeInform: { ...cafeInform },
         });
         await this.couponRepository.save({
           expiredDate,
-          stamp: { ...result },
+          cafeInform: { ...result.cafeInform },
+          user: { ...result.user },
         });
         if (count >= 3) {
           await this.stampHistoryRepository.save({
@@ -133,17 +139,18 @@ export class StampService {
       }
     } else {
       const result = await this.stampRepository.save({
-        count: count,
+        count,
         user: { ...user },
         cafeInform: { ...cafeInform },
       });
 
-      if (count >= 3)
+      if (count >= 3) {
         await this.stampHistoryRepository.save({
           user: { ...user },
           owner: { ...owner },
           coupon: { ...result },
         });
+      }
       return result;
     }
   }

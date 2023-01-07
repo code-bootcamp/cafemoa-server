@@ -81,7 +81,7 @@ export class CommentResolver {
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
     @Context() Context: IContext,
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.commentService.findusercomments({
       userID: Context.req.user.id,
       page,
@@ -92,7 +92,7 @@ export class CommentResolver {
     @Args('Location') Location: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.commentService.findCommentWithLocation({ Location, page });
   }
 
@@ -102,7 +102,7 @@ export class CommentResolver {
     @Args({ name: 'Tags', type: () => [String] }) Tags: string[], //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.commentService.findCommentWithLocationAndTag({
       Location,
       Tags,

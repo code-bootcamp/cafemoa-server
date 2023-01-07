@@ -20,13 +20,11 @@ type CommentImage {
   comment: Comment!
 }
 
-type Coupon {
+type Stamp {
   id: String!
-  stamp: Int!
-  accstamp: Int!
+  count: Int!
   user: User!
   cafeInform: CafeInform!
-  expiredDate: String!
 }
 
 type User {
@@ -114,10 +112,10 @@ type DeletedCoupon {
 
 type StampHistory {
   id: String!
-  stamp: Int!
+  count: Int!
   user: User!
   owner: Owner!
-  coupon: Coupon!
+  stamp: Stamp!
   createdAt: DateTime!
 }
 
@@ -131,31 +129,34 @@ type Query {
   fetchCafes(Location: String, Tags: [String!], page: Int): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
-  fetchComments(page: Float!): [Comment!]!
+  fetchComments(page: Int): [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchbestcomment: [Comment!]!
   fetchCommentWithTag(Tags: [String!]!): [Comment!]!
+  fetchUserComments(page: Int): [Comment!]!
+  fetchCommentmWithLocation(Location: String!, page: Int): [Comment!]!
+  fetchCommentsAll(Location: String!, Tags: [String!]!, page: Int): [Comment!]!
   fetchCommentImages: [CommentImage!]!
   fetchCommentImage(commentId: String!): CommentImage!
   fetchCommentImagesbyID(commentId: String!): [CommentImage!]!
-  fetchCoupon(couponId: String!): Coupon!
-  fetchCoupons: [Coupon!]!
-  fetchUserCoupons(page: Float!): [Coupon!]!
-  fetchCafeCoupons(cafeId: String!, page: Float!): [Coupon!]!
-  fetchCouponWithLocation(cafeAddr: String!, page: Float!): [Coupon!]!
+  fetchUserCoupons(page: Int): [Stamp!]!
   fetchDeletedCoupon: [DeletedCoupon!]!
   fetchOwners: [Owner!]!
   fetchOwner(ownerID: String!): Owner!
-  fetchOwnerComment(page: Float!): [OwnerComment!]!
+  fetchOwnerComment(page: Int!): [OwnerComment!]!
   fetchOwnerComment1(ownercommentId: String!): OwnerComment!
-  fetchMyOwnerComments(OwnerID: String!): [OwnerComment!]!
+  fetchMyOwnerComments(OwnerID: String!, page: Int!): [OwnerComment!]!
   fetchOwnerCommentByCommentID(commentID: String!): String!
   fetchMyPickLists(page: Float!): [PickList!]!
   fetchMyPickListLocation(Location: String!, page: Float!): [PickList!]!
-  fetchStamps(cafeId: String!, page: Float!): [StampHistory!]!
+  fetchCoupon(stampId: String!): Stamp!
+  fetchCoupons: [Stamp!]!
+  fetchCafeCoupons(cafeId: String!, page: Int): [Stamp!]!
+  fetchCouponWithLocation(cafeAddr: String!, page: Int): [Stamp!]!
+  fetchStamps(cafeId: String!, page: Int): [StampHistory!]!
   fetchUsers: [User!]!
   fetchUser(email: String!): User!
-  fetchCouponAddUsers(name: String!, page: Float!): [User!]!
+  fetchCouponAddUsers(name: String!, page: Int): [User!]!
 }
 
 type Mutation {
@@ -170,9 +171,7 @@ type Mutation {
   createComment(createCommentinput: createCommentInput!, cafeinformId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): String!
-  createCoupon(createCouponInput: CreateCouponInput!): Coupon!
-  useCoupon(couponId: String!, password: String!): String!
-  deleteCoupon(couponId: String!): String!
+  useCoupon(couponId: String!, password: String!): DeletedCoupon!
   uploadFile(files: [Upload!]!): [String!]!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
   deleteOwner: Boolean!
@@ -186,6 +185,8 @@ type Mutation {
   createOwnerComment(createOwnerCommentInput: CreateOwnerCommentInput!, commentID: String!): OwnerComment!
   updateOwnerComment(UpdateOwnerCommentInput: UpdateOwnerCommentInput!, ownerCommentID: String!): OwnerComment!
   deleteOwnerComment(ownerCommentId: String!): Boolean!
+  createCoupon(createCouponInput: CreateStampInput!): Stamp!
+  deleteCoupon(stampId: String!): String!
   deleteStamp(ownerpassword: String!, stamphistoryId: String!): Int!
   createUser(createUserInput: CreateUserInput!): User!
   emailVerify(email: String!): String!
@@ -229,13 +230,6 @@ input UpdateCommentInput {
   image_Url: [String!]
 }
 
-input CreateCouponInput {
-  phoneNumber: String!
-  cafeId: String!
-  stamp: Int!
-  password: String!
-}
-
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
@@ -263,6 +257,13 @@ input CreateOwnerCommentInput {
 
 input UpdateOwnerCommentInput {
   content: String
+}
+
+input CreateStampInput {
+  phoneNumber: String!
+  cafeId: String!
+  count: Int!
+  password: String!
 }
 
 input CreateUserInput {

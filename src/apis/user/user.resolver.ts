@@ -42,7 +42,7 @@ export class UserResolver {
     @Args('name') name: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.userService.findCouponUser({ name, page });
   }
 

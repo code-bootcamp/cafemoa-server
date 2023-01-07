@@ -16,6 +16,7 @@ export class CouponResolver {
     @Context() context: IContext,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
+    page = page === undefined ? 1 : page;
     return this.couponService.findUserCoupon({
       userId: context.req.user.id,
       page,

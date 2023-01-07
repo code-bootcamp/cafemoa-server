@@ -15,7 +15,12 @@ export class PickListService {
       take: 10,
       skip: (page - 1) * 10,
       where: { user: { id: userID } },
-      relations: ['user', 'cafeInform', 'cafeInform.cafeTag'],
+      relations: [
+        'user',
+        'cafeInform',
+        'cafeInform.cafeTag',
+        'cafeInform.owner',
+      ],
     });
     if (!result) {
       throw new ConflictException('찜한 카페가 없습니다.');
@@ -28,7 +33,12 @@ export class PickListService {
       where: {
         user: { id: userID },
       },
-      relations: ['user', 'cafeInform', 'cafeInform.cafeTag'],
+      relations: [
+        'user',
+        'cafeInform',
+        'cafeInform.cafeTag',
+        'cafeInform.owner',
+      ],
     });
 
     const resultLocation = result.filter((el) =>

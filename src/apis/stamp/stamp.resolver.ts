@@ -29,6 +29,7 @@ export class StampResolver {
     @Args('cafeId') cafeId: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
+    page = page === null ? 1 : page;
     return this.stampService.findCafeStamp({ cafeId, page });
   }
 
@@ -38,6 +39,7 @@ export class StampResolver {
     @Args('cafeAddr') cafeAddr: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
+    page = page === null ? 1 : page;
     return this.stampService.findStampLocation({ cafeAddr, page });
   }
 

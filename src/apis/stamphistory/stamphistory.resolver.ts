@@ -14,6 +14,7 @@ export class StampHistoryResolver {
     @Args('cafeId') cafeId: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ): Promise<StampHistory[]> {
+    page = page === null ? 1 : page;
     return this.stampHistory.findStamps({ cafeId, page });
   }
 

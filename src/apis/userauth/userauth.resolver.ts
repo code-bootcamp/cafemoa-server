@@ -25,6 +25,7 @@ export class UserAuthResolver {
   restoreAccessToken(
     @Context() context: IContext, //
   ): string {
+    console.log(context.req.user);
     return this.userAuthService.getAccessToken({ user: context.req.user });
   }
 

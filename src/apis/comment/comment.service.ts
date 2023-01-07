@@ -172,7 +172,9 @@ export class CommentService {
     const result = await this.commentRepository.find({
       relations: ['cafeinfo', 'user', 'cafeinfo.cafeTag'],
     });
-    const answer = result.filter((el) => el.commentAddr.includes(Location));
+    const answer = result.filter((el) =>
+      el.cafeinfo.cafeAddr.includes(Location),
+    );
     if (answer.length > 10) {
       const pageNum = Math.ceil(answer.length / 10);
       const result = new Array(pageNum);
@@ -189,7 +191,9 @@ export class CommentService {
       const result = await this.commentRepository.find({
         relations: ['cafeinfo', 'user', 'cafeinfo.cafeTag'],
       });
-      const answer = result.filter((el) => el.commentAddr.includes(Location));
+      const answer = result.filter((el) =>
+        el.cafeinfo.cafeAddr.includes(Location),
+      );
       if (answer.length > 10) {
         const pageNum = Math.ceil(answer.length / 10);
         const result = new Array(pageNum);
@@ -231,7 +235,9 @@ export class CommentService {
       const result = await this.commentRepository.find({
         relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
       });
-      const answer = result.filter((el) => el.commentAddr.includes(Location));
+      const answer = result.filter((el) =>
+        el.cafeinfo.cafeAddr.includes(Location),
+      );
       const arr = [];
       answer.forEach((el) => {
         el.cafeinfo.cafeTag.forEach((e) => {

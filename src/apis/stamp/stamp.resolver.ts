@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { CreateStampInput } from './dto/stamp-create.input';
 import { Stamp } from './entities/stamp.entity';
 import { StampService } from './stamp.service';
@@ -13,19 +14,33 @@ export class StampResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => Stamp)
-  fetchCoupon(@Args('stampId') stampId: string) {
+  fetchStamp(@Args('stampId') stampId: string) {
     return this.stampService.find({ stampId });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Stamp])
-  fetchCoupons() {
+  fetchStamps() {
     return this.stampService.findAll();
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Stamp])
-  fetchCafeCoupons(
+  fetchUserStamps(
+    @Context() context: IContext,
+    @Args({ name: 'page', type: () => Int, nullable: true })
+    page: number,
+  ) {
+    page = page === undefined ? 1 : page;
+    return this.stampService.findUserStamp({
+      userId: context.req.user.id,
+      page,
+    });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [Stamp])
+  fetchCafeStamps(
     @Args('cafeId') cafeId: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
@@ -35,7 +50,7 @@ export class StampResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Stamp])
-  fetchCouponWithLocation(
+  fetchStampWithLocation(
     @Args('cafeAddr') cafeAddr: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
@@ -45,13 +60,13 @@ export class StampResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Stamp)
-  createCoupon(@Args('createCouponInput') createStampInput: CreateStampInput) {
+  createStamp(@Args('createCouponInput') createStampInput: CreateStampInput) {
     return this.stampService.createStamp({ createStampInput });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => String)
-  deleteCoupon(@Args('stampId') stampId: string) {
+  deleteStamp(@Args('stampId') stampId: string) {
     return this.stampService.deleteCoupon({ stampId });
   }
 }

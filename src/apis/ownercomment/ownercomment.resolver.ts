@@ -14,7 +14,7 @@ export class OwnerCommentResolver {
 
   @Query(() => [OwnerComment])
   fetchOwnerComment(@Args({ name: 'page', type: () => Int }) page: number) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.ownercommentService.findAll({ page });
   }
 
@@ -74,7 +74,7 @@ export class OwnerCommentResolver {
     @Args('OwnerID') OwnerID: string, //
     @Args({ name: 'page', type: () => Int }) page: number,
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.ownercommentService.findById({ OwnerID, page });
   }
 

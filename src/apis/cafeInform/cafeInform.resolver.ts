@@ -53,7 +53,7 @@ export class CafeInformResolver {
     @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
     @Args('page') page: number, //
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.cafeInformService.findCafeInformWithTags({ Tags, page });
   }
 
@@ -62,7 +62,7 @@ export class CafeInformResolver {
     @Args('Location') Location: string, //
     @Args('page') page: number, //
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.cafeInformService.findCafeInformWithLocation({
       Location,
       page,
@@ -83,7 +83,7 @@ export class CafeInformResolver {
   fetchCafeInforms(
     @Args('page') page: number, //
   ) {
-    page = page === null ? 1 : page;
+    page = page === undefined ? 1 : page;
     return this.cafeInformService.findAll({ page });
   }
 
@@ -95,7 +95,8 @@ export class CafeInformResolver {
     Tags: string[],
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === null ? 1 : page;
+    console.log(page);
+    page = page === undefined ? 1 : page;
     return this.cafeInformService.findCafeWithLocationAndTag({
       Location,
       Tags,

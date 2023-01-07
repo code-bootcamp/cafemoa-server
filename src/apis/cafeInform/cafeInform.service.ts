@@ -321,7 +321,9 @@ export class CafeInformService {
     return result.affected ? true : false;
   }
   async findBestCafe() {
-    const result = await this.cafeInformrRepository.find();
+    const result = await this.cafeInformrRepository.find({
+      relations: ['owner', 'cafeTag'],
+    });
 
     result.sort((a, b) => b.like - a.like);
 

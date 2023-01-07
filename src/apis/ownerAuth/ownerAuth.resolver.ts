@@ -45,6 +45,7 @@ export class OwnerAuthResolver {
   restoreOwnerAccessToken(
     @Context() context: IContext, //
   ): string {
+    console.log(context.req.user);
     return this.ownerAuthLogin.getAccessToken({ user: context.req.user });
   }
 

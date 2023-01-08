@@ -69,11 +69,13 @@ export class CafeInform {
   @OneToMany(() => CafeImage, (cafeImage) => cafeImage.cafeInform, {
     cascade: true,
   })
+  @Field(() => [CafeImage])
   cafeImage: CafeImage[];
 
   @OneToMany(() => CafeMenuImage, (cafeMenuImage) => cafeMenuImage.cafeInform, {
     cascade: true,
   })
+  @Field(() => [CafeMenuImage])
   cafeMenuImage: CafeMenuImage[];
 
   @OneToMany(() => PickList, (pickList) => pickList.cafeInform, {

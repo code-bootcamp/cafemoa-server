@@ -45,7 +45,9 @@ export class Comment {
   @OneToMany(() => CommentImage, (commentImage) => commentImage.comment, {
     onDelete: 'CASCADE',
   })
+  @Field(() => [CommentImage])
   commentImage: CommentImage[];
+
   @DeleteDateColumn()
   deletedAt: Date;
 }

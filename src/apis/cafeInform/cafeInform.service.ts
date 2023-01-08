@@ -8,6 +8,7 @@ import { CafeMenuImage } from '../cafemenuimage/entities/cafemenuimage.entity';
 import { CafeTag } from '../cafeTag/entities/cafeTag.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { User } from '../user/entities/user.entity';
+import { throwIfEmpty } from 'rxjs';
 
 @Injectable()
 export class CafeInformService {
@@ -416,5 +417,17 @@ export class CafeInformService {
       });
       return result;
     }
+  }
+
+  async findMyCafes({ ownerID, page }) {
+    const result = await this.cafeInformrRepository.find({
+      where: {
+        owner: { id: ownerID },
+      },
+      relations: ['owner', 'cafeTag'],
+      take: 10,
+      skip: (page - 1) * 10,
+    });
+    return result;
   }
 }

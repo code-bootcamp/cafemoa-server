@@ -14,23 +14,29 @@ export class PickListResolver {
   fetchMyPickLists(
     @Context() context: IContext, //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+    @Args({ name: 'Location', type: () => String, nullable: true })
+    Location: string, //
   ) {
     page = page === undefined ? 1 : page;
-    return this.pickListService.find({ userID: context.req.user.id, page });
-  }
-
-  @UseGuards(GqlAuthAccessGuard)
-  @Query(() => [PickList])
-  fetchMyPickListLocation(
-    @Args('Location') Location: string, //
-    @Context() context: IContext,
-    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  ) {
-    page = page === undefined ? 1 : page;
-    return this.pickListService.findWithLocation({
+    return this.pickListService.find({
       userID: context.req.user.id,
-      Location,
       page,
+      Location,
     });
   }
+
+  // @UseGuards(GqlAuthAccessGuard)
+  // @Query(() => [PickList])
+  // fetchMyPickListLocation(
+  //   @Args('Location') Location: string, //
+  //   @Context() context: IContext,
+  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  // ) {
+  //   page = page === undefined ? 1 : page;
+  //   return this.pickListService.findWithLocation({
+  //     userID: context.req.user.id,
+  //     Location,
+  //     page,
+  //   });
+  // }
 }

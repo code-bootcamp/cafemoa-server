@@ -1,10 +1,12 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import { CommentImage } from '../commentImage.ts/entities/commentImage.entity';
 import { User } from '../user/entities/user.entity';
+import { PickList } from '../pickList/entities/pickList.entity';
+import { LikeComment } from '../likeComment/entities/likecomment.entity';
 
 @Injectable()
 export class CommentService {
@@ -18,6 +20,9 @@ export class CommentService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(LikeComment)
+    private readonly likeCommentRepository: Repository<LikeComment>,
   ) {}
   async findAll({ page }) {
     return await this.commentRepository.find({
@@ -135,7 +140,7 @@ export class CommentService {
 
   async sendBestComment() {
     const Like = await this.commentRepository.find({
-      relations: ['user', 'ownerComment', 'cafeinfo'],
+      relations: ['user', 'ownerComment', 'cafeinfo', 'cafeinfo.cafeTag'],
     });
     Like.sort((a, b) => b.like - a.like);
     console.log(Like);
@@ -268,6 +273,67 @@ export class CommentService {
         relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
       });
       return result;
+    }
+  }
+
+  async likeComment({ commentID, userID }) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userID,
+      },
+    });
+
+    const comment = await this.commentRepository.findOne({
+      where: {
+        id: commentID,
+      },
+    });
+    const likeComment = await this.likeCommentRepository.findOne({
+      where: {
+        user: { id: userID },
+        comment: { id: commentID },
+      },
+      relations: ['user', 'comment'],
+    });
+    if (likeComment) {
+      await this.commentRepository.update(
+        {
+          id: commentID,
+        },
+        {
+          like: comment.like - 1,
+        },
+      );
+      await this.likeCommentRepository.delete({ id: likeComment.id });
+      const result = await this.commentRepository.findOne({
+        where: {
+          id: commentID,
+        },
+      });
+      return result.like;
+    } else {
+      await this.commentRepository.update(
+        {
+          id: commentID,
+        },
+        {
+          like: comment.like + 1,
+        },
+      );
+      const resultComment = await this.commentRepository.findOne({
+        where: {
+          id: commentID,
+        },
+      });
+      const result = await this.likeCommentRepository.save({
+        user: {
+          ...user,
+        },
+        comment: {
+          ...resultComment,
+        },
+      });
+      return resultComment.like;
     }
   }
 }

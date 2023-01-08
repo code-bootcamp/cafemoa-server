@@ -109,4 +109,15 @@ export class CommentResolver {
       page,
     });
   }
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => Int)
+  likeComment(
+    @Args({ name: 'commentID', type: () => String }) commentID: string, //
+    @Context() context: IContext, //
+  ) {
+    return this.commentService.likeComment({
+      commentID,
+      userID: context.req.user.id,
+    });
+  }
 }

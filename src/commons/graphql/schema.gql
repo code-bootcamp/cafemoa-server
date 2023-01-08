@@ -27,6 +27,12 @@ type Stamp {
   cafeInform: CafeInform!
 }
 
+type PickList {
+  id: String!
+  user: User!
+  cafeInform: CafeInform!
+}
+
 type User {
   id: String!
   name: String!
@@ -43,7 +49,6 @@ type Comment {
   id: String!
   reply: String!
   like: Int!
-  commentAddr: String!
   time: DateTime!
   user: User!
   cafeinfo: CafeInform!
@@ -70,12 +75,6 @@ type Owner {
   phone: String!
   is_main: Boolean!
   is_cafeInform: Boolean!
-}
-
-type PickList {
-  id: String!
-  user: User!
-  cafeInform: CafeInform!
 }
 
 type CafeInform {
@@ -122,11 +121,12 @@ type StampHistory {
 type Query {
   fetchCafeImage(cafeInformID: String!): [CafeImage!]!
   fetchCafeInform(cafeInformID: String!): CafeInform!
-  fetchCafeInformWithTag(Tags: [String!]!, page: Float!): [CafeInform!]!
-  fetchCafeInformWithLocation(Location: String!, page: Float!): [CafeInform!]!
+  fetchCafeInformWithTag(Tags: [String!]!, page: Int): [CafeInform!]!
+  fetchCafeInformWithLocation(Location: String!, page: Int): [CafeInform!]!
   fetchBestCafe: [CafeInform!]!
-  fetchCafeInforms(page: Float!): [CafeInform!]!
+  fetchCafeInforms(page: Int): [CafeInform!]!
   fetchCafes(Location: String, Tags: [String!], page: Int): [CafeInform!]!
+  fetchMyCafes(page: Int!): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
   fetchComments(page: Int): [Comment!]!
@@ -147,15 +147,15 @@ type Query {
   fetchOwnerComment1(ownercommentId: String!): OwnerComment!
   fetchMyOwnerComments(OwnerID: String!, page: Int!): [OwnerComment!]!
   fetchOwnerCommentByCommentID(commentID: String!): String!
-  fetchMyPickLists(page: Float!): [PickList!]!
-  fetchMyPickListLocation(Location: String!, page: Float!): [PickList!]!
-  fetchCoupon(stampId: String!): Stamp!
-  fetchCoupons: [Stamp!]!
-  fetchCafeCoupons(cafeId: String!, page: Int): [Stamp!]!
-  fetchCouponWithLocation(cafeAddr: String!, page: Int): [Stamp!]!
+  fetchMyPickLists(page: Int, Location: String): [PickList!]!
+  fetchMyPickListLocation(Location: String!, page: Int): [PickList!]!
+  fetchStamp(stampId: String!): Stamp!
   fetchStamps(cafeId: String!, page: Int): [StampHistory!]!
+  fetchUserStamps(page: Int): [Stamp!]!
+  fetchCafeStamps(cafeId: String!, page: Int): [Stamp!]!
+  fetchStampWithLocation(cafeAddr: String!, page: Int): [Stamp!]!
   fetchUsers: [User!]!
-  fetchUser(email: String!): User!
+  fetchUser: User!
   fetchCouponAddUsers(name: String!, page: Int): [User!]!
 }
 
@@ -171,6 +171,7 @@ type Mutation {
   createComment(createCommentinput: createCommentInput!, cafeinformId: String!): Comment!
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): String!
+  likeComment(commentID: String!): Int!
   useCoupon(couponId: String!, password: String!): DeletedCoupon!
   uploadFile(files: [Upload!]!): [String!]!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
@@ -185,8 +186,7 @@ type Mutation {
   createOwnerComment(createOwnerCommentInput: CreateOwnerCommentInput!, commentID: String!): OwnerComment!
   updateOwnerComment(UpdateOwnerCommentInput: UpdateOwnerCommentInput!, ownerCommentID: String!): OwnerComment!
   deleteOwnerComment(ownerCommentId: String!): Boolean!
-  createCoupon(createCouponInput: CreateStampInput!): Stamp!
-  deleteCoupon(stampId: String!): String!
+  createStamp(createCouponInput: CreateStampInput!): Stamp!
   deleteStamp(ownerpassword: String!, stamphistoryId: String!): Int!
   createUser(createUserInput: CreateUserInput!): User!
   emailVerify(email: String!): String!

@@ -2,6 +2,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Comment } from 'src/apis/comment/entities/comment.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Stamp } from 'src/apis/stamp/entities/stamp.entity';
+import { PickList } from 'src/apis/pickList/entities/pickList.entity';
+import { LikeComment } from 'src/apis/likeComment/entities/likecomment.entity';
 
 @Entity()
 @ObjectType()
@@ -55,4 +57,14 @@ export class User {
 
   @OneToMany(() => Stamp, (stamp) => stamp.user, { onDelete: 'CASCADE' })
   stamp: Stamp;
+
+  @OneToMany(() => PickList, (pickList) => pickList.user, {
+    onDelete: 'CASCADE',
+  })
+  pickList: PickList;
+
+  @OneToMany(() => LikeComment, (likeComment) => likeComment.user, {
+    onDelete: 'CASCADE',
+  })
+  likeComment: LikeComment;
 }

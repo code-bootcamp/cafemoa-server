@@ -103,4 +103,17 @@ export class CafeInformResolver {
       page,
     });
   }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [CafeInform])
+  fetchMyCafes(
+    @Context() context: IContext, //
+    @Args({ name: 'page', type: () => Int }) page: number,
+  ) {
+    page = page === undefined ? 1 : page;
+    return this.cafeInformService.findMyCafes({
+      ownerID: context.req.user.id,
+      page,
+    });
+  }
 }

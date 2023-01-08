@@ -32,8 +32,8 @@ export class UserResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
-  fetchUser(@Args('email') email: string): Promise<User> {
-    return this.userService.find({ email });
+  fetchUser(@Context() context: IContext): Promise<User> {
+    return this.userService.find({ email: context.req.user.email });
   }
 
   @UseGuards(GqlAuthAccessGuard)

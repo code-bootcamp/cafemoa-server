@@ -25,17 +25,19 @@ export class CommentService {
     private readonly likeCommentRepository: Repository<LikeComment>,
   ) {}
   async findAll({ page }) {
-    return await this.commentRepository.find({
+    const result = await this.commentRepository.find({
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'ownerComment'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
+    console.log(result);
+    return result;
   }
 
   async findOne({ commentId }) {
     const result = await this.commentRepository.findOne({
       where: { id: commentId },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'ownerComment'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
 
     return result;
@@ -45,7 +47,7 @@ export class CommentService {
       take: 10,
       skip: (page - 1) * 10,
       where: { user: { id: userID } },
-      relations: ['user'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
     return result;
   }
@@ -93,7 +95,7 @@ export class CommentService {
     const { image_Url, ...comment } = UpdateCommentInput;
     const mycomment = await this.commentRepository.findOne({
       where: { id: commentId },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
 
     if (mycomment.user.id !== userID) {
@@ -140,7 +142,7 @@ export class CommentService {
 
   async sendBestComment() {
     const Like = await this.commentRepository.find({
-      relations: ['user', 'ownerComment', 'cafeinfo', 'cafeinfo.cafeTag'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
     Like.sort((a, b) => b.like - a.like);
     console.log(Like);
@@ -153,7 +155,7 @@ export class CommentService {
 
   async findcommentwithTags({ Tags }) {
     const result = await this.commentRepository.find({
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
 
     const arr = [];
@@ -175,7 +177,7 @@ export class CommentService {
   }
   async findCommentWithLocation({ Location, page }) {
     const result = await this.commentRepository.find({
-      relations: ['cafeinfo', 'user', 'cafeinfo.cafeTag'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
     const answer = result.filter((el) =>
       el.cafeinfo.cafeAddr.includes(Location),
@@ -194,7 +196,7 @@ export class CommentService {
   async findCommentWithLocationAndTag({ Location, Tags, page }) {
     if (Location && Tags.length === 0) {
       const result = await this.commentRepository.find({
-        relations: ['cafeinfo', 'user', 'cafeinfo.cafeTag'],
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
       });
       const answer = result.filter((el) =>
         el.cafeinfo.cafeAddr.includes(Location),
@@ -210,7 +212,7 @@ export class CommentService {
       return answer;
     } else if (!Location && Tags.length > 0) {
       const result = await this.commentRepository.find({
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
       });
 
       const arr = [];
@@ -238,7 +240,7 @@ export class CommentService {
       return arr;
     } else if (Location && Tags.length > 0) {
       const result = await this.commentRepository.find({
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
       });
       const answer = result.filter((el) =>
         el.cafeinfo.cafeAddr.includes(Location),
@@ -270,7 +272,7 @@ export class CommentService {
       const result = await this.commentRepository.find({
         take: 10,
         skip: (page - 1) * 10,
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
       });
       return result;
     }
@@ -341,7 +343,7 @@ export class CommentService {
       where: {
         cafeinfo: { id: cafeID },
       },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
       take: 10,
       skip: (page - 1) * 10,
     });

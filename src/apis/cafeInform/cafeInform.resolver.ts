@@ -108,7 +108,7 @@ export class CafeInformResolver {
   @Query(() => [CafeInform])
   fetchMyCafes(
     @Context() context: IContext, //
-    @Args({ name: 'page', type: () => Int }) page: number,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     page = page === undefined ? 1 : page;
     return this.cafeInformService.findMyCafes({

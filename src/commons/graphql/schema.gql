@@ -52,6 +52,7 @@ type Comment {
   time: DateTime!
   user: User!
   cafeinfo: CafeInform!
+  commentImage: [CommentImage!]!
 }
 
 """
@@ -88,6 +89,8 @@ type CafeInform {
   thumbNail: String!
   owner: Owner!
   cafeTag: [CafeTag!]!
+  cafeImage: [CafeImage!]!
+  cafeMenuImage: [CafeMenuImage!]!
 }
 
 type CafeImage {
@@ -126,7 +129,7 @@ type Query {
   fetchBestCafe: [CafeInform!]!
   fetchCafeInforms(page: Int): [CafeInform!]!
   fetchCafes(Location: String, Tags: [String!], page: Int): [CafeInform!]!
-  fetchMyCafes(page: Int!): [CafeInform!]!
+  fetchMyCafes(page: Int): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
   fetchComments(page: Int): [Comment!]!
@@ -136,6 +139,7 @@ type Query {
   fetchUserComments(page: Int): [Comment!]!
   fetchCommentmWithLocation(Location: String!, page: Int): [Comment!]!
   fetchCommentsAll(Location: String!, Tags: [String!]!, page: Int): [Comment!]!
+  fetchCommentBycafeID(cafeID: String!, page: Int): [Comment!]!
   fetchCommentImages: [CommentImage!]!
   fetchCommentImage(commentId: String!): CommentImage!
   fetchCommentImagesbyID(commentId: String!): [CommentImage!]!
@@ -143,12 +147,12 @@ type Query {
   fetchDeletedCoupon: [DeletedCoupon!]!
   fetchOwners: [Owner!]!
   fetchOwner(ownerID: String!): Owner!
+  fetchOwnerLoggedIn: Owner!
   fetchOwnerComment(page: Int!): [OwnerComment!]!
   fetchOwnerComment1(ownercommentId: String!): OwnerComment!
   fetchMyOwnerComments(OwnerID: String!, page: Int!): [OwnerComment!]!
   fetchOwnerCommentByCommentID(commentID: String!): String!
   fetchMyPickLists(page: Int, Location: String): [PickList!]!
-  fetchMyPickListLocation(Location: String!, page: Int): [PickList!]!
   fetchStamp(stampId: String!): Stamp!
   fetchStamps(cafeId: String!, page: Int): [StampHistory!]!
   fetchUserStamps(page: Int): [Stamp!]!

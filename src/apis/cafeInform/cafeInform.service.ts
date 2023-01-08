@@ -40,7 +40,7 @@ export class CafeInformService {
       where: {
         id: cafeInformID,
       },
-      relations: ['cafeTag', 'owner'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
 
     return result;
@@ -323,7 +323,7 @@ export class CafeInformService {
   }
   async findBestCafe() {
     const result = await this.cafeInformrRepository.find({
-      relations: ['owner', 'cafeTag'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
 
     result.sort((a, b) => b.like - a.like);
@@ -334,14 +334,14 @@ export class CafeInformService {
     const result = await this.cafeInformrRepository.find({
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['cafeTag', 'owner'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
     return result;
   }
   async findCafeWithLocationAndTag({ Location, Tags, page }) {
     if (Location && Tags.length === 0) {
       const result = await this.cafeInformrRepository.find({
-        relations: ['cafeTag', 'owner'],
+        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
       });
       const answer = result.filter((el) => el.cafeAddr.includes(Location));
       if (answer.length > 10) {
@@ -356,7 +356,7 @@ export class CafeInformService {
       return answer;
     } else if (!Location && Tags.length > 0) {
       const result = await this.cafeInformrRepository.find({
-        relations: ['cafeTag', 'owner'],
+        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
       });
       const arr = [];
       result.forEach((el) => {
@@ -383,7 +383,7 @@ export class CafeInformService {
       return arr;
     } else if (Location && Tags.length > 0) {
       const result = await this.cafeInformrRepository.find({
-        relations: ['cafeTag', 'owner'],
+        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
       });
       const answer = result.filter((el) => el.cafeAddr.includes(Location));
       const arr = [];
@@ -413,7 +413,7 @@ export class CafeInformService {
       const result = await this.cafeInformrRepository.find({
         take: 10,
         skip: (page - 1) * 10,
-        relations: ['cafeTag', 'owner'],
+        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
       });
       return result;
     }
@@ -424,7 +424,7 @@ export class CafeInformService {
       where: {
         owner: { id: ownerID },
       },
-      relations: ['owner', 'cafeTag'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
       take: 10,
       skip: (page - 1) * 10,
     });

@@ -44,6 +44,7 @@ export class StampService {
       take: 10,
       skip: (page - 1) * 10,
       where: { user: { id: userId } },
+      relations: ['user', 'cafeInform'],
     });
   }
 
@@ -52,6 +53,7 @@ export class StampService {
       take: 10,
       skip: (page - 1) * 10,
       where: { cafeInform: { id: cafeId } },
+      relations: ['user', 'cafeInform'],
     });
   }
 

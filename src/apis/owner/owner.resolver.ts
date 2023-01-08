@@ -65,4 +65,12 @@ export class OwnerResolver {
   sendTokenToSMS(@Args('phone') phone: string) {
     return this.ownerService.sendTokenToSMS({ phone });
   }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => Owner)
+  fetchOwnerLoggedIn(
+    @Context() context: IContext, //
+  ) {
+    return this.ownerService.findOne({ ownerID: context.req.user.id });
+  }
 }

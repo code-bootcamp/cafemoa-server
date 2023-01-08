@@ -120,4 +120,12 @@ export class CommentResolver {
       userID: context.req.user.id,
     });
   }
+  @Query(() => [Comment])
+  fetchCommentBycafeID(
+    @Args({ name: 'cafeID', type: () => String }) cafeID: string,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
+    page = page === undefined ? 1 : page;
+    return this.commentService.findCommentBycafeID({ cafeID, page });
+  }
 }

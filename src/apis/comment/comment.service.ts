@@ -336,4 +336,15 @@ export class CommentService {
       return resultComment.like;
     }
   }
+  async findCommentBycafeID({ cafeID, page }) {
+    const result = await this.commentRepository.find({
+      where: {
+        cafeinfo: { id: cafeID },
+      },
+      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user'],
+      take: 10,
+      skip: (page - 1) * 10,
+    });
+    return result;
+  }
 }

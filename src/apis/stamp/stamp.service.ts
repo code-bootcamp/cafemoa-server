@@ -39,13 +39,32 @@ export class StampService {
     return await this.stampRepository.find();
   }
 
-  async findUserStamp({ userId, page }) {
-    return await this.stampRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      where: { user: { id: userId } },
-      relations: ['user', 'cafeInform'],
-    });
+  async findUserStamp({ userId, page, location }) {
+    if (location) {
+      const result = await this.stampRepository.find({
+        relations: ['user', 'cafeInform'],
+      });
+      const answer = result.filter((el) =>
+        el.cafeInform.cafeAddr.includes(location),
+      );
+      if (answer.length > 10) {
+        const pageNum = Math.ceil(answer.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = answer.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
+      return answer;
+    } else {
+      const result = await this.stampRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
+        where: { user: { id: userId } },
+        relations: ['user', 'cafeInform'],
+      });
+      return result;
+    }
   }
 
   async findCafeStamp({ cafeId, page }) {
@@ -57,17 +76,8 @@ export class StampService {
     });
   }
 
-  async findStampLocation({ cafeAddr, page }) {
-    const cafe = await this.stampRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      relations: ['cafeInform'],
-    });
-    return cafe.filter((el) => el.cafeInform.cafeAddr.includes(cafeAddr));
-  }
-
   async createStamp({ createStampInput }) {
-    const { count, phoneNumber, cafeId, password } = createStampInput;
+    const { count, phone, cafeId, password } = createStampInput;
 
     const create = new Date();
     const year = create.getFullYear();
@@ -77,7 +87,7 @@ export class StampService {
     const expiredDate = `${year}-${month}-${day}`;
 
     const user = await this.userRepository.findOne({
-      where: { phoneNumber },
+      where: { phone },
     });
 
     const cafeInform = await this.cafeInformRepository.findOne({
@@ -95,7 +105,7 @@ export class StampService {
     }
 
     const stamp = await this.stampRepository.findOne({
-      where: { user: { phoneNumber }, cafeInform: { id: cafeId } },
+      where: { user: { phone }, cafeInform: { id: cafeId } },
       relations: ['user', 'cafeInform'],
     });
 

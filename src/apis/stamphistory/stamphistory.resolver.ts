@@ -10,7 +10,7 @@ export class StampHistoryResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [StampHistory])
-  fetchStamps(
+  fetchUnusualStamps(
     @Args('cafeId') cafeId: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ): Promise<StampHistory[]> {
@@ -20,7 +20,7 @@ export class StampHistoryResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Int)
-  deleteStamp(
+  deleteUnusualStamp(
     @Args('ownerpassword') ownerpassword: string,
     @Args('stamphistoryId') stamphistoryId: string,
   ) {

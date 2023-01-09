@@ -39,11 +39,11 @@ export class UserResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [User])
   fetchCouponAddUsers(
-    @Args('name') name: string,
+    @Args({ name: 'phone', type: () => String, nullable: true }) phone: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     page = page === undefined ? 1 : page;
-    return this.userService.findCouponUser({ name, page });
+    return this.userService.findCouponUser({ phone, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)

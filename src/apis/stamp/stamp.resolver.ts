@@ -28,12 +28,14 @@ export class StampResolver {
   @Query(() => [Stamp])
   fetchUserStamps(
     @Context() context: IContext,
+    @Args({ name: 'location', type: () => String, nullable: true })
     @Args({ name: 'page', type: () => Int, nullable: true })
     page: number,
   ) {
     page = page === undefined ? 1 : page;
     return this.stampService.findUserStamp({
       userId: context.req.user.id,
+      location,
       page,
     });
   }
@@ -49,18 +51,8 @@ export class StampResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
-  @Query(() => [Stamp])
-  fetchStampWithLocation(
-    @Args('cafeAddr') cafeAddr: string,
-    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  ) {
-    page = page === undefined ? 1 : page;
-    return this.stampService.findStampLocation({ cafeAddr, page });
-  }
-
-  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Stamp)
-  createStamp(@Args('createCouponInput') createStampInput: CreateStampInput) {
+  createStamp(@Args('createStampInput') createStampInput: CreateStampInput) {
     return this.stampService.createStamp({ createStampInput });
   }
 

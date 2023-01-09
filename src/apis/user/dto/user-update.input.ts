@@ -6,13 +6,10 @@ export class UpdateUserInput {
   email: string;
 
   @Field(() => String, { nullable: true })
-  address: string;
+  detailAddress: string;
 
   @Field(() => String, { nullable: true })
-  personalNumber: string;
-
-  @Field(() => String, { nullable: true })
-  phoneNumber: string;
+  phone: string;
 
   @Field(() => String, { nullable: true })
   password: string;

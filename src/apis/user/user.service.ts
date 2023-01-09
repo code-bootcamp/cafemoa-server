@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import {
   IUserServiceCreate,
@@ -17,7 +17,7 @@ export class UserService {
   ) {}
 
   async create({ createUserInput }: IUserServiceCreate): Promise<User> {
-    const { password, email, personalNumber, ...User } = createUserInput;
+    const { password, email, ...User } = createUserInput;
 
     const is_Valid = await this.userRepository.findOne({ where: { email } });
 
@@ -27,31 +27,9 @@ export class UserService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const date = new Date();
-    const year = date.getFullYear();
-    const yearend = Number(String(year).slice(2, 4));
-    const personalfirst = Number(personalNumber.slice(0, 2));
-    let age;
-
-    if (personalfirst <= yearend) {
-      age = '20' + personalfirst;
-      age = year - Number(age);
-    } else {
-      age = '19' + personalfirst;
-      age = year - Number(age);
-    }
-
-    if (String(age).length === 1) {
-      age = '10대 이하';
-    } else {
-      age = String(age)[0] + '0대';
-    }
-
     return await this.userRepository.save({
       password: hashedPassword,
-      personalNumber,
       email,
-      age,
       ...User,
     });
   }
@@ -60,15 +38,11 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { email } });
     if (user) throw new ConflictException('이미 등록된 회원입니다');
 
-    const EMAIL_USER = process.env.EMAIL_USER;
-    const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
-    const EMAIL_SENDER = process.env.EMAIL_SENDER;
-
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASSWORD,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
     const verifyNum = String(Math.floor(Math.random() * 1000000)).padStart(
@@ -77,7 +51,7 @@ export class UserService {
     );
 
     await transporter.sendMail({
-      from: EMAIL_SENDER,
+      from: process.env.EMAIL_SENDER,
       to: email,
       subject: '[카페모아] 이메일 인증번호가 발급되었습니다.',
       html: `
@@ -107,38 +81,19 @@ export class UserService {
     });
   }
 
-  async findCouponUser({ name, page }) {
-    if (name.length === 1) {
-      const firstname = name[0];
-      return await this.userRepository
-        .createQueryBuilder()
-        .where('name Like :name', { name: `${firstname}%%` })
-        .take(10)
-        .skip(10 * (page - 1))
-        .getMany();
-    } else if (name.length === 2) {
-      const firstname = name[0];
-      const secondname = name[1];
-      return await this.userRepository
-        .createQueryBuilder()
-        .where('name Like :name', { name: `${firstname}%%` })
-        .andWhere('name Like :secondname', { secondname: `%${secondname}%` })
-        .take(10)
-        .skip(10 * (page - 1))
-        .getMany();
-    } else if (name.length === 3) {
-      const firstname = name[0];
-      const secondname = name[1];
-      const thirdname = name[2];
-
-      return await this.userRepository
-        .createQueryBuilder()
-        .where('name Like :name', { name: `${firstname}%%` })
-        .andWhere('name Like :secondname', { secondname: `%${secondname}%` })
-        .andWhere('name Like :thirdname', { thirdname: `%%${thirdname}` })
-        .take(10)
-        .skip(10 * (page - 1))
-        .getMany();
+  async findCouponUser({ phone, page }) {
+    if (phone) {
+      return await this.userRepository.find({
+        where: { phone: Like(`%%${phone}`) },
+        take: 10,
+        skip: (page - 1) * 10,
+      });
+    } else {
+      return await this.userRepository.find({
+        where: { phone },
+        take: 10,
+        skip: (page - 1) * 10,
+      });
     }
   }
 

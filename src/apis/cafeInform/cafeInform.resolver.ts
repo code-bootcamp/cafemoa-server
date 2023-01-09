@@ -50,7 +50,7 @@ export class CafeInformResolver {
 
   @Query(() => [CafeInform])
   fetchCafeInformWithTag(
-    @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
+    @Args({ name: 'tags', type: () => [String] }) Tags: string[],
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     page = page === undefined ? 1 : page;
@@ -59,7 +59,7 @@ export class CafeInformResolver {
 
   @Query(() => [CafeInform])
   fetchCafeInformWithLocation(
-    @Args('Location') Location: string, //
+    @Args('location') Location: string, //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     page = page === undefined ? 1 : page;
@@ -89,9 +89,9 @@ export class CafeInformResolver {
 
   @Query(() => [CafeInform])
   fetchCafes(
-    @Args({ name: 'Location', type: () => String, nullable: true })
-    Location: string, //
-    @Args({ name: 'Tags', type: () => [String], nullable: true })
+    @Args({ name: 'location', type: () => String, nullable: true })
+    Location: string,
+    @Args({ name: 'tags', type: () => [String], nullable: true })
     Tags: string[],
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {

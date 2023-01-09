@@ -39,8 +39,6 @@ export class CouponService {
       relations: ['user', 'cafeInform'],
     });
 
-    console.log(result[0].user.id);
-
     const date = new Date();
 
     const year = date.getFullYear();

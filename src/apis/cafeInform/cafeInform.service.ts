@@ -301,18 +301,15 @@ export class CafeInformService {
 
   async findCafeInformWithLocation({ Location, page }) {
     const result = await this.cafeInformrRepository.find({
-      relations: ['cafeTag', 'owner'],
+      where: {
+        cafeAddr: Like(`%${Location}%`),
+      },
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+      take: 10,
+      skip: (page - 1) * 10,
     });
-    const answer = result.filter((el) => el.cafeAddr.includes(Location));
-    if (answer.length > 10) {
-      const pageNum = Math.ceil(answer.length / 10);
-      const result = new Array(pageNum);
-      for (let i = 0; i < pageNum; i++) {
-        result[i] = answer.slice(i * 10, (i + 1) * 10);
-      }
-      return result[page - 1];
-    }
-    return answer;
+
+    return result;
   }
 
   async deleteCafeInform({ cafeInformID }) {
@@ -340,52 +337,13 @@ export class CafeInformService {
   }
   async findCafeWithLocationAndTag({ Location, Tags, page }) {
     if (Location && Tags.length === 0) {
-      const result = await this.cafeInformrRepository.find({
-        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
-      });
-      const answer = result.filter((el) => el.cafeAddr.includes(Location));
-      if (answer.length > 10) {
-        const pageNum = Math.ceil(answer.length / 10);
-        const result = new Array(pageNum);
-        for (let i = 0; i < pageNum; i++) {
-          result[i] = answer.slice(i * 10, (i + 1) * 10);
-        }
-        return result[page - 1];
-      }
-
-      return answer;
+      const result = await this.findCafeInformWithLocation({ Location, page });
+      return result;
     } else if (!Location && Tags.length > 0) {
-      const result = await this.cafeInformrRepository.find({
-        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
-      });
-      const arr = [];
-      result.forEach((el) => {
-        el.cafeTag.forEach((e) => {
-          for (let i = 0; i < Tags.length; i++) {
-            if (e.tagName === Tags[i]) {
-              if (arr.includes(el)) {
-                continue;
-              } else {
-                arr.push(el);
-              }
-            }
-          }
-        });
-      });
-      if (arr.length > 10) {
-        const pageNum = Math.ceil(arr.length / 10);
-        const result = new Array(pageNum);
-        for (let i = 0; i < pageNum; i++) {
-          result[i] = arr.slice(i * 10, (i + 1) * 10);
-        }
-        return result[page - 1];
-      }
-      return arr;
+      const result = await this.findCafeInformWithTags({ Tags, page });
+      return result;
     } else if (Location && Tags.length > 0) {
-      const result = await this.cafeInformrRepository.find({
-        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
-      });
-      const answer = result.filter((el) => el.cafeAddr.includes(Location));
+      const answer = await this.findCafeInformWithLocation({ Location, page });
       const arr = [];
       answer.forEach((el) => {
         el.cafeTag.forEach((e) => {

@@ -68,12 +68,12 @@ export class CommentResolver {
     return this.commentService.sendBestComment();
   }
 
-  @Query(() => [Comment])
-  fetchCommentWithTag(
-    @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
-  ) {
-    return this.commentService.findcommentwithTags({ Tags });
-  }
+  // @Query(() => [Comment])
+  // fetchCommentWithTag(
+  //   @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
+  // ) {
+  //   return this.commentService.findcommentwithTags({ Tags });
+  // }
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Comment])
@@ -87,14 +87,14 @@ export class CommentResolver {
       page,
     });
   }
-  @Query(() => [Comment])
-  fetchCommentmWithLocation(
-    @Args('Location') Location: string,
-    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  ) {
-    page = page === undefined ? 1 : page;
-    return this.commentService.findCommentWithLocation({ Location, page });
-  }
+  // @Query(() => [Comment])
+  // fetchCommentmWithLocation(
+  //   @Args('Location') Location: string,
+  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  // ) {
+  //   page = page === undefined ? 1 : page;
+  //   return this.commentService.findCommentWithLocation({ Location, page });
+  // }
 
   @Query(() => [Comment])
   fetchCommentsAll(

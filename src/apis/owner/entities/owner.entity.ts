@@ -48,6 +48,7 @@ export class Owner {
   @OneToMany(() => CafeInform, (cafeinform) => cafeinform.owner, {
     onDelete: 'CASCADE',
   })
+  // @Field(() => [CafeInform])
   cafeInform: CafeInform[];
 
   @OneToMany(() => OwnerComment, (ownerComment) => ownerComment.owner, {

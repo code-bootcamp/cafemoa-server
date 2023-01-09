@@ -39,6 +39,10 @@ export class CafeInform {
   @Field(() => String)
   cafeAddr: string;
 
+  @Column()
+  @Field(() => String)
+  detailAddr: string;
+
   @Column({ default: 0 })
   @Field(() => Int)
   like: number;

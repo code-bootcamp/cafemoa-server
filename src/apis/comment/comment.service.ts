@@ -7,6 +7,7 @@ import { CommentImage } from '../commentImage.ts/entities/commentImage.entity';
 import { User } from '../user/entities/user.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { LikeComment } from '../likeComment/entities/likecomment.entity';
+import { resourceLimits } from 'worker_threads';
 
 @Injectable()
 export class CommentService {
@@ -179,9 +180,13 @@ export class CommentService {
     const result = await this.commentRepository.find({
       relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
     });
-    const answer = result.filter((el) =>
-      el.cafeinfo.cafeAddr.includes(Location),
-    );
+    const answer = [];
+    for (let i = 0; i < result.length; i++) {
+      const str = result[i].cafeinfo.cafeAddr + result[i].cafeinfo.detailAddr;
+      if (str.includes(Location)) {
+        answer.push(result[i]);
+      }
+    }
     if (answer.length > 10) {
       const pageNum = Math.ceil(answer.length / 10);
       const result = new Array(pageNum);
@@ -195,21 +200,8 @@ export class CommentService {
 
   async findCommentWithLocationAndTag({ Location, Tags, page }) {
     if (Location && Tags.length === 0) {
-      const result = await this.commentRepository.find({
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
-      });
-      const answer = result.filter((el) =>
-        el.cafeinfo.cafeAddr.includes(Location),
-      );
-      if (answer.length > 10) {
-        const pageNum = Math.ceil(answer.length / 10);
-        const result = new Array(pageNum);
-        for (let i = 0; i < pageNum; i++) {
-          result[i] = answer.slice(i * 10, (i + 1) * 10);
-        }
-        return result[page - 1];
-      }
-      return answer;
+      const result = await this.findCommentWithLocation({ Location, page });
+      return result;
     } else if (!Location && Tags.length > 0) {
       const result = await this.commentRepository.find({
         relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
@@ -239,14 +231,9 @@ export class CommentService {
       }
       return arr;
     } else if (Location && Tags.length > 0) {
-      const result = await this.commentRepository.find({
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
-      });
-      const answer = result.filter((el) =>
-        el.cafeinfo.cafeAddr.includes(Location),
-      );
+      const result = await this.findCommentWithLocation({ Location, page });
       const arr = [];
-      answer.forEach((el) => {
+      result.forEach((el) => {
         el.cafeinfo.cafeTag.forEach((e) => {
           for (let i = 0; i < Tags.length; i++) {
             if (e.tagName === Tags[i]) {

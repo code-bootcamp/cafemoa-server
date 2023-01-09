@@ -12,6 +12,9 @@ export class UpdateCafeInform {
   cafeAddr: string;
 
   @Field(() => String, { nullable: true })
+  detailAddr: string;
+
+  @Field(() => String, { nullable: true })
   ownerNum: string;
 
   @Field(() => String, { nullable: true })

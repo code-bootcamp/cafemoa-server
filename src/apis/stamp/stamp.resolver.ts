@@ -29,6 +29,7 @@ export class StampResolver {
   fetchUserStamps(
     @Context() context: IContext,
     @Args({ name: 'location', type: () => String, nullable: true })
+    location: string,
     @Args({ name: 'page', type: () => Int, nullable: true })
     page: number,
   ) {

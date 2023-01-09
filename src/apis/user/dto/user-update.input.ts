@@ -6,6 +6,9 @@ export class UpdateUserInput {
   email: string;
 
   @Field(() => String, { nullable: true })
+  address: string;
+
+  @Field(() => String, { nullable: true })
   detailAddress: string;
 
   @Field(() => String, { nullable: true })

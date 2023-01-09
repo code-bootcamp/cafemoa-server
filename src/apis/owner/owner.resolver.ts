@@ -54,14 +54,14 @@ export class OwnerResolver {
     return this.ownerService.emailPassword({ email });
   }
 
-  @Mutation(() => Int)
+  @Mutation(() => String)
   sendTokenToOwnerEmail(
     @Args('email') email: string, //
   ) {
     return this.ownerService.sendToken({ email });
   }
 
-  @Mutation(() => Int)
+  @Mutation(() => String)
   sendTokenToSMS(@Args('phone') phone: string) {
     return this.ownerService.sendTokenToSMS({ phone });
   }

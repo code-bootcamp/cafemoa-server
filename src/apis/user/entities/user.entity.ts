@@ -28,17 +28,13 @@ export class User {
   @Field(() => String)
   address: string;
 
-  @Column()
+  @Column({ default: '' })
   @Field(() => String)
-  personalNumber: string;
+  detailAddress: string;
 
   @Column()
   @Field(() => String)
-  phoneNumber: string;
-
-  @Column()
-  @Field(() => String)
-  age: string;
+  phone: string;
 
   @Column()
   // @Field(() => String)

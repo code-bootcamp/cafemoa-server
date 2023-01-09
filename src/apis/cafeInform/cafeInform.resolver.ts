@@ -21,7 +21,7 @@ export class CafeInformResolver {
   @Mutation(() => CafeInform)
   updateCafeInform(
     @Args('updateCafeInform') updateCafeInform: UpdateCafeInform, //
-    @Args('CafeInformID') CafeInformID: string,
+    @Args('cafeInformID') CafeInformID: string,
   ) {
     return this.cafeInformService.update({ updateCafeInform, CafeInformID });
   }
@@ -39,7 +39,7 @@ export class CafeInformResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Int)
   PickCafe(
-    @Args('CafeInformID') CafeInformID: string, //
+    @Args('cafeInformID') CafeInformID: string, //
     @Context() context: IContext,
   ) {
     return this.cafeInformService.pickcafe({

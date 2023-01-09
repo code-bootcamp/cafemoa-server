@@ -135,13 +135,10 @@ type Query {
   fetchComments(page: Int): [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchbestcomment: [Comment!]!
-  fetchCommentWithTag(Tags: [String!]!): [Comment!]!
   fetchUserComments(page: Int): [Comment!]!
-  fetchCommentmWithLocation(Location: String!, page: Int): [Comment!]!
   fetchCommentsAll(Location: String!, Tags: [String!]!, page: Int): [Comment!]!
   fetchCommentBycafeID(cafeID: String!, page: Int): [Comment!]!
   fetchCommentImages: [CommentImage!]!
-  fetchCommentImage(commentId: String!): CommentImage!
   fetchCommentImagesbyID(commentId: String!): [CommentImage!]!
   fetchUserCoupons(page: Int): [Stamp!]!
   fetchDeletedCoupon: [DeletedCoupon!]!
@@ -165,9 +162,9 @@ type Query {
 
 type Mutation {
   deleteCafeImage(cafeImageID: String!): Boolean!
-  updateCafeInform(updateCafeInform: UpdateCafeInform!, CafeInformID: String!): CafeInform!
+  updateCafeInform(updateCafeInform: UpdateCafeInform!, cafeInformID: String!): CafeInform!
   CreatecafeInform(cafeInformInput: CafeInformInput!): CafeInform!
-  PickCafe(CafeInformID: String!): Int!
+  PickCafe(cafeInformID: String!): Int!
   deleteCafeInform(cafeInformID: String!): Boolean!
   deleteCafeMenuImage(cafeMenuImageID: String!): Boolean!
   createCategory(category: String!): Category!

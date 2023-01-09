@@ -9,6 +9,7 @@ import { CafeTag } from '../cafeTag/entities/cafeTag.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { User } from '../user/entities/user.entity';
 import { throwIfEmpty } from 'rxjs';
+import { resourceLimits } from 'worker_threads';
 
 @Injectable()
 export class CafeInformService {
@@ -301,15 +302,24 @@ export class CafeInformService {
 
   async findCafeInformWithLocation({ Location, page }) {
     const result = await this.cafeInformrRepository.find({
-      where: {
-        cafeAddr: Like(`%${Location}%`),
-      },
       relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
-      take: 10,
-      skip: (page - 1) * 10,
     });
-
-    return result;
+    const arr = [];
+    for (let i = 0; i < result.length; i++) {
+      const str = result[i].cafeAddr + result[i].detailAddr;
+      if (str.includes(Location)) {
+        arr.push(result[i]);
+      }
+    }
+    if (arr.length > 10) {
+      const pageNum = Math.ceil(arr.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = arr.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return arr;
   }
 
   async deleteCafeInform({ cafeInformID }) {

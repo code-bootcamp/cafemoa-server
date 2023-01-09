@@ -39,9 +39,8 @@ type User {
   nickname: String!
   email: String!
   address: String!
-  personalNumber: String!
-  phoneNumber: String!
-  age: String!
+  detailAddress: String!
+  phone: String!
   profileImage: String!
 }
 
@@ -83,6 +82,7 @@ type CafeInform {
   cafeinfo: String!
   operatingInfo: String!
   cafeAddr: String!
+  detailAddr: String!
   like: Int!
   ownerNum: String!
   brandName: String!
@@ -105,6 +105,13 @@ type Category {
   category: String!
 }
 
+type Coupon {
+  id: String!
+  expiredDate: String!
+  cafeInform: CafeInform!
+  user: User!
+}
+
 type DeletedCoupon {
   id: String!
   expired: Boolean!
@@ -124,11 +131,11 @@ type StampHistory {
 type Query {
   fetchCafeImage(cafeInformID: String!): [CafeImage!]!
   fetchCafeInform(cafeInformID: String!): CafeInform!
-  fetchCafeInformWithTag(Tags: [String!]!, page: Int): [CafeInform!]!
-  fetchCafeInformWithLocation(Location: String!, page: Int): [CafeInform!]!
+  fetchCafeInformWithTag(tags: [String!]!, page: Int): [CafeInform!]!
+  fetchCafeInformWithLocation(location: String!, page: Int): [CafeInform!]!
   fetchBestCafe: [CafeInform!]!
   fetchCafeInforms(page: Int): [CafeInform!]!
-  fetchCafes(Location: String, Tags: [String!], page: Int): [CafeInform!]!
+  fetchCafes(location: String, tags: [String!], page: Int): [CafeInform!]!
   fetchMyCafes(page: Int): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
@@ -140,7 +147,7 @@ type Query {
   fetchCommentBycafeID(cafeID: String!, page: Int): [Comment!]!
   fetchCommentImages: [CommentImage!]!
   fetchCommentImagesbyID(commentId: String!): [CommentImage!]!
-  fetchUserCoupons(page: Int): [Stamp!]!
+  fetchUserCoupons(page: Int): [Coupon!]!
   fetchDeletedCoupon: [DeletedCoupon!]!
   fetchOwners: [Owner!]!
   fetchOwner(ownerID: String!): Owner!
@@ -151,13 +158,13 @@ type Query {
   fetchOwnerCommentByCommentID(commentID: String!): String!
   fetchMyPickLists(page: Int, Location: String): [PickList!]!
   fetchStamp(stampId: String!): Stamp!
-  fetchStamps(cafeId: String!, page: Int): [StampHistory!]!
-  fetchUserStamps(page: Int): [Stamp!]!
+  fetchStamps: [Stamp!]!
+  fetchUserStamps(location: String, page: Int): [Stamp!]!
   fetchCafeStamps(cafeId: String!, page: Int): [Stamp!]!
-  fetchStampWithLocation(cafeAddr: String!, page: Int): [Stamp!]!
+  fetchUnusualStamps(cafeId: String!, page: Int): [StampHistory!]!
   fetchUsers: [User!]!
   fetchUser: User!
-  fetchCouponAddUsers(name: String!, page: Int): [User!]!
+  fetchCouponAddUsers(phone: String, page: Int): [User!]!
 }
 
 type Mutation {
@@ -179,16 +186,17 @@ type Mutation {
   deleteOwner: Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!): Owner!
   findOwnerPassword(email: String!): String!
-  sendTokenToOwnerEmail(email: String!): Int!
-  sendTokenToSMS(phone: String!): Int!
+  sendTokenToOwnerEmail(email: String!): String!
+  sendTokenToSMS(phone: String!): String!
   ownerLogin(email: String!, password: String!): String!
   restoreOwnerAccessToken: String!
   ownerLogout: String!
   createOwnerComment(createOwnerCommentInput: CreateOwnerCommentInput!, commentID: String!): OwnerComment!
   updateOwnerComment(UpdateOwnerCommentInput: UpdateOwnerCommentInput!, ownerCommentID: String!): OwnerComment!
   deleteOwnerComment(ownerCommentId: String!): Boolean!
-  createStamp(createCouponInput: CreateStampInput!): Stamp!
-  deleteStamp(ownerpassword: String!, stamphistoryId: String!): Int!
+  createStamp(createStampInput: CreateStampInput!): Stamp!
+  deleteStamp(stampId: String!): String!
+  deleteUnusualStamp(ownerpassword: String!, stamphistoryId: String!): Int!
   createUser(createUserInput: CreateUserInput!): User!
   emailVerify(email: String!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
@@ -203,6 +211,7 @@ input UpdateCafeInform {
   cafeinfo: String
   operatingInfo: String
   cafeAddr: String
+  detailAddr: String
   ownerNum: String
   brandName: String
   menu_imageUrl: [String!]
@@ -214,6 +223,7 @@ input CafeInformInput {
   cafeinfo: String!
   operatingInfo: String!
   cafeAddr: String!
+  detailAddr: String!
   ownerNum: String!
   brandName: String!
   cafeTag: [String!]!
@@ -261,7 +271,7 @@ input UpdateOwnerCommentInput {
 }
 
 input CreateStampInput {
-  phoneNumber: String!
+  phone: String!
   cafeId: String!
   count: Int!
   password: String!
@@ -271,18 +281,17 @@ input CreateUserInput {
   name: String!
   nickname: String!
   email: String!
-  personalNumber: String!
-  phoneNumber: String!
   address: String!
+  phone: String!
+  detailAddress: String
   password: String!
   profileImage: String
 }
 
 input UpdateUserInput {
   email: String
-  address: String
-  personalNumber: String
-  phoneNumber: String
+  detailAddress: String
+  phone: String
   password: String
   profileImage: String
 }

@@ -12,6 +12,9 @@ export class CafeInformInput {
   cafeAddr: string;
 
   @Field(() => String)
+  detailAddr: string;
+
+  @Field(() => String)
   ownerNum: string;
 
   @Field(() => String)

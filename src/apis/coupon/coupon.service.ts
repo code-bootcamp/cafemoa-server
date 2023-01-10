@@ -58,6 +58,7 @@ export class CouponService {
           },
         });
         await this.deletedCouponRepository.save({
+          expiredDate: result[i].expiredDate,
           user: {
             ...user,
           },
@@ -80,6 +81,7 @@ export class CouponService {
             },
           });
           await this.deletedCouponRepository.save({
+            expiredDate: result[i].expiredDate,
             user: {
               ...user,
             },
@@ -102,6 +104,7 @@ export class CouponService {
               },
             });
             await this.deletedCouponRepository.save({
+              expiredDate: result[i].expiredDate,
               user: {
                 ...user,
               },
@@ -155,6 +158,7 @@ export class CouponService {
     }
 
     const result = await this.deletedCouponRepository.save({
+      expiredDate: '',
       expired: false,
       user: { ...stamp.user },
       cafeInform: { ...cafeInform },

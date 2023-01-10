@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
@@ -133,16 +137,15 @@ export class CouponService {
   async useCoupon({ password, couponId }) {
     const coupon = await this.couponRepository.findOne({
       where: { id: couponId },
-      relations: ['stamp'],
+      relations: ['user', 'cafeInform'],
     });
 
-    const stamp = await this.stampRepository.findOne({
-      where: { id: coupon.id },
-      relations: ['cafeInform', 'user'],
-    });
+    if (!coupon) {
+      throw new ConflictException('일치하는 쿠폰이 없습니다.');
+    }
 
     const cafeInform = await this.cafeInformRepository.findOne({
-      where: { id: stamp.cafeInform.id },
+      where: { id: coupon.cafeInform.id },
       relations: ['owner'],
     });
 
@@ -160,8 +163,8 @@ export class CouponService {
     const result = await this.deletedCouponRepository.save({
       expiredDate: '',
       expired: false,
-      user: { ...stamp.user },
-      cafeInform: { ...cafeInform },
+      user: { ...coupon.user },
+      cafeInform: { ...coupon.cafeInform },
     });
 
     await this.couponRepository.delete({ id: couponId });

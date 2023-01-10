@@ -49,10 +49,6 @@ export class CafeInform {
 
   @Column()
   @Field(() => String)
-  ownerNum: string;
-
-  @Column()
-  @Field(() => String)
   brandName: string;
 
   @Column()

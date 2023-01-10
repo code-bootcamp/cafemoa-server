@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentImage } from './entities/commentImage.entity';
@@ -31,5 +31,21 @@ export class CommentImageService {
       relations: ['comment'],
     });
     return result;
+  }
+
+  async delete({ context, commnetImageID }) {
+    const result = await this.CommentImageRepository.findOne({
+      where: {
+        id: commnetImageID,
+      },
+      relations: ['comment', 'comment.user'],
+    });
+    if (result.comment.user.id !== context.req.user.id) {
+      throw new ConflictException('이미지를 삭제할 수 없습니다.');
+    }
+    const resultD = await this.CommentImageRepository.softDelete({
+      id: commnetImageID,
+    });
+    return resultD.affected ? '삭제 성공' : '삭제 실패';
   }
 }

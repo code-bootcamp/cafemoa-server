@@ -22,8 +22,13 @@ export class CafeInformResolver {
   updateCafeInform(
     @Args('updateCafeInform') updateCafeInform: UpdateCafeInform, //
     @Args('cafeInformID') CafeInformID: string,
+    @Context() context: IContext,
   ) {
-    return this.cafeInformService.update({ updateCafeInform, CafeInformID });
+    return this.cafeInformService.update({
+      updateCafeInform,
+      CafeInformID,
+      context,
+    });
   }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeInform)
@@ -70,8 +75,11 @@ export class CafeInformResolver {
   }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteCafeInform(@Args('cafeInformID') cafeInformID: string) {
-    return this.cafeInformService.deleteCafeInform({ cafeInformID });
+  deleteCafeInform(
+    @Args('cafeInformID') cafeInformID: string, //
+    @Context() context: IContext,
+  ) {
+    return this.cafeInformService.deleteCafeInform({ cafeInformID, context });
   }
 
   @Query(() => [CafeInform])
@@ -95,7 +103,6 @@ export class CafeInformResolver {
     Tags: string[],
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    console.log(page);
     page = page === undefined ? 1 : page;
     return this.cafeInformService.findCafeWithLocationAndTag({
       Location,

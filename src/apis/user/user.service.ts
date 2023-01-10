@@ -138,14 +138,14 @@ export class UserService {
     });
 
     const EMAIL_USER = process.env.EMAIL_USER;
-    const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+    const EMAIL_PASS = process.env.EMAIL_PASS;
     const EMAIL_SENDER = process.env.EMAIL_SENDER;
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: EMAIL_USER,
-        pass: EMAIL_PASSWORD,
+        pass: EMAIL_PASS,
       },
     });
 

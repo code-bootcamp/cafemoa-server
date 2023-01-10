@@ -47,15 +47,18 @@ export class CafeInformService {
     return result;
   }
 
-  async update({ updateCafeInform, CafeInformID }) {
+  async update({ updateCafeInform, CafeInformID, context }) {
     const { cafeTag, menu_imageUrl, cafe_imageUrl, ...CafeInform } =
       updateCafeInform;
     const cafeinform = await this.cafeInformrRepository.findOne({
       where: {
         id: CafeInformID,
       },
-      relations: ['cafeTag'],
+      relations: ['cafeTag', 'owner'],
     });
+    if (cafeinform.owner.id !== context.req.user.id) {
+      throw new ConflictException('자신의 카페만 수정이 가능합니다.');
+    }
     if (menu_imageUrl) {
       await Promise.all(
         menu_imageUrl.map(async (el) => {
@@ -322,7 +325,16 @@ export class CafeInformService {
     return arr;
   }
 
-  async deleteCafeInform({ cafeInformID }) {
+  async deleteCafeInform({ cafeInformID, context }) {
+    const resultCafe = await this.cafeInformrRepository.findOne({
+      where: {
+        id: cafeInformID,
+      },
+      relations: ['owner'],
+    });
+    if (resultCafe.owner.id !== context.req.user.id) {
+      throw new ConflictException('자신의 카페만 삭제 가능합니다.');
+    }
     const result = await this.cafeInformrRepository.delete({
       id: cafeInformID,
     });

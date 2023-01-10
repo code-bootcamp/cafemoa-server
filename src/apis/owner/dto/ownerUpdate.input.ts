@@ -19,4 +19,7 @@ export class OwnerUpdateInput {
 
   @Field(() => String, { nullable: true })
   ownerPassword: string;
+
+  @Field(() => String, { nullable: true })
+  ownerNum: string;
 }

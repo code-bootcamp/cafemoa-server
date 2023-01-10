@@ -6,7 +6,6 @@ import * as bcrypt from 'bcrypt';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
 import * as nodemailer from 'nodemailer';
 import * as coolsms from 'coolsms-node-sdk';
-import { SchemaTextFieldPhonetics } from 'redis';
 const mysms = coolsms.default;
 @Injectable()
 export class OwnerService {

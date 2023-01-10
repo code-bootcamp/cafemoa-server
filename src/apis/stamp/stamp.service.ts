@@ -158,6 +158,7 @@ export class StampService {
 
       if (count >= 3) {
         await this.stampHistoryRepository.save({
+          count,
           user: { ...user },
           owner: { ...owner },
           coupon: { ...result },

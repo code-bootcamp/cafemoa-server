@@ -15,9 +15,6 @@ export class CafeInformInput {
   detailAddr: string;
 
   @Field(() => String)
-  ownerNum: string;
-
-  @Field(() => String)
   brandName: string;
 
   @Field(() => [String])

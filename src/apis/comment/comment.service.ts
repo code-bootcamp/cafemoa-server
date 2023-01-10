@@ -8,6 +8,8 @@ import { User } from '../user/entities/user.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { LikeComment } from '../likeComment/entities/likecomment.entity';
 import { resourceLimits } from 'worker_threads';
+import { Stamp } from '../stamp/entities/stamp.entity';
+import { copyFile } from 'fs';
 
 @Injectable()
 export class CommentService {
@@ -24,6 +26,9 @@ export class CommentService {
 
     @InjectRepository(LikeComment)
     private readonly likeCommentRepository: Repository<LikeComment>,
+
+    @InjectRepository(Stamp)
+    private readonly stampRepository: Repository<Stamp>,
   ) {}
   async findAll({ page }) {
     const result = await this.commentRepository.find({
@@ -55,6 +60,10 @@ export class CommentService {
 
   async create({ createCommentInput, cafeinformId, userID }) {
     const { image_Url, ...Comment } = createCommentInput;
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDay();
 
     const resultUser = await this.userRepository.findOne({
       where: {
@@ -63,6 +72,41 @@ export class CommentService {
     });
     if (!resultUser) {
       throw new ConflictException('댓글은 유저만 작성가능합니다.');
+    }
+
+    const resultStamp = await this.stampRepository.findOne({
+      where: {
+        user: {
+          id: userID,
+        },
+        cafeInform: {
+          id: cafeinformId,
+        },
+      },
+      relations: ['user', 'cafeInform'],
+    });
+
+    if (resultStamp) {
+      let dayS = String(resultStamp.updatedAt);
+      dayS = dayS.slice(0, 10);
+      let result = dayS.split('-');
+      if (Number(result[0]) < year) {
+        throw new ConflictException('댓글을 작성할 수 있는 기간이 지났습니다.');
+      } else if (Number(result[0]) === year) {
+        if (Number(result[1]) < month) {
+          throw new ConflictException(
+            '댓글을 작성할 수 있는 기간이 지났습니다.',
+          );
+        } else if (Number(result[1]) === month) {
+          if (Number(result[2]) + 3 < day) {
+            throw new ConflictException(
+              '댓글을 작성 할 수 있는 기간이 지났습니다.',
+            );
+          }
+        }
+      }
+    } else {
+      throw new ConflictException('해당 카페의 스탬프 기록이 없습니다.');
     }
 
     const result = await this.cafeInformrRepository.findOne({
@@ -108,8 +152,6 @@ export class CommentService {
       ...comment,
     });
     if (image_Url) {
-      await this.commentImageRepository.delete({ comment: { id: commentId } });
-
       for (let i = 0; i < image_Url.length; i++) {
         this.commentImageRepository.save({
           image_url: image_Url[i],

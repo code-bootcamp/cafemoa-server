@@ -13,17 +13,19 @@ export class OwnerCommentResolver {
   ) {}
 
   @Query(() => [OwnerComment])
-  fetchOwnerComment(@Args({ name: 'page', type: () => Int }) page: number) {
+  fetchOwnerComment(
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
     page = page === undefined ? 1 : page;
     return this.ownercommentService.findAll({ page });
   }
 
-  @Query(() => OwnerComment)
-  fetchOwnerComment1(
-    @Args('ownercommentId') ownercommentId: string, //
-  ) {
-    return this.ownercommentService.findOne({ ownercommentId });
-  }
+  // @Query(() => OwnerComment)
+  // fetchOwnerComment1(
+  //   @Args('ownercommentId') ownercommentId: string, //
+  // ) {
+  //   return this.ownercommentService.findOne({ ownercommentId });
+  // }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => OwnerComment)
   async createOwnerComment(
@@ -57,25 +59,28 @@ export class OwnerCommentResolver {
       UpdateOwnerCommentInput,
     });
   }
+  // @UseGuards(GqlAuthAccessGuard)
+  // @Mutation(() => Boolean)
+  // deleteOwnerComment(
+  //   @Args('ownerCommentId') ownercommentId: string, //
+  //   @Context() context: IContext,
+  // ) {
+  //   return this.ownercommentService.delete({
+  //     ownercommentId,
+  //     ownerID: context.req.user.id,
+  //   });
+  // }
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => Boolean)
-  deleteOwnerComment(
-    @Args('ownerCommentId') ownercommentId: string, //
-    @Context() context: IContext,
-  ) {
-    return this.ownercommentService.delete({
-      ownercommentId,
-      ownerID: context.req.user.id,
-    });
-  }
-
   @Query(() => [OwnerComment])
   fetchMyOwnerComments(
-    @Args('OwnerID') OwnerID: string, //
-    @Args({ name: 'page', type: () => Int }) page: number,
+    @Context() context: IContext, //
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     page = page === undefined ? 1 : page;
-    return this.ownercommentService.findById({ OwnerID, page });
+    return this.ownercommentService.findById({
+      OwnerID: context.req.user.id,
+      page,
+    });
   }
 
   @Query(() => String)

@@ -14,6 +14,10 @@ export class DeletedCoupon {
   @Field(() => Boolean)
   expired: boolean;
 
+  @Column()
+  @Field(() => String)
+  expiredDate: string;
+
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;

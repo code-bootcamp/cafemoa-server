@@ -123,4 +123,13 @@ export class CafeInformResolver {
       page,
     });
   }
+
+  @Query(() => [CafeInform])
+  fetchCafeInformsByBrandName(
+    @Args({ name: 'name', type: () => String, nullable: true }) name: string,
+    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  ) {
+    page = page === undefined ? 1 : page;
+    return this.cafeInformService.findCafeByName({ name, page });
+  }
 }

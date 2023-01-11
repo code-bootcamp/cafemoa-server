@@ -77,6 +77,7 @@ type Owner {
   is_main: Boolean!
   is_cafeInform: Boolean!
   ownerNum: String!
+  brandName: String!
 }
 
 type CafeInform {
@@ -86,7 +87,6 @@ type CafeInform {
   cafeAddr: String!
   detailAddr: String!
   like: Int!
-  brandName: String!
   thumbNail: String!
   owner: Owner!
   cafeTag: [CafeTag!]!
@@ -137,13 +137,14 @@ type Query {
   fetchCafeInforms(page: Int): [CafeInform!]!
   fetchCafes(location: String, tags: [String!], page: Int): [CafeInform!]!
   fetchMyCafes(page: Int): [CafeInform!]!
+  fetchCafeInformsByBrandName(name: String, page: Int): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
   fetchComments(page: Int): [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchbestcomment: [Comment!]!
   fetchUserComments(page: Int): [Comment!]!
-  fetchCommentsAll(Location: String!, Tags: [String!]!, page: Int): [Comment!]!
+  fetchCommentsAll(location: String, tags: [String!], page: Int): [Comment!]!
   fetchCommentBycafeID(cafeID: String!, page: Int): [Comment!]!
   fetchCommentImages: [CommentImage!]!
   fetchCommentImagesbyID(commentId: String!): [CommentImage!]!
@@ -212,7 +213,6 @@ input UpdateCafeInform {
   cafeAddr: String
   detailAddr: String
   ownerNum: String
-  brandName: String
   menu_imageUrl: [String!]
   cafe_imageUrl: [String!]
   cafeTag: [String!]
@@ -223,7 +223,6 @@ input CafeInformInput {
   operatingInfo: String!
   cafeAddr: String!
   detailAddr: String!
-  brandName: String!
   cafeTag: [String!]!
   menu_imageUrl: [String!]!
   cafe_imageUrl: [String!]!
@@ -250,6 +249,7 @@ input OwnerInput {
   ownerNum: String!
   password: String!
   ownerPassword: String!
+  brandName: String!
 }
 
 input OwnerUpdateInput {
@@ -260,6 +260,7 @@ input OwnerUpdateInput {
   password: String
   ownerPassword: String
   ownerNum: String
+  brandName: String
 }
 
 input CreateOwnerCommentInput {

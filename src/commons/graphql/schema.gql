@@ -116,6 +116,7 @@ type Coupon {
 type DeletedCoupon {
   id: String!
   expired: Boolean!
+  expiredDate: String!
   user: User!
   cafeInform: CafeInform!
 }
@@ -132,8 +133,6 @@ type StampHistory {
 type Query {
   fetchCafeImage(cafeInformID: String!): [CafeImage!]!
   fetchCafeInform(cafeInformID: String!): CafeInform!
-  fetchCafeInformWithTag(tags: [String!]!, page: Int): [CafeInform!]!
-  fetchCafeInformWithLocation(location: String!, page: Int): [CafeInform!]!
   fetchBestCafe: [CafeInform!]!
   fetchCafeInforms(page: Int): [CafeInform!]!
   fetchCafes(location: String, tags: [String!], page: Int): [CafeInform!]!
@@ -180,6 +179,7 @@ type Mutation {
   updateComment(commentId: String!, UpdateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): String!
   likeComment(commentID: String!): Int!
+  deleteCommentImage(commentImageID: String!): String!
   useCoupon(couponId: String!, password: String!): DeletedCoupon!
   uploadFile(files: [Upload!]!): [String!]!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!

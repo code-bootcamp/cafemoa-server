@@ -4,7 +4,7 @@ import { Owner } from '../entities/owner.entity';
 @InputType()
 export class OwnerInput extends OmitType(
   Owner,
-  ['id', 'is_cafeInform', 'ownerNum'],
+  ['id', 'is_cafeInform', 'ownerNum', 'brandName'],
   InputType,
 ) {
   @Field(() => String)
@@ -13,4 +13,6 @@ export class OwnerInput extends OmitType(
   password: string;
   @Field(() => String)
   ownerPassword: string;
+  @Field(() => String)
+  brandName: string;
 }

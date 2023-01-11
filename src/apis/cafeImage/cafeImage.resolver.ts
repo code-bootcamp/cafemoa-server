@@ -17,7 +17,10 @@ export class CafeImageResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteCafeImage(@Args('cafeImageID') cafeImageID: string) {
-    return this.cafeImageService.delete({ cafeImageID });
+  deleteCafeImage(
+    @Args('cafeImageID') cafeImageID: string, //
+    @Context() context: IContext,
+  ) {
+    return this.cafeImageService.delete({ cafeImageID, context });
   }
 }

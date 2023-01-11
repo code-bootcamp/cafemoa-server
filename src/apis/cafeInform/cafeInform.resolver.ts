@@ -53,26 +53,26 @@ export class CafeInformResolver {
     });
   }
 
-  @Query(() => [CafeInform])
-  fetchCafeInformWithTag(
-    @Args({ name: 'tags', type: () => [String] }) Tags: string[],
-    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  ) {
-    page = page === undefined ? 1 : page;
-    return this.cafeInformService.findCafeInformWithTags({ Tags, page });
-  }
+  // @Query(() => [CafeInform])
+  // fetchCafeInformWithTag(
+  //   @Args({ name: 'tags', type: () => [String] }) Tags: string[],
+  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  // ) {
+  //   page = page === undefined ? 1 : page;
+  //   return this.cafeInformService.findCafeInformWithTags({ Tags, page });
+  // }
 
-  @Query(() => [CafeInform])
-  fetchCafeInformWithLocation(
-    @Args('location') Location: string, //
-    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  ) {
-    page = page === undefined ? 1 : page;
-    return this.cafeInformService.findCafeInformWithLocation({
-      Location,
-      page,
-    });
-  }
+  // @Query(() => [CafeInform])
+  // fetchCafeInformWithLocation(
+  //   @Args('location') Location: string, //
+  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+  // ) {
+  //   page = page === undefined ? 1 : page;
+  //   return this.cafeInformService.findCafeInformWithLocation({
+  //     Location,
+  //     page,
+  //   });
+  // }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteCafeInform(

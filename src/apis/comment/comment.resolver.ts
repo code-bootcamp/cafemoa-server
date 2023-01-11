@@ -98,8 +98,10 @@ export class CommentResolver {
 
   @Query(() => [Comment])
   fetchCommentsAll(
-    @Args('Location') Location: string, //
-    @Args({ name: 'Tags', type: () => [String] }) Tags: string[], //
+    @Args({ name: 'location', type: () => String, nullable: true })
+    Location: string, //
+    @Args({ name: 'tags', type: () => [String], nullable: true })
+    Tags: string[], //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
     page = page === undefined ? 1 : page;

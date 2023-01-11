@@ -17,9 +17,6 @@ export class UpdateCafeInform {
   @Field(() => String, { nullable: true })
   ownerNum: string;
 
-  @Field(() => String, { nullable: true })
-  brandName: string;
-
   @Field(() => [String], { nullable: true })
   menu_imageUrl: string[];
 

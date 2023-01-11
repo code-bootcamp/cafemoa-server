@@ -23,18 +23,18 @@ export class StampHistoryService {
     private readonly stampRepository: Repository<Stamp>,
   ) {}
 
-  async findStamps({ cafeId, page }) {
+  async findStamps({ ownerId, page }) {
     const cafeStamp = await this.stampHistoryRepository.find({
       where: {
-        stamp: { cafeInform: { id: cafeId } },
+        owner: { id: ownerId },
       },
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['stamp', 'owner', 'user'],
+      relations: ['stamp', 'owner', 'user', 'stamp.cafeInform'],
     });
 
     const result = cafeStamp.filter((el) => {
-      if (el.count > 3) return el;
+      if (el.count > 3) return true;
     });
 
     if (result.length > 10) {

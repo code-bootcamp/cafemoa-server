@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { StampHistory } from './entities/stamphistory.entity';
 import { StampHistoryService } from './stamphistory.service';
 
@@ -11,11 +12,11 @@ export class StampHistoryResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [StampHistory])
   fetchUnusualStamps(
-    @Args('cafeId') cafeId: string,
+    @Context() context: IContext,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ): Promise<StampHistory[]> {
     page = page === undefined ? 1 : page;
-    return this.stampHistory.findStamps({ cafeId, page });
+    return this.stampHistory.findStamps({ ownerId: context.req.user.id, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)

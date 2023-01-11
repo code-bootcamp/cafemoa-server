@@ -123,7 +123,7 @@ export class StampService {
             count,
             user: { ...user },
             owner: { ...owner },
-            coupon: { ...result },
+            stamp: { ...result },
           });
         }
         return result;
@@ -144,7 +144,7 @@ export class StampService {
             count,
             user: { ...user },
             owner: { ...owner },
-            coupon: { ...result },
+            stamp: { ...result },
           });
         }
         return result;
@@ -161,7 +161,7 @@ export class StampService {
           count,
           user: { ...user },
           owner: { ...owner },
-          coupon: { ...result },
+          stamp: { ...result },
         });
       }
       return result;

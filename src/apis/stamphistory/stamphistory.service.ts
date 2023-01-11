@@ -30,7 +30,7 @@ export class StampHistoryService {
       },
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['coupon', 'owner', 'user'],
+      relations: ['stamp', 'owner', 'user'],
     });
 
     const result = cafeStamp.filter((el) => {
@@ -51,7 +51,7 @@ export class StampHistoryService {
   async delete({ ownerpassword, stamphistoryId }) {
     const stamphistory = await this.stampHistoryRepository.findOne({
       where: { id: stamphistoryId },
-      relations: ['owner', 'coupon'],
+      relations: ['owner', 'stamp'],
     });
 
     const owner = await this.ownerRepository.findOne({
@@ -59,6 +59,15 @@ export class StampHistoryService {
         id: stamphistory.owner.id,
       },
     });
+
+    const validOwnerPwd = await bcrypt.compare(
+      ownerpassword,
+      owner.ownerPassword,
+    );
+    if (!validOwnerPwd) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    }
+
     const coupon = await this.stampRepository.findOne({
       where: { id: stamphistory.stamp.id },
     });
@@ -78,14 +87,6 @@ export class StampHistoryService {
       throw new UnprocessableEntityException(
         '실제로 쿠폰 사용되었습니다. 경찰에 신고하십시오',
       );
-    }
-
-    const validOwnerPwd = await bcrypt.compare(
-      ownerpassword,
-      owner.ownerPassword,
-    );
-    if (!validOwnerPwd) {
-      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
 
     await this.stampHistoryRepository.delete({

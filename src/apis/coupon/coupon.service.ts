@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
@@ -141,7 +137,7 @@ export class CouponService {
     });
 
     if (!coupon) {
-      throw new ConflictException('일치하는 쿠폰이 없습니다.');
+      throw new UnauthorizedException('일치하는 쿠폰이 없습니다.');
     }
 
     const cafeInform = await this.cafeInformRepository.findOne({
@@ -161,7 +157,7 @@ export class CouponService {
     }
 
     const result = await this.deletedCouponRepository.save({
-      expiredDate: '',
+      expiredDate: coupon.expiredDate,
       expired: false,
       user: { ...coupon.user },
       cafeInform: { ...coupon.cafeInform },

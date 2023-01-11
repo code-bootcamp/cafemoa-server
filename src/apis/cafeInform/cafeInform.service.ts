@@ -54,7 +54,7 @@ export class CafeInformService {
       where: {
         id: CafeInformID,
       },
-      relations: ['cafeTag', 'owner'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
     if (cafeinform.owner.id !== context.req.user.id) {
       throw new ConflictException('자신의 카페만 수정이 가능합니다.');
@@ -142,9 +142,9 @@ export class CafeInformService {
         is_cafeInform: true,
       });
     }
-    // if (Owner.is_cafeInform === true) {
-    //   throw new ConflictException('이미 한개의 카페가 존재합니다.');
-    // }
+    if (Owner.is_cafeInform === true) {
+      throw new ConflictException('이미 한개의 카페가 존재합니다.');
+    }
 
     const temp = [];
 
@@ -206,7 +206,7 @@ export class CafeInformService {
       where: {
         id: CafeInformID,
       },
-      relations: ['cafeTag', 'owner'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
     const user = await this.userRepository.findOne({
       where: {
@@ -275,7 +275,7 @@ export class CafeInformService {
   }
   async findCafeInformWithTags({ Tags, page }) {
     const result = await this.cafeInformrRepository.find({
-      relations: ['cafeTag', 'owner'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
     const arr = [];
     result.forEach((el) => {
@@ -330,7 +330,7 @@ export class CafeInformService {
       where: {
         id: cafeInformID,
       },
-      relations: ['owner'],
+      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
     if (resultCafe.owner.id !== context.req.user.id) {
       throw new ConflictException('자신의 카페만 삭제 가능합니다.');
@@ -409,5 +409,28 @@ export class CafeInformService {
       skip: (page - 1) * 10,
     });
     return result;
+  }
+
+  async findCafeByName({ name, page }) {
+    if (name) {
+      const result = await this.cafeInformrRepository.find({
+        where: {
+          owner: {
+            brandName: Like(`%${name}%`),
+          },
+        },
+        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+        take: 10,
+        skip: (page - 1) * 10,
+      });
+      return result;
+    } else {
+      const result = await this.cafeInformrRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
+        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+      });
+      return result;
+    }
   }
 }

@@ -34,7 +34,13 @@ export class CommentService {
     const result = await this.commentRepository.find({
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
     console.log(result);
     return result;
@@ -43,7 +49,13 @@ export class CommentService {
   async findOne({ commentId }) {
     const result = await this.commentRepository.findOne({
       where: { id: commentId },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
 
     return result;
@@ -53,7 +65,13 @@ export class CommentService {
       take: 10,
       skip: (page - 1) * 10,
       where: { user: { id: userID } },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
     return result;
   }
@@ -140,7 +158,13 @@ export class CommentService {
     const { image_Url, ...comment } = UpdateCommentInput;
     const mycomment = await this.commentRepository.findOne({
       where: { id: commentId },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
 
     if (mycomment.user.id !== userID) {
@@ -185,7 +209,13 @@ export class CommentService {
 
   async sendBestComment() {
     const Like = await this.commentRepository.find({
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
     Like.sort((a, b) => b.like - a.like);
     console.log(Like);
@@ -198,7 +228,13 @@ export class CommentService {
 
   async findcommentwithTags({ Tags }) {
     const result = await this.commentRepository.find({
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
 
     const arr = [];
@@ -220,7 +256,13 @@ export class CommentService {
   }
   async findCommentWithLocation({ Location, page }) {
     const result = await this.commentRepository.find({
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
     });
     const answer = [];
     for (let i = 0; i < result.length; i++) {
@@ -246,7 +288,13 @@ export class CommentService {
       return result;
     } else if (!Location && Tags.length > 0) {
       const result = await this.commentRepository.find({
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+        relations: [
+          'cafeinfo',
+          'cafeinfo.cafeTag',
+          'user',
+          'commentImage',
+          'cafeinfo.owner',
+        ],
       });
 
       const arr = [];
@@ -301,7 +349,13 @@ export class CommentService {
       const result = await this.commentRepository.find({
         take: 10,
         skip: (page - 1) * 10,
-        relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+        relations: [
+          'cafeinfo',
+          'cafeinfo.cafeTag',
+          'user',
+          'commentImage',
+          'cafeinfo.owner',
+        ],
       });
       return result;
     }
@@ -372,7 +426,13 @@ export class CommentService {
       where: {
         cafeinfo: { id: cafeID },
       },
-      relations: ['cafeinfo', 'cafeinfo.cafeTag', 'user', 'commentImage'],
+      relations: [
+        'cafeinfo',
+        'cafeinfo.cafeTag',
+        'user',
+        'commentImage',
+        'cafeinfo.owner',
+      ],
       take: 10,
       skip: (page - 1) * 10,
     });

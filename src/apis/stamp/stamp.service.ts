@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeInform } from '../cafeInform/entities/cafeInform.entity';
@@ -42,7 +46,7 @@ export class StampService {
   async findUserStamp({ userId, page, location }) {
     if (location) {
       const result = await this.stampRepository.find({
-        relations: ['user', 'cafeInform'],
+        relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });
       const answer = result.filter((el) =>
         el.cafeInform.cafeAddr.includes(location),
@@ -61,7 +65,7 @@ export class StampService {
         take: 10,
         skip: (page - 1) * 10,
         where: { user: { id: userId } },
-        relations: ['user', 'cafeInform'],
+        relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });
       return result;
     }
@@ -72,7 +76,7 @@ export class StampService {
       take: 10,
       skip: (page - 1) * 10,
       where: { cafeInform: { id: cafeId } },
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
   }
 
@@ -106,7 +110,7 @@ export class StampService {
 
     const stamp = await this.stampRepository.findOne({
       where: { user: { phone }, cafeInform: { id: cafeId } },
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
 
     if (stamp) {
@@ -168,7 +172,17 @@ export class StampService {
     }
   }
 
-  async deleteCoupon({ stampId }) {
+  async deleteStamp({ stampId, userId }) {
+    const result = await this.stampRepository.findOne({
+      where: {
+        id: stampId,
+      },
+      relations: ['user'],
+    });
+    if (result.user.id !== userId) {
+      throw new ConflictException('자신의 스탬프 적립이 아닙니다.');
+    }
+
     await this.stampRepository.delete({ id: stampId });
     return '삭제가 완료되었습니다.';
   }

@@ -36,7 +36,7 @@ export class CouponService {
       where: {
         user: { id: userId },
       },
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
 
     const date = new Date();
@@ -124,7 +124,7 @@ export class CouponService {
       },
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
 
     return result2;
@@ -133,7 +133,7 @@ export class CouponService {
   async useCoupon({ password, couponId }) {
     const coupon = await this.couponRepository.findOne({
       where: { id: couponId },
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
 
     if (!coupon) {

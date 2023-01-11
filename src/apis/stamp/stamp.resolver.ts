@@ -59,7 +59,10 @@ export class StampResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => String)
-  deleteStamp(@Args('stampId') stampId: string) {
-    return this.stampService.deleteCoupon({ stampId });
+  deleteStamp(@Args('stampId') stampId: string, @Context() context: IContext) {
+    return this.stampService.deleteStamp({
+      stampId,
+      userId: context.req.user.id,
+    });
   }
 }

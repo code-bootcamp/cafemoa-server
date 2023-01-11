@@ -13,7 +13,7 @@ export class DeletedCouponService {
   async findCoupon({ context }) {
     return await this.deletedCouponRepository.find({
       where: { user: { id: context.req.user.id } },
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
   }
 }

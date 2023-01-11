@@ -70,13 +70,13 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({});
+    return await this.userRepository.find({});
   }
 
-  async find({ email }): Promise<User> {
-    return this.userRepository.findOne({
+  async find({ id }): Promise<User> {
+    return await this.userRepository.findOne({
       where: {
-        email,
+        id,
       },
     });
   }

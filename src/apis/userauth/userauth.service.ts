@@ -15,6 +15,9 @@ import {
 import { Cache } from 'cache-manager';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserAuthService {
@@ -22,12 +25,15 @@ export class UserAuthService {
     private readonly jwtService: JwtService, //
     private readonly userService: UserService,
 
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
 
   async login({ email, password, context }: IUserAuthloginService) {
-    const user = await this.userService.find({ email });
+    const user = await this.userRepository.findOne({ where: { email } });
 
     // 존재하는 유저인지 검증
     if (!user) {

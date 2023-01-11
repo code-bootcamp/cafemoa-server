@@ -14,9 +14,6 @@ export class CafeInformInput {
   @Field(() => String)
   detailAddr: string;
 
-  @Field(() => String)
-  brandName: string;
-
   @Field(() => [String])
   cafeTag: string[];
 

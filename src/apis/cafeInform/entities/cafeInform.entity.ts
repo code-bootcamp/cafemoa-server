@@ -49,10 +49,6 @@ export class CafeInform {
 
   @Column()
   @Field(() => String)
-  brandName: string;
-
-  @Column()
-  @Field(() => String)
   thumbNail: string;
 
   @ManyToOne(() => Owner, { onDelete: 'CASCADE' })

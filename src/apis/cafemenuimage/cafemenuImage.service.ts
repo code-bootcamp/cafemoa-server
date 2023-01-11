@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { find } from 'rxjs';
 import { Repository } from 'typeorm';
@@ -21,7 +22,17 @@ export class CafeMenuImageService {
     });
   }
 
-  async delete({ cafeMenuImageID }) {
+  async delete({ cafeMenuImageID, context }) {
+    const resultOwner = await this.cafeMenuImageRepository.findOne({
+      where: {
+        id: cafeMenuImageID,
+      },
+      relations: ['cafeInform', 'cafeInform.owner'],
+    });
+    console.log(resultOwner);
+    if (resultOwner.cafeInform.owner.id !== context.req.user.id) {
+      throw new ConflictException('삭제 권한이 없습니다.');
+    }
     const result = await this.cafeMenuImageRepository.delete({
       id: cafeMenuImageID,
     });

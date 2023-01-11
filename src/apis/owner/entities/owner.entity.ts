@@ -49,6 +49,10 @@ export class Owner {
   @Field(() => String)
   ownerNum: string;
 
+  @Column()
+  @Field(() => String)
+  brandName: string;
+
   @OneToMany(() => CafeInform, (cafeinform) => cafeinform.owner, {
     onDelete: 'CASCADE',
   })

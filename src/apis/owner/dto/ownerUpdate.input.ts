@@ -22,4 +22,7 @@ export class OwnerUpdateInput {
 
   @Field(() => String, { nullable: true })
   ownerNum: string;
+
+  @Field(() => String, { nullable: true })
+  brandName: string;
 }

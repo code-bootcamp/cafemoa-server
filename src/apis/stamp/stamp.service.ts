@@ -48,8 +48,8 @@ export class StampService {
       const result = await this.stampRepository.find({
         relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });
-      const answer = result.filter((el) =>
-        el.cafeInform.cafeAddr.includes(location),
+      const answer = result.filter(
+        (el) => el.cafeInform.cafeAddr.includes(location) && el.count !== 0,
       );
       if (answer.length > 10) {
         const pageNum = Math.ceil(answer.length / 10);
@@ -67,7 +67,16 @@ export class StampService {
         where: { user: { id: userId } },
         relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });
-      return result;
+      const answer = result.filter((el) => el.count !== 0);
+      if (answer.length > 10) {
+        const pageNum = Math.ceil(answer.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = answer.slice(i * 10, (i + 1) * 10);
+        }
+        return result[page - 1];
+      }
+      return answer;
     }
   }
 

@@ -76,7 +76,7 @@ export class OwnerCommentService {
       relations: ['owner', 'comment'],
     });
     if (result.owner.id !== onwerID) {
-      throw new ConflictException('자신의 댓글이 아닙니다.');
+      throw new ConflictException('수정권한이 없습니다.');
     }
     const newOwner = {
       ...result,
@@ -93,7 +93,7 @@ export class OwnerCommentService {
     });
 
     if (result2.owner.id !== ownerID) {
-      throw new ConflictException('자신의 댓글이 아닙니다.');
+      throw new ConflictException('삭제권한이 없습니다.');
     }
     const result = await this.ownercommentRepository.softDelete({
       id: ownercommentId,
@@ -125,7 +125,7 @@ export class OwnerCommentService {
       },
       relations: ['comment'],
     });
-    console.log(result);
+
     return result.content;
   }
 }

@@ -15,7 +15,7 @@ export class PickList {
   @Field(() => User)
   user: User;
 
-  @ManyToOne(() => CafeInform, { cascade: true })
+  @ManyToOne(() => CafeInform, { onDelete: 'CASCADE' })
   @Field(() => CafeInform)
   cafeInform: CafeInform;
 }

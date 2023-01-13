@@ -39,6 +39,13 @@ type PickList {
   cafeInform: CafeInform!
 }
 
+type Coupon {
+  id: String!
+  expiredDate: String!
+  cafeInform: CafeInform!
+  user: User!
+}
+
 type User {
   id: String!
   name: String!
@@ -106,13 +113,6 @@ type Category {
   category: String!
 }
 
-type Coupon {
-  id: String!
-  expiredDate: String!
-  cafeInform: CafeInform!
-  user: User!
-}
-
 type DeletedCoupon {
   id: String!
   expired: Boolean!
@@ -137,7 +137,7 @@ type Query {
   fetchCafeInforms(page: Int): [CafeInform!]!
   fetchCafes(location: String, tags: [String!], page: Int): [CafeInform!]!
   fetchMyCafes(page: Int): [CafeInform!]!
-  fetchCafeInformsByBrandName(name: String, page: Int): [CafeInform!]!
+  fetchCafesWithNameAndLocation(name: String, page: Int, location: String): [CafeInform!]!
   fetchCafeMenuImage(CafeInformID: String!): [CafeMenuImage!]!
   fetchCategory: [Category!]!
   fetchComments(page: Int): [Comment!]!

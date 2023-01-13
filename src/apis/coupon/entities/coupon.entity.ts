@@ -14,11 +14,11 @@ export class Coupon {
   @Field(() => String)
   expiredDate: string;
 
-  @ManyToOne(() => CafeInform)
+  @ManyToOne(() => CafeInform, { onDelete: 'CASCADE' })
   @Field(() => CafeInform)
   cafeInform: CafeInform;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @Field(() => User)
   user: User;
 }

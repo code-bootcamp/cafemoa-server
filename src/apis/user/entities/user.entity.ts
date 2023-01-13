@@ -4,6 +4,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Stamp } from 'src/apis/stamp/entities/stamp.entity';
 import { PickList } from 'src/apis/pickList/entities/pickList.entity';
 import { LikeComment } from 'src/apis/likeComment/entities/likecomment.entity';
+import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
 
 @Entity()
 @ObjectType()
@@ -63,4 +64,6 @@ export class User {
     onDelete: 'CASCADE',
   })
   likeComment: LikeComment;
+  @OneToMany(() => Coupon, (coupon) => coupon.user, { onDelete: 'CASCADE' })
+  coupon: Coupon[];
 }

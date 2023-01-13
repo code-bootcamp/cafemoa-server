@@ -8,8 +8,6 @@ import { CafeMenuImage } from '../cafemenuimage/entities/cafemenuimage.entity';
 import { CafeTag } from '../cafeTag/entities/cafeTag.entity';
 import { PickList } from '../pickList/entities/pickList.entity';
 import { User } from '../user/entities/user.entity';
-import { throwIfEmpty } from 'rxjs';
-import { resourceLimits } from 'worker_threads';
 
 @Injectable()
 export class CafeInformService {
@@ -218,13 +216,9 @@ export class CafeInformService {
         user: { id: UserID },
         cafeInform: { id: CafeInformID },
       },
-      relations: ['user', 'cafeInform'],
+      relations: ['user', 'cafeInform', 'cafeInform.cafeTag'],
     });
     if (pickList) {
-      console.log('=====================');
-      console.log('있을 때');
-      console.log('=====================');
-
       await this.pickListRepository.delete({ id: pickList.id });
       if (cafeInform.like > 0) {
         await this.cafeInformrRepository.update(
@@ -410,9 +404,8 @@ export class CafeInformService {
     });
     return result;
   }
-
-  async findCafeByName({ name, page }) {
-    if (name) {
+  async findCafeByName({ name, page, Location }) {
+    if (name && !Location) {
       const result = await this.cafeInformrRepository.find({
         where: {
           owner: {
@@ -424,6 +417,21 @@ export class CafeInformService {
         skip: (page - 1) * 10,
       });
       return result;
+    } else if (!name && Location) {
+      const result = await this.findCafeInformWithLocation({ Location, page });
+      return result;
+    } else if (name && Location) {
+      const result = await this.findCafeInformWithLocation({ Location, page });
+      const arr = result.filter((el) => el.owner.brandName.includes(name));
+      if (arr.length > 10) {
+        const pageNum = Math.ceil(arr.length / 10);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = arr.slice(i * 10, (i + 1) * 10);
+        }
+        result[page - 1];
+      }
+      return arr;
     } else {
       const result = await this.cafeInformrRepository.find({
         take: 10,

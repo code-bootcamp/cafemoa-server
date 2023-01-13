@@ -119,13 +119,28 @@ export class OwnerService {
       html: `
       <html>
         <body>
-            <div style ="display: flex; flex-direction: column; align-items: center;">
-                <div style = "width: 500px;">
-                    <h1>${owner.name}님 임시비밀번호가 발급되었습니다.</h1>
-                    <hr />
-                    <div>이름: ${owner.name}</div>
-                    <div>임시비밀번호: ${password}</div>
-                </div>
+            <div style ="display: flex; flex-direction: column; justify-content: center; width:600px;">
+                    <h1>안녕하세요 ${owner.name}님, 카페모아입니다.</h1>
+                    <br />
+                    <div>${owner.name}님의 임시 비밀번호는 다음과 같습니다.</div>
+                    <div style = "font-weight: bold;">임시비밀번호: ${password} </div>
+                    <br />
+                    <div>개인정보 보호를 위해 로그인 후 새로운 비밀번호로 변경해 주시기 바랍니다.</div>
+                    <div>저희 카페모아를 이용해 주셔서 감사합니다.</div>
+                    <br /><br />
+                    <buttton style="
+                    background-color: #81564B;
+                    text-align: center;
+                    padding: 20px;
+                    text-align: center;
+                    cursor: pointer;
+                    font-size:24px;
+                    width: 200px;
+                    padding:20px 60px;
+                    outline: none;
+                    border: none;
+                    border-radius:5px;
+                     ;"><a href="https://www.naver.com" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
             </div>
         </body>
     </html>`,
@@ -155,17 +170,33 @@ export class OwnerService {
     await transporter.sendMail({
       from: process.env.EMAIL_SENDER,
       to: email,
-      subject: '[카페모아] 인증번호가 발급되었습니다.',
+      subject: '[카페모아] 이메일 인증번호가 발급되었습니다.',
       html: `
       <html>
         <body>
-            <div style ="display: flex; flex-direction: column; align-items: center;">
-                <div style = "width: 500px;">
-                    <h1>인증번호가 발급되었습니다.</h1>
-                    <hr />
-                    
-                    <div>인증번호: ${token}</div>
-                </div>
+            <div style ="display: flex; flex-direction: column; justify-content: center; width:600px;">
+                
+                    <h1>안녕하세요 카페모아입니다!</h1>
+                    <br />
+                    <div>요청하신 카페모아의 이메일 인증번호를 안내드립니다.</div>
+                    <div>아래 번호를 입력하여 인증절차를 완료해 주세요.</div>
+                    <br />
+                    <div style= "font-weight: bold">인증번호 : ${token}</div>
+                    <br /><br />
+                    <buttton style="
+                    background-color: #81564B;
+                    text-align: center;
+                    padding: 20px;
+                    text-align: center;
+                    cursor: pointer;
+                    font-size:24px;
+                    width: 200px;
+                    padding:20px 60px;
+                    outline: none;
+                    border: none;
+                    border-radius:5px;
+                     ;"><a href="https://www.naver.com" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
+
             </div>
         </body>
     </html>`,

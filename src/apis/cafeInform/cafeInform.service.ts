@@ -134,12 +134,7 @@ export class CafeInformService {
         id: OwnerId,
       },
     });
-    if (Owner.is_cafeInform === false) {
-      await this.ownerRepository.save({
-        ...Owner,
-        is_cafeInform: true,
-      });
-    }
+
     if (Owner.is_cafeInform === true) {
       throw new ConflictException('이미 한개의 카페가 존재합니다.');
     }
@@ -172,6 +167,10 @@ export class CafeInformService {
       ...cafeInform,
       thumbNail: cafe_imageUrl[0],
       cafeTag: temp,
+    });
+    await this.cafeInformrRepository.save({
+      ...Owner,
+      is_cafeInform: true,
     });
 
     await Promise.all(
@@ -240,7 +239,6 @@ export class CafeInformService {
 
       return cafeInform2.like;
     } else {
-      console.log(cafeInform, '없을 때');
       const result = await this.cafeInformrRepository.update(
         {
           id: CafeInformID,

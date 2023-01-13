@@ -125,11 +125,13 @@ export class CafeInformResolver {
   }
 
   @Query(() => [CafeInform])
-  fetchCafeInformsByBrandName(
+  fetchCafesWithNameAndLocation(
     @Args({ name: 'name', type: () => String, nullable: true }) name: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+    @Args({ name: 'location', type: () => String, nullable: true })
+    Location: string,
   ) {
     page = page === undefined ? 1 : page;
-    return this.cafeInformService.findCafeByName({ name, page });
+    return this.cafeInformService.findCafeByName({ name, page, Location });
   }
 }

@@ -168,7 +168,7 @@ export class CommentService {
     });
 
     if (mycomment.user.id !== userID) {
-      throw new ConflictException('자신의 댓글이 아닙니다.');
+      throw new ConflictException('수정권한이 없습니다.');
     }
 
     const result = await this.commentRepository.save({
@@ -195,7 +195,7 @@ export class CommentService {
       relations: ['user'],
     });
     if (resultUser.user.id !== userID) {
-      throw new ConflictException('자신의 댓글이 아닙니다.');
+      throw new ConflictException('삭제권한이 없습니다.');
     }
     const result = await this.commentRepository.softDelete({ id: commentId });
     return result.affected ? '삭제에 성공했습니다.' : '삭제에 실패했습니다.';

@@ -4,6 +4,7 @@ import { CafeMenuImage } from 'src/apis/cafemenuimage/entities/cafemenuimage.ent
 import { CafeTag } from 'src/apis/cafeTag/entities/cafeTag.entity';
 
 import { Comment } from 'src/apis/comment/entities/comment.entity';
+import { Coupon } from 'src/apis/coupon/entities/coupon.entity';
 
 import { Owner } from 'src/apis/owner/entities/owner.entity';
 import { PickList } from 'src/apis/pickList/entities/pickList.entity';
@@ -88,4 +89,9 @@ export class CafeInform {
     onDelete: 'CASCADE',
   })
   stamp: Stamp[];
+
+  @OneToMany(() => Coupon, (coupon) => coupon.cafeInform, {
+    onDelete: 'CASCADE',
+  })
+  coupon: Coupon[];
 }

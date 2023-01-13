@@ -161,17 +161,19 @@ export class CafeInformService {
     }
 
     const result2 = await this.cafeInformrRepository.save({
+      ...cafeInform,
       owner: {
         ...Owner,
       },
-      ...cafeInform,
       thumbNail: cafe_imageUrl[0],
       cafeTag: temp,
     });
-    await this.cafeInformrRepository.save({
-      ...Owner,
-      is_cafeInform: true,
-    });
+    if (Owner.is_cafeInform === false) {
+      await this.cafeInformrRepository.save({
+        ...Owner,
+        is_cafeInform: true,
+      });
+    }
 
     await Promise.all(
       menu_imageUrl.map((el) =>

@@ -43,4 +43,22 @@ export class FilesUploadService {
     console.log(results);
     return results;
   }
+
+  async uploadOne({ file }) {
+    const storage = new Storage({
+      projectId: 'f10-team01-server-372805',
+      keyFilename: '/my-secret/gcp-file-storage.json',
+    }).bucket('f10-teamproject-storage');
+
+    const result = file
+      .createReadStream()
+      .pipe(storage.file(file.filename).createWriteStream())
+      .on('finish', () => {
+        console.log('success');
+      })
+      .on('error', () => {
+        console.log('fail');
+      });
+    return result;
+  }
 }

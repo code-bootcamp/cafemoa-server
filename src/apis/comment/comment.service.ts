@@ -266,7 +266,7 @@ export class CommentService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = arr.slice(i * 10, (i + 1) * 10);
       }
-      if (page - 1 > result.length) {
+      if (page - 1 > pageNum) {
         return [];
       } else {
         return result[page - 1];
@@ -305,7 +305,7 @@ export class CommentService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = answer.slice(i * 10, (i + 1) * 10);
       }
-      if (page - 1 > result.length) {
+      if (page - 1 > pageNum) {
         return [];
       } else {
         return result[page - 1];
@@ -357,7 +357,7 @@ export class CommentService {
         for (let i = 0; i < pageNum; i++) {
           result[i] = arr.slice(i * 10, (i + 1) * 10);
         }
-        if (page - 1 > result.length) {
+        if (page - 1 > pageNum) {
           return [];
         } else {
           return result[page - 1];
@@ -391,7 +391,7 @@ export class CommentService {
         for (let i = 0; i < pageNum; i++) {
           result[i] = arr.slice(i * 10, (i + 1) * 10);
         }
-        if (page - 1 > result.length) {
+        if (page - 1 > pageNum) {
           return [];
         } else {
           return result[page - 1];

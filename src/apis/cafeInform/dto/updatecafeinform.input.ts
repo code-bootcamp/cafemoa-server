@@ -25,4 +25,10 @@ export class UpdateCafeInform {
 
   @Field(() => [String], { nullable: true })
   cafeTag: string[];
+
+  @Field(() => Boolean, { nullable: true })
+  is_Parking: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  is_WC: boolean;
 }

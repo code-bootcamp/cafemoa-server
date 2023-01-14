@@ -22,4 +22,10 @@ export class CafeInformInput {
 
   @Field(() => [String])
   cafe_imageUrl: string[];
+
+  @Field(() => Boolean)
+  is_Parking: boolean;
+
+  @Field(() => Boolean)
+  is_WC: boolean;
 }

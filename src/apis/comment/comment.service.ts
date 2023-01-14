@@ -41,6 +41,9 @@ export class CommentService {
         'commentImage',
         'cafeinfo.owner',
       ],
+      order: {
+        time: 'DESC',
+      },
     });
     console.log(result);
     return result;
@@ -72,6 +75,9 @@ export class CommentService {
         'commentImage',
         'cafeinfo.owner',
       ],
+      order: {
+        time: 'DESC',
+      },
     });
     return result;
   }
@@ -226,7 +232,7 @@ export class CommentService {
     }
   }
 
-  async findcommentwithTags({ Tags }) {
+  async findcommentwithTags({ Tags, page }) {
     const result = await this.commentRepository.find({
       relations: [
         'cafeinfo',
@@ -235,6 +241,9 @@ export class CommentService {
         'commentImage',
         'cafeinfo.owner',
       ],
+      order: {
+        time: 'DESC',
+      },
     });
 
     const arr = [];
@@ -251,6 +260,18 @@ export class CommentService {
         }
       });
     });
+    if (arr.length > 10) {
+      const pageNum = Math.ceil(arr.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = arr.slice(i * 10, (i + 1) * 10);
+      }
+      if (page - 1 > result.length) {
+        return [];
+      } else {
+        return result[page - 1];
+      }
+    }
 
     return arr;
   }
@@ -263,6 +284,9 @@ export class CommentService {
         'commentImage',
         'cafeinfo.owner',
       ],
+      order: {
+        time: 'DESC',
+      },
     });
     const answer = [];
     for (let i = 0; i < result.length; i++) {
@@ -277,7 +301,11 @@ export class CommentService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = answer.slice(i * 10, (i + 1) * 10);
       }
-      return result[page - 1];
+      if (page - 1 > result.length) {
+        return [];
+      } else {
+        return result[page - 1];
+      }
     }
     return answer;
   }
@@ -295,6 +323,9 @@ export class CommentService {
           'commentImage',
           'cafeinfo.owner',
         ],
+        order: {
+          time: 'DESC',
+        },
       });
 
       const arr = [];
@@ -317,7 +348,11 @@ export class CommentService {
         for (let i = 0; i < pageNum; i++) {
           result[i] = arr.slice(i * 10, (i + 1) * 10);
         }
-        return result[page - 1];
+        if (page - 1 > result.length) {
+          return [];
+        } else {
+          return result[page - 1];
+        }
       }
       return arr;
     } else if (Location && Tags.length > 0) {
@@ -342,7 +377,11 @@ export class CommentService {
         for (let i = 0; i < pageNum; i++) {
           result[i] = arr.slice(i * 10, (i + 1) * 10);
         }
-        return result[page - 1];
+        if (page - 1 > result.length) {
+          return [];
+        } else {
+          return result[page - 1];
+        }
       }
       return arr;
     } else {
@@ -356,6 +395,9 @@ export class CommentService {
           'commentImage',
           'cafeinfo.owner',
         ],
+        order: {
+          time: 'DESC',
+        },
       });
       return result;
     }
@@ -433,6 +475,9 @@ export class CommentService {
         'commentImage',
         'cafeinfo.owner',
       ],
+      order: {
+        time: 'DESC',
+      },
       take: 10,
       skip: (page - 1) * 10,
     });

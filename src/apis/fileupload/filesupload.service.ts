@@ -50,15 +50,12 @@ export class FilesUploadService {
       keyFilename: '/my-secret/gcp-file-storage.json',
     }).bucket('f10-teamproject-storage');
 
-    const result = file
-      .createReadStream()
-      .pipe(storage.file(file.filename).createWriteStream())
-      .on('finish', () => {
-        console.log('success');
-      })
-      .on('error', () => {
-        console.log('fail');
-      });
-    return result;
+    return new Promise<string>((resolve, reject) => {
+      file
+        .createReadStream()
+        .pipe(storage.file(file.filename).createWriteStream())
+        .on('finish', () => resolve(`f10-teamproject-storage/${file.filename}`))
+        .on('error', () => reject('실패'));
+    });
   }
 }

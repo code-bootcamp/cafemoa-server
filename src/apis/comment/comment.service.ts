@@ -45,7 +45,7 @@ export class CommentService {
         time: 'DESC',
       },
     });
-    console.log(result);
+
     return result;
   }
 
@@ -224,7 +224,7 @@ export class CommentService {
       ],
     });
     Like.sort((a, b) => b.like - a.like);
-    console.log(Like);
+
     if (Like[0].like < 5) {
       throw new ConflictException('해당하는 댓글이 없습니다.');
     } else {
@@ -271,9 +271,13 @@ export class CommentService {
       } else {
         return result[page - 1];
       }
+    } else {
+      if (page > 1) {
+        return [];
+      } else {
+        return arr;
+      }
     }
-
-    return arr;
   }
   async findCommentWithLocation({ Location, page }) {
     const result = await this.commentRepository.find({
@@ -306,8 +310,13 @@ export class CommentService {
       } else {
         return result[page - 1];
       }
+    } else {
+      if (page > 1) {
+        return [];
+      } else {
+        return answer;
+      }
     }
-    return answer;
   }
 
   async findCommentWithLocationAndTag({ Location, Tags, page }) {
@@ -353,8 +362,13 @@ export class CommentService {
         } else {
           return result[page - 1];
         }
+      } else {
+        if (page > 1) {
+          return [];
+        } else {
+          return arr;
+        }
       }
-      return arr;
     } else if (Location && Tags.length > 0) {
       const result = await this.findCommentWithLocation({ Location, page });
       const arr = [];
@@ -382,8 +396,13 @@ export class CommentService {
         } else {
           return result[page - 1];
         }
+      } else {
+        if (page > 1) {
+          return [];
+        } else {
+          return arr;
+        }
       }
-      return arr;
     } else {
       const result = await this.commentRepository.find({
         take: 10,

@@ -294,14 +294,17 @@ export class CafeInformService {
       }
 
       if (page - 1 > result.length) {
-        console.log(result.length);
         return [];
       } else {
         return result[page - 1];
       }
+    } else {
+      if (page > 1) {
+        return [];
+      } else {
+        return arr;
+      }
     }
-
-    return arr;
   }
 
   async findCafeInformWithLocation({ Location, page }) {
@@ -329,8 +332,13 @@ export class CafeInformService {
       } else {
         return result[page - 1];
       }
+    } else {
+      if (page > 1) {
+        return [];
+      } else {
+        return arr;
+      }
     }
-    return arr;
   }
 
   async deleteCafeInform({ cafeInformID, context }) {
@@ -400,8 +408,13 @@ export class CafeInformService {
         } else {
           return result[page - 1];
         }
+      } else {
+        if (page > 1) {
+          return [];
+        } else {
+          return arr;
+        }
       }
-      return arr;
     } else {
       const result = await this.cafeInformrRepository.find({
         take: 10,
@@ -462,8 +475,13 @@ export class CafeInformService {
         } else {
           return result[page - 1];
         }
+      } else {
+        if (page > 1) {
+          return [];
+        } else {
+          return arr;
+        }
       }
-      return arr;
     } else {
       const result = await this.cafeInformrRepository.find({
         take: 10,

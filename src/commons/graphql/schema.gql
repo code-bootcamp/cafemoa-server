@@ -183,6 +183,7 @@ type Mutation {
   deleteCommentImage(commentImageID: String!): String!
   useCoupon(couponId: String!, password: String!): DeletedCoupon!
   uploadFile(files: [Upload!]!): [String!]!
+  uploadFileOne(file: Upload!): String!
   CreateOwner(createOwnerInput: OwnerInput!): Owner!
   deleteOwner: Boolean!
   updateOwner(updateOwnerInput: OwnerUpdateInput!): Owner!
@@ -291,6 +292,7 @@ input CreateUserInput {
 
 input UpdateUserInput {
   email: String
+  nickname: String
   address: String
   detailAddress: String
   phone: String

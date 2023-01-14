@@ -268,6 +268,9 @@ export class CafeInformService {
   async findCafeInformWithTags({ Tags, page }) {
     const result = await this.cafeInformrRepository.find({
       relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
     const arr = [];
     result.forEach((el) => {
@@ -289,15 +292,24 @@ export class CafeInformService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = arr.slice(i * 10, (i + 1) * 10);
       }
-      return result[page - 1];
+
+      if (page - 1 > result.length) {
+        console.log(result.length);
+        return [];
+      } else {
+        return result[page - 1];
+      }
     }
-    console.log(arr);
+
     return arr;
   }
 
   async findCafeInformWithLocation({ Location, page }) {
     const result = await this.cafeInformrRepository.find({
       relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
     const arr = [];
     for (let i = 0; i < result.length; i++) {
@@ -312,7 +324,11 @@ export class CafeInformService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = arr.slice(i * 10, (i + 1) * 10);
       }
-      return result[page - 1];
+      if (page - 1 > result.length) {
+        return [];
+      } else {
+        return result[page - 1];
+      }
     }
     return arr;
   }
@@ -355,6 +371,7 @@ export class CafeInformService {
       return result;
     } else if (!Location && Tags.length > 0) {
       const result = await this.findCafeInformWithTags({ Tags, page });
+
       return result;
     } else if (Location && Tags.length > 0) {
       const answer = await this.findCafeInformWithLocation({ Location, page });
@@ -378,7 +395,11 @@ export class CafeInformService {
         for (let i = 0; i < pageNum; i++) {
           result[i] = arr.slice(i * 10, (i + 1) * 10);
         }
-        return result[page - 1];
+        if (page - 1 > result.length) {
+          return [];
+        } else {
+          return result[page - 1];
+        }
       }
       return arr;
     } else {
@@ -386,6 +407,9 @@ export class CafeInformService {
         take: 10,
         skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+        order: {
+          createdAt: 'DESC',
+        },
       });
       return result;
     }
@@ -397,6 +421,9 @@ export class CafeInformService {
         owner: { id: ownerID },
       },
       relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+      order: {
+        createdAt: 'DESC',
+      },
       take: 10,
       skip: (page - 1) * 10,
     });
@@ -413,6 +440,9 @@ export class CafeInformService {
         relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
         take: 10,
         skip: (page - 1) * 10,
+        order: {
+          createdAt: 'DESC',
+        },
       });
       return result;
     } else if (!name && Location) {
@@ -427,7 +457,11 @@ export class CafeInformService {
         for (let i = 0; i < pageNum; i++) {
           result[i] = arr.slice(i * 10, (i + 1) * 10);
         }
-        result[page - 1];
+        if (page - 1 > result.length) {
+          return [];
+        } else {
+          return result[page - 1];
+        }
       }
       return arr;
     } else {
@@ -435,6 +469,9 @@ export class CafeInformService {
         take: 10,
         skip: (page - 1) * 10,
         relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+        order: {
+          createdAt: 'DESC',
+        },
       });
       return result;
     }

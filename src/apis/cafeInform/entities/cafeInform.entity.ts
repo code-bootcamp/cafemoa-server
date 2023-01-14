@@ -11,13 +11,12 @@ import { PickList } from 'src/apis/pickList/entities/pickList.entity';
 import { Stamp } from 'src/apis/stamp/entities/stamp.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -51,6 +50,18 @@ export class CafeInform {
   @Column()
   @Field(() => String)
   thumbNail: string;
+
+  // @Column()
+  // @Field(() => Boolean)
+  // thumbNail: string;
+
+  @Column()
+  @Field(() => Boolean)
+  is_WC: boolean;
+
+  @Column()
+  @Field(() => Boolean)
+  is_Parking: boolean;
 
   @ManyToOne(() => Owner, { onDelete: 'CASCADE' })
   @Field(() => Owner)
@@ -94,4 +105,7 @@ export class CafeInform {
     onDelete: 'CASCADE',
   })
   coupon: Coupon[];
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

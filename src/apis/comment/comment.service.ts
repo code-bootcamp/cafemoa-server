@@ -182,6 +182,11 @@ export class CommentService {
       ...comment,
     });
     if (image_Url) {
+      await this.commentImageRepository.delete({
+        comment: {
+          id: mycomment.id,
+        },
+      });
       for (let i = 0; i < image_Url.length; i++) {
         this.commentImageRepository.save({
           image_url: image_Url[i],

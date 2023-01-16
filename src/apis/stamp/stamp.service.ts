@@ -81,7 +81,7 @@ export class StampService {
   }
 
   async findCafeStamp({ cafeId, page }) {
-    await this.stampRepository.find({
+    return await this.stampRepository.find({
       take: 10,
       skip: (page - 1) * 10,
       where: { cafeInform: { id: cafeId } },

@@ -19,6 +19,7 @@ export class PickListService {
           'cafeInform',
           'cafeInform.cafeTag',
           'cafeInform.owner',
+          'cafeInform.cafeImage',
         ],
         where: {
           user: { id: userID },
@@ -39,6 +40,7 @@ export class PickListService {
           'cafeInform',
           'cafeInform.cafeTag',
           'cafeInform.owner',
+          'cafeInform.cafeImage',
         ],
       });
       if (!result) {

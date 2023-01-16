@@ -1,7 +1,7 @@
 import {
   ConflictException,
   Injectable,
-  UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -114,7 +114,7 @@ export class StampService {
 
     const validOwnerPwd = await bcrypt.compare(password, owner.password);
     if (!validOwnerPwd) {
-      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+      throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
     }
 
     const stamp = await this.stampRepository.findOne({

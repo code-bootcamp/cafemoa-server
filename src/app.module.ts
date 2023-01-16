@@ -70,6 +70,7 @@ import { CouponModule } from './apis/coupon/coupon.module';
           'Accept',
         ],
       },
+      // playground: false,
     }),
 
     TypeOrmModule.forRoot({

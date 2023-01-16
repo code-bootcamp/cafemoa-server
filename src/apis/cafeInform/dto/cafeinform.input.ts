@@ -12,6 +12,9 @@ export class CafeInformInput {
   cafeAddr: string;
 
   @Field(() => String)
+  notice: string;
+
+  @Field(() => String)
   detailAddr: string;
 
   @Field(() => [String])
@@ -28,4 +31,7 @@ export class CafeInformInput {
 
   @Field(() => Boolean)
   is_WC: boolean;
+
+  @Field(() => Boolean)
+  is_Wifi: boolean;
 }

@@ -15,6 +15,9 @@ export class UpdateCafeInform {
   detailAddr: string;
 
   @Field(() => String, { nullable: true })
+  notice: string;
+
+  @Field(() => String, { nullable: true })
   ownerNum: string;
 
   @Field(() => [String], { nullable: true })
@@ -31,4 +34,7 @@ export class UpdateCafeInform {
 
   @Field(() => Boolean, { nullable: true })
   is_WC: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  is_Wifi: boolean;
 }

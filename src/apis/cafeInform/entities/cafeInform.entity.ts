@@ -33,6 +33,10 @@ export class CafeInform {
 
   @Column()
   @Field(() => String)
+  notice: string;
+
+  @Column()
+  @Field(() => String)
   operatingInfo: string;
 
   @Column()
@@ -58,6 +62,10 @@ export class CafeInform {
   @Column()
   @Field(() => Boolean)
   is_WC: boolean;
+
+  @Column()
+  @Field(() => Boolean)
+  is_Wifi: boolean;
 
   @Column()
   @Field(() => Boolean)

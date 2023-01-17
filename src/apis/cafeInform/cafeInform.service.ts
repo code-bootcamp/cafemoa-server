@@ -52,7 +52,7 @@ export class CafeInformService {
       where: {
         id: CafeInformID,
       },
-      relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
+      relations: ['cafeTag', 'owner'],
     });
     if (cafeinform.owner.id !== context.req.user.id) {
       throw new ConflictException('자신의 카페만 수정이 가능합니다.');

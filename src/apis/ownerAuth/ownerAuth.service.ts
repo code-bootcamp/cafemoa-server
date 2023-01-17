@@ -49,9 +49,10 @@ export class OwnerAuthService {
       'http://localhost:3000',
       'https://mydatabase.backkim.shop',
       'http://127.0.0.1:5500',
-      'http://backkim.shop',
+      'https://backkim.shop',
       'http://localhost:5500',
       'http://localhost:5501',
+      'https://cafemoa.shop',
     ];
     const origin = req.headers.origin;
     if (permittedOrigins.includes(origin)) {

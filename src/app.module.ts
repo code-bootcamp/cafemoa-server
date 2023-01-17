@@ -54,10 +54,11 @@ import { CouponModule } from './apis/coupon/coupon.module';
       cors: {
         origin: [
           'http://localhost:3000',
-          'https://mydatabase.backkim.shop/graphql',
+          'https://mydatabase.backkim.shop',
           'https://backkim.shop',
           'http://localhost:5500',
           'http://localhost:5501',
+          'https://cafemoa.shop',
         ],
         credentials: true,
         exposedHeaders: ['Set-Cookie', 'Cookie'],

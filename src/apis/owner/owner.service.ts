@@ -140,7 +140,7 @@ export class OwnerService {
                     outline: none;
                     border: none;
                     border-radius:5px;
-                     ;"><a href="https://www.naver.com" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
+                     ;"><a href="https://cafemoa.shop" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
             </div>
         </body>
     </html>`,
@@ -195,7 +195,7 @@ export class OwnerService {
                     outline: none;
                     border: none;
                     border-radius:5px;
-                     ;"><a href="https://www.naver.com" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
+                     ;"><a href="https://cafemoa.shop" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
 
             </div>
         </body>

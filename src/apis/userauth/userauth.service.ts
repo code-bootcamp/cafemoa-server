@@ -58,6 +58,7 @@ export class UserAuthService {
       'https://backkim.shop',
       'http://localhost:5500',
       'http://localhost:5501',
+      'https://cafemoa.shop',
     ];
     const req = context.req;
     const res = context.res;

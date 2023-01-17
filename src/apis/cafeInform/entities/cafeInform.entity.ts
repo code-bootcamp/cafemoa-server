@@ -27,15 +27,15 @@ export class CafeInform {
   @Field(() => String)
   id: string;
 
-  @Column()
+  @Column({ length: 1500 })
   @Field(() => String)
   cafeinfo: string;
 
-  @Column()
+  @Column({ length: 1500 })
   @Field(() => String)
   notice: string;
 
-  @Column()
+  @Column({ length: 1500 })
   @Field(() => String)
   operatingInfo: string;
 

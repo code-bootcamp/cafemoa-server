@@ -121,12 +121,21 @@ export class CafeInformService {
         }
       }
     }
-    return this.cafeInformrRepository.save({
-      ...cafeinform,
-      ...CafeInform,
-      cafeTag: [...cafeinform.cafeTag, ...temp],
-      thumbnail: cafe_imageUrl[0],
-    });
+    if (temp.length > 0) {
+      return this.cafeInformrRepository.save({
+        ...cafeinform,
+        ...CafeInform,
+        cafeTag: temp,
+        thumbnail: cafe_imageUrl[0],
+      });
+    } else {
+      return this.cafeInformrRepository.save({
+        ...cafeinform,
+        ...CafeInform,
+        cafeTag: [...cafeinform.cafeTag, ...temp],
+        thumbnail: cafe_imageUrl[0],
+      });
+    }
   }
   async create({ cafeInformInput, OwnerId }) {
     // 이메일 인증 버튼 및 중복확인, 체크까지

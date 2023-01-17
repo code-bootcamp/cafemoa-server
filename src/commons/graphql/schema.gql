@@ -90,11 +90,15 @@ type Owner {
 type CafeInform {
   id: String!
   cafeinfo: String!
+  notice: String!
   operatingInfo: String!
   cafeAddr: String!
   detailAddr: String!
   like: Int!
   thumbNail: String!
+  is_WC: Boolean!
+  is_Wifi: Boolean!
+  is_Parking: Boolean!
   owner: Owner!
   cafeTag: [CafeTag!]!
   cafeImage: [CafeImage!]!
@@ -213,20 +217,28 @@ input UpdateCafeInform {
   operatingInfo: String
   cafeAddr: String
   detailAddr: String
+  notice: String
   ownerNum: String
   menu_imageUrl: [String!]
   cafe_imageUrl: [String!]
   cafeTag: [String!]
+  is_Parking: Boolean
+  is_WC: Boolean
+  is_Wifi: Boolean
 }
 
 input CafeInformInput {
   cafeinfo: String!
   operatingInfo: String!
   cafeAddr: String!
+  notice: String!
   detailAddr: String!
   cafeTag: [String!]!
   menu_imageUrl: [String!]!
   cafe_imageUrl: [String!]!
+  is_Parking: Boolean!
+  is_WC: Boolean!
+  is_Wifi: Boolean!
 }
 
 input createCommentInput {

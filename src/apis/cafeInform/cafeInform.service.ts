@@ -58,6 +58,9 @@ export class CafeInformService {
       throw new ConflictException('자신의 카페만 수정이 가능합니다.');
     }
     if (menu_imageUrl) {
+      await this.menuImageRepository.delete({
+        cafeInform: { id: cafeinform.id },
+      });
       await Promise.all(
         menu_imageUrl.map(async (el) => {
           await this.menuImageRepository.save({

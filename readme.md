@@ -56,7 +56,8 @@
 
 # 서버 폴더구조
 
-`├── Dockerfile
+```
+├── Dockerfile
 ├── Dockerfile.nginx
 ├── Dockerfile.prod
 ├── docker-compose.prod.yaml
@@ -211,11 +212,12 @@
 │   └── jest-e2e.json
 ├── tsconfig.build.json
 ├── tsconfig.json
-└── yarn.lock`
+└── yarn.lock
+```
 
 # .env
 
-`
+```
 DATABASE_DATABASE
 DATABASE_HOST
 DATABASE_PASSWORD
@@ -231,4 +233,4 @@ SMS_KEY
 SMS_SECRET
 SMS_SENDER
 
-`
+```

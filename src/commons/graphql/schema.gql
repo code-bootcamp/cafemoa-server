@@ -164,7 +164,7 @@ type Query {
   fetchStamp(stampId: String!): Stamp!
   fetchStamps: [Stamp!]!
   fetchUserStamps(location: String, page: Int): [Stamp!]!
-  fetchCafeStamps(cafeId: String!, page: Int): [Stamp!]!
+  fetchCafeStamps(cafeId: String!): [DateTime!]!
   fetchUnusualStamps(page: Int): [StampHistory!]!
   fetchUsers: [User!]!
   fetchUser: User!

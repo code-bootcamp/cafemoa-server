@@ -87,8 +87,8 @@ import { CouponModule } from './apis/coupon/coupon.module';
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://my-redis:6379',
-      // url: 'redis://10.14.81.3:6379',
+      // url: 'redis://my-redis:6379',
+      url: 'redis://10.14.81.3:6379',
       isGlobal: true,
     }),
   ],

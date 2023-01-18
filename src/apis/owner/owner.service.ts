@@ -140,7 +140,7 @@ export class OwnerService {
                     outline: none;
                     border: none;
                     border-radius:5px;
-                     ;"><a href="https://cafemoa.shop" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
+                     ;"><a href="https://cafemoa.shop/login/" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
             </div>
         </body>
     </html>`,
@@ -183,20 +183,6 @@ export class OwnerService {
                     <br />
                     <div style= "font-weight: bold">인증번호 : ${token}</div>
                     <br /><br />
-                    <buttton style="
-                    background-color: #81564B;
-                    text-align: center;
-                    padding: 20px;
-                    text-align: center;
-                    cursor: pointer;
-                    font-size:24px;
-                    width: 200px;
-                    padding:20px 60px;
-                    outline: none;
-                    border: none;
-                    border-radius:5px;
-                     ;"><a href="https://cafemoa.shop" style="color: #FFFFFF; text-decoration: none; ">카페모아로 이동</a></button>
-
             </div>
         </body>
     </html>`,

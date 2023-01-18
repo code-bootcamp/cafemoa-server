@@ -46,6 +46,9 @@ export class StampService {
   async findUserStamp({ userId, page, location }) {
     if (location) {
       const result = await this.stampRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
+        where: { user: { id: userId } },
         relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });
       const answer = result.filter(
@@ -80,13 +83,16 @@ export class StampService {
     }
   }
 
-  async findCafeStamp({ cafeId, page }) {
-    return await this.stampRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      where: { cafeInform: { id: cafeId } },
+  async findCafeStamp({ cafeId, userId }) {
+    const result = await this.stampRepository.findOne({
+      where: { cafeInform: { id: cafeId }, user: { id: userId } },
       relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
+    if (result) {
+      return [result.updatedAt];
+    } else {
+      return [];
+    }
   }
 
   async createStamp({ createStampInput }) {
@@ -163,21 +169,43 @@ export class StampService {
         return result;
       }
     } else {
-      const result = await this.stampRepository.save({
-        count,
-        user: { ...user },
-        cafeInform: { ...cafeInform },
-      });
-
-      if (count >= 3) {
-        await this.stampHistoryRepository.save({
-          count,
+      if (count < 10) {
+        const result = await this.stampRepository.save({
+          count: count,
           user: { ...user },
-          owner: { ...owner },
-          stamp: { ...result },
+          cafeInform: { ...cafeInform },
         });
+
+        if (count >= 3) {
+          await this.stampHistoryRepository.save({
+            count,
+            user: { ...user },
+            owner: { ...owner },
+            stamp: { ...result },
+          });
+        }
+        return result;
+      } else {
+        const result = await this.stampRepository.save({
+          count: count - 10,
+          user: { ...user },
+          cafeInform: { ...cafeInform },
+        });
+        await this.couponRepository.save({
+          expiredDate,
+          cafeInform: { ...result.cafeInform },
+          user: { ...result.user },
+        });
+        if (count >= 3) {
+          await this.stampHistoryRepository.save({
+            count,
+            user: { ...user },
+            owner: { ...owner },
+            stamp: { ...result },
+          });
+        }
+        return result;
       }
-      return result;
     }
   }
 

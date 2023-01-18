@@ -222,6 +222,11 @@ export class CafeInformService {
         id: UserID,
       },
     });
+
+    if (!user) {
+      throw new ConflictException('가맹주는 찜을 할 수 없습니다.');
+    }
+
     const pickList = await this.pickListRepository.findOne({
       where: {
         user: { id: UserID },

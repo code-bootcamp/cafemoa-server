@@ -42,13 +42,15 @@ export class StampResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
-  @Query(() => [Stamp])
+  @Query(() => [Date])
   fetchCafeStamps(
     @Args('cafeId') cafeId: string,
-    @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
+    @Context() context: IContext,
   ) {
-    page = page === undefined ? 1 : page;
-    return this.stampService.findCafeStamp({ cafeId, page });
+    return this.stampService.findCafeStamp({
+      cafeId,
+      userId: context.req.user.id,
+    });
   }
 
   @UseGuards(GqlAuthAccessGuard)

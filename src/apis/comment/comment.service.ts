@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
@@ -433,6 +437,12 @@ export class CommentService {
         id: userID,
       },
     });
+
+    if (!user) {
+      throw new UnprocessableEntityException(
+        '가맹주는 좋아요를 할 수 없습니다.',
+      );
+    }
 
     const comment = await this.commentRepository.findOne({
       where: {

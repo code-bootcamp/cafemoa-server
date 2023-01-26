@@ -16,16 +16,9 @@ export class OwnerCommentResolver {
   fetchOwnerComment(
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.ownercommentService.findAll({ page });
   }
 
-  // @Query(() => OwnerComment)
-  // fetchOwnerComment1(
-  //   @Args('ownercommentId') ownercommentId: string, //
-  // ) {
-  //   return this.ownercommentService.findOne({ ownercommentId });
-  // }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => OwnerComment)
   async createOwnerComment(
@@ -40,10 +33,6 @@ export class OwnerCommentResolver {
       commentID,
     });
   }
-  //   @Mutation(() => OwnerComment)
-  //   async createOwnerComment(@Args('commentId') Comment: string) {
-  //     return this.ownercommentService.create({ Comment }); //
-  //   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => OwnerComment)
@@ -59,24 +48,13 @@ export class OwnerCommentResolver {
       UpdateOwnerCommentInput,
     });
   }
-  // @UseGuards(GqlAuthAccessGuard)
-  // @Mutation(() => Boolean)
-  // deleteOwnerComment(
-  //   @Args('ownerCommentId') ownercommentId: string, //
-  //   @Context() context: IContext,
-  // ) {
-  //   return this.ownercommentService.delete({
-  //     ownercommentId,
-  //     ownerID: context.req.user.id,
-  //   });
-  // }
+
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [OwnerComment])
   fetchMyOwnerComments(
     @Context() context: IContext, //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.ownercommentService.findById({
       OwnerID: context.req.user.id,
       page,

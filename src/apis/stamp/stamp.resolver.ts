@@ -33,7 +33,6 @@ export class StampResolver {
     @Args({ name: 'page', type: () => Int, nullable: true })
     page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.stampService.findUserStamp({
       userId: context.req.user.id,
       location,

@@ -36,7 +36,7 @@ export class StampHistoryService {
         createdAt: 'ASC',
       },
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       relations: ['stamp', 'owner', 'user', 'stamp.cafeInform'],
     });
 

@@ -37,7 +37,7 @@ export class CommentService {
   async findAll({ page }) {
     const result = await this.commentRepository.find({
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       relations: [
         'cafeinfo',
         'cafeinfo.cafeTag',
@@ -70,7 +70,7 @@ export class CommentService {
   async findusercomments({ userID, page }) {
     const result = await this.commentRepository.find({
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       where: { user: { id: userID } },
       relations: [
         'cafeinfo',
@@ -216,14 +216,11 @@ export class CommentService {
     return result.affected ? '삭제에 성공했습니다.' : '삭제에 실패했습니다.';
   }
 
-  withdelete(): Promise<Comment[]> {
-    return this.commentRepository.find({
-      withDeleted: true,
-    });
-  }
-
   async sendBestComment() {
     const Like = await this.commentRepository.find({
+      order: {
+        like: 'DESC',
+      },
       relations: [
         'cafeinfo',
         'cafeinfo.cafeTag',
@@ -232,7 +229,6 @@ export class CommentService {
         'cafeinfo.owner',
       ],
     });
-    Like.sort((a, b) => b.like - a.like);
 
     if (Like[0].like < 5) {
       throw new ConflictException('해당하는 댓글이 없습니다.');
@@ -379,54 +375,10 @@ export class CommentService {
         }
       }
     } else if (Location && Tags.length > 0) {
-      const result = await this.findCommentWithLocation({ Location, page });
-      const arr = [];
-      result.forEach((el) => {
-        el.cafeinfo.cafeTag.forEach((e) => {
-          for (let i = 0; i < Tags.length; i++) {
-            if (e.tagName === Tags[i]) {
-              if (arr.includes(el)) {
-                continue;
-              } else {
-                arr.push(el);
-              }
-            }
-          }
-        });
-      });
-      if (arr.length > 10) {
-        const pageNum = Math.ceil(arr.length / 10);
-        const result = new Array(pageNum);
-        for (let i = 0; i < pageNum; i++) {
-          result[i] = arr.slice(i * 10, (i + 1) * 10);
-        }
-        if (page > pageNum) {
-          return [];
-        } else {
-          return result[page - 1];
-        }
-      } else {
-        if (page > 1) {
-          return [];
-        } else {
-          return arr;
-        }
-      }
+      const result = await this.findcommentwithTags({ page, Tags });
+      return result;
     } else {
-      const result = await this.commentRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
-        relations: [
-          'cafeinfo',
-          'cafeinfo.cafeTag',
-          'user',
-          'commentImage',
-          'cafeinfo.owner',
-        ],
-        order: {
-          time: 'DESC',
-        },
-      });
+      const result = await this.findAll({ page });
       return result;
     }
   }
@@ -481,20 +433,20 @@ export class CommentService {
           like: comment.like + 1,
         },
       );
-      const resultComment = await this.commentRepository.findOne({
+      const updatedComment = await this.commentRepository.findOne({
         where: {
           id: commentID,
         },
       });
-      const result = await this.likeCommentRepository.save({
+      await this.likeCommentRepository.save({
         user: {
           ...user,
         },
         comment: {
-          ...resultComment,
+          ...updatedComment,
         },
       });
-      return resultComment.like;
+      return updatedComment.like;
     }
   }
   async findCommentBycafeID({ cafeID, page }) {
@@ -513,7 +465,7 @@ export class CommentService {
         time: 'DESC',
       },
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
     });
     return result;
   }

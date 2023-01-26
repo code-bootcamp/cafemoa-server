@@ -123,7 +123,7 @@ export class CouponService {
         user: { id: userId },
       },
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       relations: ['user', 'cafeInform', 'cafeInform.owner'],
     });
 

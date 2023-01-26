@@ -17,7 +17,6 @@ export class CommentResolver {
   fetchComments(
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.commentService.findAll({ page });
   }
   @Query(() => Comment)
@@ -68,33 +67,17 @@ export class CommentResolver {
     return this.commentService.sendBestComment();
   }
 
-  // @Query(() => [Comment])
-  // fetchCommentWithTag(
-  //   @Args({ name: 'Tags', type: () => [String] }) Tags: string[],
-  // ) {
-  //   return this.commentService.findcommentwithTags({ Tags });
-  // }
-
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Comment])
   fetchUserComments(
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
     @Context() Context: IContext,
   ) {
-    page = page === undefined ? 1 : page;
     return this.commentService.findusercomments({
       userID: Context.req.user.id,
       page,
     });
   }
-  // @Query(() => [Comment])
-  // fetchCommentmWithLocation(
-  //   @Args('Location') Location: string,
-  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  // ) {
-  //   page = page === undefined ? 1 : page;
-  //   return this.commentService.findCommentWithLocation({ Location, page });
-  // }
 
   @Query(() => [Comment])
   fetchCommentsAll(
@@ -104,7 +87,6 @@ export class CommentResolver {
     Tags: string[], //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.commentService.findCommentWithLocationAndTag({
       Location,
       Tags,
@@ -127,7 +109,6 @@ export class CommentResolver {
     @Args({ name: 'cafeID', type: () => String }) cafeID: string,
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.commentService.findCommentBycafeID({ cafeID, page });
   }
 }

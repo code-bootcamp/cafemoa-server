@@ -47,7 +47,7 @@ export class StampService {
     if (location) {
       const result = await this.stampRepository.find({
         take: 10,
-        skip: (page - 1) * 10,
+        skip: page === undefined ? 1 : (page - 1) * 10,
         where: { user: { id: userId } },
         relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });
@@ -66,7 +66,7 @@ export class StampService {
     } else {
       const result = await this.stampRepository.find({
         take: 10,
-        skip: (page - 1) * 10,
+        skip: page === undefined ? 1 : (page - 1) * 10,
         where: { user: { id: userId } },
         relations: ['user', 'cafeInform', 'cafeInform.owner'],
       });

@@ -53,26 +53,6 @@ export class CafeInformResolver {
     });
   }
 
-  // @Query(() => [CafeInform])
-  // fetchCafeInformWithTag(
-  //   @Args({ name: 'tags', type: () => [String] }) Tags: string[],
-  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  // ) {
-  //   page = page === undefined ? 1 : page;
-  //   return this.cafeInformService.findCafeInformWithTags({ Tags, page });
-  // }
-
-  // @Query(() => [CafeInform])
-  // fetchCafeInformWithLocation(
-  //   @Args('location') Location: string, //
-  //   @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
-  // ) {
-  //   page = page === undefined ? 1 : page;
-  //   return this.cafeInformService.findCafeInformWithLocation({
-  //     Location,
-  //     page,
-  //   });
-  // }
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteCafeInform(
@@ -91,7 +71,6 @@ export class CafeInformResolver {
   fetchCafeInforms(
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.cafeInformService.findAll({ page });
   }
 
@@ -103,7 +82,6 @@ export class CafeInformResolver {
     Tags: string[],
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.cafeInformService.findCafeWithLocationAndTag({
       Location,
       Tags,
@@ -117,7 +95,6 @@ export class CafeInformResolver {
     @Context() context: IContext, //
     @Args({ name: 'page', type: () => Int, nullable: true }) page: number,
   ) {
-    page = page === undefined ? 1 : page;
     return this.cafeInformService.findMyCafes({
       ownerID: context.req.user.id,
       page,
@@ -131,7 +108,6 @@ export class CafeInformResolver {
     @Args({ name: 'location', type: () => String, nullable: true })
     Location: string,
   ) {
-    page = page === undefined ? 1 : page;
     return this.cafeInformService.findCafeByName({ name, page, Location });
   }
 }

@@ -18,7 +18,7 @@ export class OwnerCommentService {
   async findAll({ page }) {
     return await this.ownercommentRepository.find({
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       relations: ['comment', 'owner'],
     });
   }
@@ -33,11 +33,11 @@ export class OwnerCommentService {
   }
 
   async create({ createOwnerCommentInput, OwnerId, commentID }) {
-    const result = await this.ownerRepository.findOne({
+    const owner = await this.ownerRepository.findOne({
       where: { id: OwnerId },
     });
 
-    if (!result) {
+    if (!owner) {
       throw new ConflictException('가맹주만 답글을 작성할 수 있습니다.');
     }
 
@@ -56,7 +56,7 @@ export class OwnerCommentService {
     });
     const result2 = await this.ownercommentRepository.save({
       owner: {
-        ...result,
+        ...owner,
       },
       comment: {
         ...result3,
@@ -69,17 +69,17 @@ export class OwnerCommentService {
   }
 
   async update({ UpdateOwnerCommentInput, ownerCommentID, onwerID }) {
-    const result = await this.ownercommentRepository.findOne({
+    const ownerComment = await this.ownercommentRepository.findOne({
       where: {
         id: ownerCommentID,
       },
       relations: ['owner', 'comment'],
     });
-    if (result.owner.id !== onwerID) {
+    if (ownerComment.owner.id !== onwerID) {
       throw new ConflictException('수정권한이 없습니다.');
     }
     const newOwner = {
-      ...result,
+      ...ownerComment,
       ...UpdateOwnerCommentInput,
     };
     return this.ownercommentRepository.save(newOwner);
@@ -100,16 +100,11 @@ export class OwnerCommentService {
     });
     return result.affected ? true : false;
   }
-  withdelete(): Promise<OwnerComment[]> {
-    return this.ownercommentRepository.find({
-      withDeleted: true,
-    });
-  }
 
   async findById({ OwnerID, page }) {
     const result = await this.ownercommentRepository.find({
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       where: {
         owner: { id: OwnerID },
       },

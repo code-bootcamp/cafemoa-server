@@ -248,15 +248,15 @@ export class CafeInformService {
       } else {
       }
 
-      const cafeInform2 = await this.cafeInformrRepository.findOne({
+      const updatedCafeInform = await this.cafeInformrRepository.findOne({
         where: {
           id: CafeInformID,
         },
       });
 
-      return cafeInform2.like;
+      return updatedCafeInform.like;
     } else {
-      const result = await this.cafeInformrRepository.update(
+      await this.cafeInformrRepository.update(
         {
           id: CafeInformID,
         },
@@ -265,21 +265,21 @@ export class CafeInformService {
         },
       );
 
-      const cafeInform2 = await this.cafeInformrRepository.findOne({
+      const updatedCafeInform = await this.cafeInformrRepository.findOne({
         where: {
           id: CafeInformID,
         },
       });
       await this.pickListRepository.save({
         cafeInform: {
-          ...cafeInform2,
+          ...updatedCafeInform,
         },
         user: {
           ...user,
         },
       });
 
-      return cafeInform2.like;
+      return updatedCafeInform.like;
     }
   }
   async findCafeInformWithTags({ Tags, page }) {
@@ -375,17 +375,18 @@ export class CafeInformService {
   }
   async findBestCafe() {
     const result = await this.cafeInformrRepository.find({
+      order: {
+        like: 'DESC',
+      },
       relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
-
-    result.sort((a, b) => b.like - a.like);
 
     return result.slice(0, 5);
   }
   async findAll({ page }) {
     const result = await this.cafeInformrRepository.find({
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
       relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
     });
     return result;
@@ -433,14 +434,7 @@ export class CafeInformService {
         }
       }
     } else {
-      const result = await this.cafeInformrRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
-        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
-        order: {
-          createdAt: 'DESC',
-        },
-      });
+      const result = await this.findAll({ page });
       return result;
     }
   }
@@ -455,7 +449,7 @@ export class CafeInformService {
         createdAt: 'DESC',
       },
       take: 10,
-      skip: (page - 1) * 10,
+      skip: page === undefined ? 1 : (page - 1) * 10,
     });
     return result;
   }
@@ -469,7 +463,7 @@ export class CafeInformService {
         },
         relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
         take: 10,
-        skip: (page - 1) * 10,
+        skip: page === undefined ? 1 : (page - 1) * 10,
         order: {
           createdAt: 'DESC',
         },
@@ -500,14 +494,7 @@ export class CafeInformService {
         }
       }
     } else {
-      const result = await this.cafeInformrRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
-        relations: ['cafeTag', 'owner', 'cafeImage', 'cafeMenuImage'],
-        order: {
-          createdAt: 'DESC',
-        },
-      });
+      const result = await this.findAll({ page });
       return result;
     }
   }
